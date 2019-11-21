@@ -8,7 +8,7 @@ const Team = () => {
 
   return (
     <Container className={classes.mainContainer}>
-
+      <h1>Team</h1>
     </Container>
   )
 }
