@@ -8,7 +8,7 @@ const Landing = () => {
 
   return (
     <Container className={classes.mainContainer}>
-
+      
     </Container>
   )
 }
