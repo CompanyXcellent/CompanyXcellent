@@ -52,4 +52,11 @@ create table response(
     value integer,
     responder_id integer references users(user_id),
     respondee_id integer references users(user_id)
+);
+
+create table posts(
+    post_id serial primary key,
+    post_time timestamp,
+    content text,
+    user_id integer references users(user_id)
 )
