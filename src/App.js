@@ -6,6 +6,8 @@ import store from './redux/store';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme/theme';
 
+import Landing from './components/Landing/Landing'
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <ThemeProvider theme={theme} >
           <div className="App">
             <CssBaseline />
+            <Landing />
           </div>
         </ThemeProvider>
       </Provider>

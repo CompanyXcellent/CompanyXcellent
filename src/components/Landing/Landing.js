@@ -1,22 +1,28 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
 
-import Container from '@material-ui/core/Container';
 
-const Landing = () => {
-  const classes = useStyles();
+class Landing extends React.Component{
+  
+  
+  componentDidMount(){
+    
+  }
 
-  return (
-    <Container className={classes.mainContainer}>
-
-    </Container>
-  )
-}
-
-export default Landing;
-
-const useStyles = makeStyles({
-  mainContainer: {
+  userLogin = () => {
+    window.location.href = "http://localhost:3030/api/auth"
 
   }
-})
+
+  render(){
+    console.log('hit')
+
+    return(
+      <div>
+        <div>
+          <button onClick={this.userLogin}>Login</button>
+        </div>
+      </div>
+    )
+  }
+}
+export default Landing;

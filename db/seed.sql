@@ -7,6 +7,7 @@ create table users(
     user_id serial primary key,
     username text,
     role_id integer references roles(role_id)
+    auth0_id varchar(250)
 );
 
 
