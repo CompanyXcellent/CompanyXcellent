@@ -86,7 +86,7 @@ export default function CustomizedDialogs() {
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose} color="primary">
-            Save changes
+            Create Post
           </Button>
         </DialogActions>
       </Dialog>

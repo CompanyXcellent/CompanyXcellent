@@ -4,4 +4,7 @@
     justify-content: space-around;
     background-color: blanchedalmond;
     align-items: center;
+    position: sticky;
+    top: 0px;
+    z-index: 3;
 }
