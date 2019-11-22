@@ -10,6 +10,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import './EditProfileDialog.css'
+import {v4 as randomString} from 'uuid'
+import axios from 'axios'
 
 
 const styles = theme => ({
@@ -56,8 +58,9 @@ export default function CustomizedDialogs() {
   const [open, setOpen] = React.useState(false);
   const [aboutMe, setAboutMe] = React.useState('')
   const [nickname, setNickname] = React.useState('')
+  const [img, setImg] = React.useState('')
 
-  console.log({aboutMe: aboutMe, nickname: nickname})
+  console.log({aboutMe: aboutMe, nickname: nickname, imgURL: img})
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,6 +68,51 @@ export default function CustomizedDialogs() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  //--------------------S3 functions start----------------------
+
+  const upLoadFile = (file, signedRequest, url) => {
+    const options = {
+        headers: {
+            'Content-Type': file.type
+        }
+    }
+    setImg(url)
+    axios.put(signedRequest, file, options)
+    //this put request goes and edits the file giving it an acutal value
+    .catch(err => console.log(err))
+  }
+
+  const handleImage = () => {
+    const file = document.getElementById('image-file').files[0]
+
+    //makes it so that if we upload the same image twice they wont have conflicting names
+    const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
+    
+    //here it makes the file and then calls upLoadFile which sends the file to s3 storage.
+    axios.get('/api/signs3',{
+        params:{
+            'file-name': fileName,
+            'file-type': file.type
+        }
+    })
+    .then(res => {
+        const{signedRequest, url} = res.data
+        setImg(signedRequest)
+        // makes the value of img on state to be the URL of the image in the s3 storage. through this url is how it is accessed later on the runner side.
+        upLoadFile(file, signedRequest, url)
+    })
+    .catch(err => console.log(err))        
+  }
+
+
+  //----------------------S3 functions end
+
+
+  const onSave = () => {
+    handleClose()
+    handleImage(img)
+  }
 
   return (
     <div>
@@ -81,6 +129,7 @@ export default function CustomizedDialogs() {
           <input
             placeholder='profile pic'
             type='file'
+            id='image-file'
           />
           <h3>NickName</h3>
           <input
@@ -92,7 +141,7 @@ export default function CustomizedDialogs() {
 
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
+          <Button autoFocus onClick={() => onSave()} color="primary">
             Save changes
           </Button>
         </DialogActions>
