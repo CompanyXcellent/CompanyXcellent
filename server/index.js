@@ -46,23 +46,25 @@ passport.use(
       callbackURL: "/api/auth"
     },
     function(accessToken, refreshToken, extraParams, profile, done) {
-      console.log(profile)
+      let { id } = profile;
+      let { value } = profile.emails[0];
+      console.log(id)
       app
         .get("db")
-        .get_user([profile.id])
-        .then(res => {
-          if (!res[0]) {
-            let { id } = profile
-            let { value } = profile.emails[0]
-            console.log( id, value)
+        .get_user([id])
+        .then(response => {
+          console.log('bitch ass', response)
+          if (!response[0]) {
+            // console.log( res )
             app
               .get("db")
               .create_user([id, value])
               .then(created => {
+                // console.log(created)
                 return done(null, created[0]);
               });
           } else {
-            return done(null, created[0]);
+            return done(null, response[0]);
           }
         });
     }
@@ -78,6 +80,7 @@ passport.deserializeUser(function(obj, done) {
 
 app.get("/api/getUser", (req, res, next) => {
   if (req.session.passport.user) {
+    console.log("hit end");
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
 });
@@ -87,21 +90,21 @@ app.get(
     failureRedirect: "http://localhost:3000/#/"
   }),
   (req, res) => {
-    res.redirect("http://localhost:3000/#/");
+    res.redirect("http://localhost:3000/#/posts");
   }
-)
-app.get('/api/logout', (req, res) => {
-  console.log('logout')
+);
+app.get("/api/logout", (req, res) => {
+  console.log("logout");
   req.logout();
-  let returnTo = 'http://localhost:3000/'
+  let returnTo = "http://localhost:3000/";
   res.redirect(
     `https://${AUTH0_DOMAIN}/v2/logout?returnTo=${returnTo}&client_id=${CLIENT_ID}`
-  )
-})
-app.post('/api/post', (req, res, next) => {
+  );
+});
+app.post("/api/post", (req, res, next) => {
   returnStr = req.body.place;
-  res.status(200).send(returnStr)
-})
+  res.status(200).send(returnStr);
+});
 //?---- End Auth0 ------
 
 app.listen(SERVER_PORT, () => {
