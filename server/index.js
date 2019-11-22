@@ -5,6 +5,7 @@ const massive = require("massive");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 
+
 const app = express();
 const {
   SERVER_PORT,
@@ -33,6 +34,35 @@ app.use(
   })
 );
 
+//?----- Sockets.io -------
+
+
+// const users = [{ user_id: 1, username: 'ted', role_id: 'admin' }, { user_id: 2, username: 'bob', role_id: 'admin' }]
+// app.get('/api/messages/:id')
+// const io = socket(
+//   app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
+// );
+
+// io.on('connection', (socket) => {
+//   socket.on('enter', ({ name }, cb) => {
+//     console.log(name)
+//     const error = true
+//     if (error) {
+//       cb({ error: 'error' })
+//     }
+//   })
+
+//   socket.on('send message', message => {
+//     socket.broadcast.emit('chat-message', message)
+//   })
+
+//   socket.on('disconnect', () => {
+
+
+//   })
+// })
+
+
 //?----- Auth0 ------------
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,9 +83,9 @@ passport.use(
         .get("db")
         .get_user([id])
         .then(response => {
-          console.log('bitch ass', response)
           if (!response[0]) {
             // console.log( res )
+            //!Change to make it add to the user_info table
             app
               .get("db")
               .create_user([id, value])
