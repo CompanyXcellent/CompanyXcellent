@@ -8,6 +8,7 @@ import Conversation from './components/Messages/Conversation'
 import Employees from './components/Employees/Employees'
 import CreatePoll from './components/Poll/CreatePoll'
 import Posts from './components/Posts/Posts'
+import CreateEmployee from './components/Employees/CreateEmployee'
 
 export default (
     <Switch>
@@ -19,5 +20,6 @@ export default (
         <Route path='/employees' component={Employees}/>
         <Route path='/createPoll' component={CreatePoll}/>
         <Route path='/posts' component={Posts}/>
+        <Route path='/createEmployee' component={CreateEmployee}/>
     </Switch>
 )
