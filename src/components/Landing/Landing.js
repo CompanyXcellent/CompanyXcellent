@@ -5,13 +5,13 @@ class Landing extends React.Component{
   
   
   componentDidMount(){
-    
-  }
-
-  userLogin = () => {
     window.location.href = "http://localhost:3030/api/auth"
-
   }
+
+  // userLogin = () => {
+  //   window.location.href = "http://localhost:3030/api/auth"
+
+  // }
 
   render(){
     console.log('hit')
@@ -19,7 +19,7 @@ class Landing extends React.Component{
     return(
       <div>
         <div>
-          <button onClick={this.userLogin}>Login</button>
+          {/* <button onClick={this.userLogin}>Login</button> */}
         </div>
       </div>
     )
