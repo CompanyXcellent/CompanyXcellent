@@ -8,7 +8,7 @@ const CreatePoll = () => {
 
   return (
     <Container className={classes.mainContainer}>
-
+      <h1>Poll form</h1>
     </Container>
   )
 }
