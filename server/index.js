@@ -4,8 +4,12 @@ const session = require("express-session");
 const massive = require("massive");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
+
+const socket = require('socket.io')
+
 const userCtrl = require('./controllers/userController')
 const compCtrl = require('./controllers/compController')
+
 
 
 const app = express();
@@ -50,32 +54,30 @@ app.get('/api/signs3', userCtrl.storeProfilePic)
 
 
 //?----- Sockets.io -------
+const socketCtrl = require('./controllers/socketCtrl')
+const io = socket(
+  app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
+);
+
+io.on('connection', (socket) => {
+  console.log('Socket Connection')
+  socket.on('enter', async ({ nickname, user_info_id, group_id }) => {
+
+    socket.broadcast.emit('message', { text: `${nickname} has joined` })
+    console.log(nickname)
+
+  })
+
+  // socket.on('send message', message => {
+  //   socket.broadcast.emit('chat-message', message)
+  //   console.log(message)
+  // })
+
+  socket.on('disconnect', () => {
 
 
-// const users = [{ user_id: 1, username: 'ted', role_id: 'admin' }, { user_id: 2, username: 'bob', role_id: 'admin' }]
-// app.get('/api/messages/:id')
-// const io = socket(
-//   app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
-// );
-
-// io.on('connection', (socket) => {
-//   socket.on('enter', ({ name }, cb) => {
-//     console.log(name)
-//     const error = true
-//     if (error) {
-//       cb({ error: 'error' })
-//     }
-//   })
-
-//   socket.on('send message', message => {
-//     socket.broadcast.emit('chat-message', message)
-//   })
-
-//   socket.on('disconnect', () => {
-
-
-//   })
-// })
+  })
+})
 
 
 //?----- Auth0 ------------
@@ -90,7 +92,7 @@ passport.use(
       clientSecret: CLIENT_SECRET,
       callbackURL: "/api/auth"
     },
-    function(accessToken, refreshToken, extraParams, profile, done) {
+    function (accessToken, refreshToken, extraParams, profile, done) {
       let { id } = profile;
       let { value } = profile.emails[0];
       console.log(id)
@@ -116,10 +118,10 @@ passport.use(
   )
 );
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
 
@@ -151,7 +153,3 @@ app.post("/api/post", (req, res, next) => {
   res.status(200).send(returnStr);
 });
 //?---- End Auth0 ------
-
-app.listen(SERVER_PORT, () => {
-  console.log(`server on port ${SERVER_PORT}`);
-});
