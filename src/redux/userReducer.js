@@ -6,6 +6,7 @@ const initialState = {
 };
 
 const GET_USER = 'GET_USER'
+const LOGOUT = 'LOGOUT'
 
 export const getUser = () => {
     console.log('hit userReducer')
@@ -16,11 +17,20 @@ export const getUser = () => {
     }
 };
 
+export const logout = () => {
+  return {
+    type: LOGOUT,
+    payload: null
+  }
+}
+
 export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case GET_USER + "_FULFILLED":
       return {...state ,user: payload, loggedIn: true};
+    case LOGOUT:
+      return {...state, user: {loggedIn: false}}
     default:
       return state;
   }

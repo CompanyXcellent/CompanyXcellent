@@ -4,7 +4,12 @@ const session = require("express-session");
 const massive = require("massive");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
+
 const socket = require('socket.io')
+
+const userCtrl = require('./controllers/userController')
+const compCtrl = require('./controllers/compController')
+
 
 
 const app = express();
@@ -34,6 +39,19 @@ app.use(
     }
   })
 );
+
+//---------------company endPoints------------------
+app.get('/api/allEmployees', compCtrl.getAllEmployees)
+
+//------------user endpoints-------------------------
+app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts)
+
+
+// --------S3---------
+app.get('/api/signs3', userCtrl.storeProfilePic)
+
+
+
 
 //?----- Sockets.io -------
 const socketCtrl = require('./controllers/socketCtrl')
