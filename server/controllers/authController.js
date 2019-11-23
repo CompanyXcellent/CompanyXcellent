@@ -1,11 +1,11 @@
 module.exports = {
-    getUsers: async(req, res) => {
+    getUsers: async (req, res) => {
         const db = req.app.get('db')
         let users = await db.get_users
         res.status(200).send(users)
     },
 
-    register: async ( req, res ) => {
+    register: async (req, res) => {
         const { user_id, username }
     }
 }

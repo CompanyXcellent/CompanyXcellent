@@ -1,30 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 import Container from '@material-ui/core/Container';
-// import Conversation from './Conversation';
+import { connect } from 'react-redux'
+
 // import Conversation from './Conversation';
 // import axios from 'axios';
 
-const Messages = () => {
+const Messages = (props) => {
+  console.log(props)
   const classes = useStyles();
-  const [name, setName] = useState('')
-  const [room, setRoom] = useState('')
+  const [user, setUser] = useState({})
+  const [messages, setMessages] = useState([])
+
+  useEffect(() => {
+    setUser(props.userReducer.user)
+    axios.get('/api/room', user.user_info_id).then(res => setMessages(res.data))
+  })
 
 
   return (
     <Container className={classes.mainContainer}>
-      <input onChange={(e) => setName(e.target.value)} />
-      <input onChange={(e) => setRoom(e.target.vale)} />
-      <Link to='/convo' name={name} room={room}>
-        <button type='submit'>enter</button>
-      </Link>
-      
+      {messages.map((el, i) => {
+        return <Link i={i} to='/conversation'></Link>
+      })}
     </Container>
   )
+
 }
 
-export default Messages;
+const mapStateToProps = (rootReducer) => {
+  return {
+    userReducer: rootReducer.userReducer
+  }
+}
+
+
+export default connect(mapStateToProps)(Messages);
 
 const useStyles = makeStyles({
   mainContainer: {
