@@ -54,9 +54,17 @@ create table response(
     respondee_id integer references users(user_id)
 );
 
+
+create table room(
+    room_id serial primary key,
+    user_1 integer references user_info(user_info_id),
+    user_2 integer references user_info(user_info_id)
+);
+
 create table posts(
     post_id serial primary key,
     post_time timestamp,
     content text,
     user_id integer references users(user_id)
 )
+

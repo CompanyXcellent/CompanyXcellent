@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import randomatic from 'randomatic';
 
@@ -19,6 +20,7 @@ const CreateEmployee = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userId, setUserId] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const submit = () => {
@@ -29,11 +31,16 @@ const CreateEmployee = () => {
 
     console.log(password);
     // Submit to server/database logic goes here.
+
+    axios.post('/api/register', {})
   }
 
   useEffect(() => {
     const randoPassword = randomatic('Aa0!', 15);
     setPassword(randoPassword);
+
+    const randoId = randomatic('Aa0', 15);
+    setUserId(randoId);
   }, [])
 
   return (

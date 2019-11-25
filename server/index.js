@@ -4,8 +4,14 @@ const session = require("express-session");
 const massive = require("massive");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
+const auth0 = require("auth0");
+const nodemailer = require("nodemailer");
+
+const socket = require('socket.io')
+
 const userCtrl = require('./controllers/userController')
 const compCtrl = require('./controllers/compController')
+
 
 
 const app = express();
@@ -15,7 +21,9 @@ const {
   CONNECTION_STRING,
   AUTH0_DOMAIN,
   CLIENT_ID,
-  CLIENT_SECRET
+  CLIENT_SECRET,
+  CLIENT_ID_TWO,
+  CLIENT_SECRET_TWO
 } = process.env;
 
 app.use(express.json());
@@ -50,32 +58,30 @@ app.get('/api/signs3', userCtrl.storeProfilePic)
 
 
 //?----- Sockets.io -------
+const socketCtrl = require('./controllers/socketCtrl')
+const io = socket(
+  app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
+);
+
+io.on('connection', (socket) => {
+  console.log('Socket Connection')
+  socket.on('enter', async ({ nickname, user_info_id, group_id }) => {
+
+    socket.broadcast.emit('message', { text: `${nickname} has joined` })
+    console.log(nickname)
+
+  })
+
+  // socket.on('send message', message => {
+  //   socket.broadcast.emit('chat-message', message)
+  //   console.log(message)
+  // })
+
+  socket.on('disconnect', () => {
 
 
-// const users = [{ user_id: 1, username: 'ted', role_id: 'admin' }, { user_id: 2, username: 'bob', role_id: 'admin' }]
-// app.get('/api/messages/:id')
-// const io = socket(
-//   app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
-// );
-
-// io.on('connection', (socket) => {
-//   socket.on('enter', ({ name }, cb) => {
-//     console.log(name)
-//     const error = true
-//     if (error) {
-//       cb({ error: 'error' })
-//     }
-//   })
-
-//   socket.on('send message', message => {
-//     socket.broadcast.emit('chat-message', message)
-//   })
-
-//   socket.on('disconnect', () => {
-
-
-//   })
-// })
+  })
+})
 
 
 //?----- Auth0 ------------
@@ -90,7 +96,7 @@ passport.use(
       clientSecret: CLIENT_SECRET,
       callbackURL: "/api/auth"
     },
-    function(accessToken, refreshToken, extraParams, profile, done) {
+    function (accessToken, refreshToken, extraParams, profile, done) {
       let { id } = profile;
       let { value } = profile.emails[0];
       console.log(id)
@@ -116,10 +122,10 @@ passport.use(
   )
 );
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
 
@@ -129,6 +135,7 @@ app.get("/api/getUser", (req, res, next) => {
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
 });
+
 app.get(
   "/api/auth",
   passport.authenticate("auth0", {
@@ -138,6 +145,7 @@ app.get(
     res.redirect("http://localhost:3000/#/posts");
   }
 );
+
 app.get("/api/logout", (req, res) => {
   console.log("logout");
   req.logout();
@@ -146,12 +154,88 @@ app.get("/api/logout", (req, res) => {
     `https://${AUTH0_DOMAIN}/v2/logout?returnTo=${returnTo}&client_id=${CLIENT_ID}`
   );
 });
+
 app.post("/api/post", (req, res, next) => {
   returnStr = req.body.place;
   res.status(200).send(returnStr);
 });
-//?---- End Auth0 ------
 
-app.listen(SERVER_PORT, () => {
-  console.log(`server on port ${SERVER_PORT}`);
+const ManagementClient = auth0.ManagementClient;
+const auth0ManagementClient = new ManagementClient({
+  domain: `${AUTH0_DOMAIN}`,
+  clientId: CLIENT_ID_TWO,
+  clientSecret: CLIENT_SECRET_TWO,
+  scope: 'read:users update:users'
 });
+
+app.post('/api/register', (req, res) => {
+  const db = req.app.get('db');
+  const {
+    userId, 
+    firstName, 
+    lastName, 
+    email, 
+    password } = req.body;
+  // console.log(req.body)
+  // console.log(req.body.user_id)
+  auth0ManagementClient.getUsersByEmail(email, (err ,users) => {
+    // console.log(users.length)
+    if(users !== undefined && users.length >= 1 ){
+      return res.status(409).send('Email already in use.')
+    } else {
+      auth0ManagementClient.getUser({id: `auth0|${userId}`}, (err, user) => {
+        if(err){
+          console.log(err)
+          return
+        }
+
+        if(user){
+          return res.status(409).send('User Id already in use.')
+        }
+
+        auth0ManagementClient.createUser({
+          user_id: userId,
+          password: password,
+          given_name: firstName,
+          family_name: lastName,
+          name: `${firstName} ${lastName}`,
+        }, (err => {
+          if(!err){
+            const transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                     user: 'companyxcellent@gmail.com',
+                     pass: 'da2340kkj'
+                 }
+             });
+          
+             const mailOptions = {
+              from: 'companyxcellent@gmail.com', // sender address
+              to: 'john.redd702@gmail.com', // list of receivers
+              subject: 'Subject of your email', // Subject line
+              text: 'Hi'// plain text body
+            };
+          
+            transporter.sendMail(mailOptions, function (err, info) {
+              if(err)
+                console.log(err)
+              else
+                console.log(info);
+           });
+
+            // db.
+
+            auth0.getUser({id: `auth0|${userId}`}, (err, user) => {
+              if(err){
+                return res.send(err)
+              }
+
+              res.status(200).send(user);
+            })
+          }
+        }))
+      })
+    }
+  })
+})
+//?---- End Auth0 ------

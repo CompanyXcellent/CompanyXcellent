@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { makeStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux'
+import { getUser } from '../../redux/userReducer'
 
 import Container from '@material-ui/core/Container';
 
-
 let socket
+
+const test = { user_info_id: 2, user_id: 1, first_name: 'test', last_name: 'test', nickname: 'test', profile_img: 'test', about: 'blah blah', group_id: 3 }
+
 
 const Conversation = () => { //params will be user stuff
   const classes = useStyles();
-  const name = 'ted'
-  // const bob = 'bob'
-  // const [messages, setMessages] = useState('')
+  const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
 
+
   useEffect(() => {
+    const { nickname, user_info_id, group_id } = test
     socket = io()
-    socket.emit('enter', { name }, () => { })
+    socket.emit('enter', { nickname, user_info_id, group_id }, () => { })
     return () => {
       socket.emit('disconnect')
       socket.off()
     }
   })
   useEffect(() => {
-    socket.on('chat-message', data => {
-      console.log(data)
+    socket.on('message', (message) => {
+      setMessage([...messages, message])
     })
-  })
+  }, [messages])
   const sendMessage = (e) => {
     e.preventDefault()
 
@@ -35,7 +39,7 @@ const Conversation = () => { //params will be user stuff
 
     })
   }
-  console.log(message)
+
   return (
     <Container className={classes.mainContainer}>
       <div>
@@ -57,7 +61,14 @@ const Conversation = () => { //params will be user stuff
   )
 }
 
-export default Conversation;
+const mapStateToProps = (rootReducer) => {
+
+  return {
+    userReducer: rootReducer.userReducer
+  }
+}
+
+export default connect(mapStateToProps, { getUser })(Conversation);
 
 const useStyles = makeStyles({
   mainContainer: {
