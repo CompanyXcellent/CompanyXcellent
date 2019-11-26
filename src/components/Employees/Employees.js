@@ -6,7 +6,7 @@ import EditEmployeeDialog from './EditEmployeeDialog'
 import axios from 'axios'
 import './styling.css'
 
-const Employees = () => {
+const Employees = (props) => {
   const classes = useStyles();
   const [emps, setEmps] = useState([])
 
@@ -19,6 +19,7 @@ const Employees = () => {
 
   console.log('emps', emps)
 
+  console.log(props)
 
   return (
     <Container className={classes.mainContainer}>
