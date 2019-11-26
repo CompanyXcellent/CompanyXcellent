@@ -60,7 +60,6 @@ export default function CustomizedDialogs() {
   const [nickname, setNickname] = React.useState('')
   const [img, setImg] = React.useState('')
 
-  console.log({aboutMe: aboutMe, nickname: nickname, imgURL: img})
 
   const handleClickOpen = () => {
     setOpen(true);
