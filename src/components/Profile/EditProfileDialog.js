@@ -1,17 +1,23 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import axios from 'axios';
+import {v4 as randomString} from 'uuid'
+
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import TextField from '@material-ui/core/TextField';
+
+import CloseIcon from '@material-ui/icons/Close';
+
+import ProfileImagePreview from './ProfileImgPreview';
+
 import './EditProfileDialog.css'
-import {v4 as randomString} from 'uuid'
-import axios from 'axios'
 
 
 const styles = theme => ({
@@ -54,98 +60,182 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs() {
-  const [open, setOpen] = React.useState(false);
-  const [aboutMe, setAboutMe] = React.useState('')
-  const [nickname, setNickname] = React.useState('')
-  const [img, setImg] = React.useState('')
+export default function CustomizedDialogs(props) {
+  const classes = useStyles();
 
-  console.log({aboutMe: aboutMe, nickname: nickname, imgURL: img})
+  // const [open, setOpen] = React.useState(false);
+  const [aboutMe, setAboutMe] = React.useState('');
+  const [nickname, setNickname] = React.useState('');
+  // const [img, setImg] = React.useState('');
+  const [imgFile, setImgFile] = useState('');
+  const [imageURI, setImageURI] = useState(null);
+
+  // console.log({aboutMe: aboutMe, nickname: nickname, imgURL: img})
 
   const handleClickOpen = () => {
-    setOpen(true);
+    props.setEdit(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    props.setEdit(false);
   };
 
   //--------------------S3 functions start----------------------
 
-  const upLoadFile = (file, signedRequest, url) => {
-    const options = {
-        headers: {
-            'Content-Type': file.type
-        }
-    }
-    setImg(url)
-    axios.put(signedRequest, file, options)
-    //this put request goes and edits the file giving it an acutal value
-    .catch(err => console.log(err))
-  }
+  // const upLoadFile = (file, signedRequest, url) => {
+  //   const options = {
+  //       headers: {
+  //           'Content-Type': file.type
+  //       }
+  //   }
+  //   setImg(url)
+  //   axios.put(signedRequest, file, options)
+  //   //this put request goes and edits the file giving it an acutal value
+  //   .catch(err => console.log(err))
+  // }
 
-  const handleImage = () => {
-    const file = document.getElementById('image-file').files[0]
+  // const handleImage = () => {
+  //   const file = document.getElementById('image-file').files[0]
 
-    //makes it so that if we upload the same image twice they wont have conflicting names
-    const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
+  //   //makes it so that if we upload the same image twice they wont have conflicting names
+  //   const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
     
-    //here it makes the file and then calls upLoadFile which sends the file to s3 storage.
-    axios.get('/api/signs3',{
-        params:{
-            'file-name': fileName,
-            'file-type': file.type
-        }
+  //   //here it makes the file and then calls upLoadFile which sends the file to s3 storage.
+  //   axios.get('/api/signs3',{
+  //       params:{
+  //           'file-name': fileName,
+  //           'file-type': file.type
+  //       }
+  //   })
+  //   .then(res => {
+  //       const{signedRequest, url} = res.data
+  //       setImg(signedRequest)
+  //       // makes the value of img on state to be the URL of the image in the s3 storage. through this url is how it is accessed later on the runner side.
+  //       upLoadFile(file, signedRequest, url)
+  //   })
+  //   .catch(err => console.log(err))        
+  // }
+
+  const getSignedRequest = (imgFile) => {
+    const fileName = `${randomString()}-${imgFile.name.replace(/\s/g, '-')}`
+
+    axios.get('/api/signs3', {
+      params: {
+        'file-name': fileName,
+        'file-type': imgFile.type
+      }
     })
-    .then(res => {
-        const{signedRequest, url} = res.data
-        setImg(signedRequest)
-        // makes the value of img on state to be the URL of the image in the s3 storage. through this url is how it is accessed later on the runner side.
-        upLoadFile(file, signedRequest, url)
-    })
-    .catch(err => console.log(err))        
+      .then((res) => {
+        const { signedRequest, url } = res.data
+        uploadFile(imgFile, signedRequest, url)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
+
+  const uploadFile = (file, signedRequest, url) => {
+    const options = {
+      headers: {
+        'Content-Type': file.type,
+      },
+    };
+
+    axios
+      .put(signedRequest, file, options)
+      .then(res => {
+        // Put profile img into our database
+      })
+      .catch(err => {
+        if (err.response.status === 403) {
+          alert(
+            `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${
+            err.stack
+            }`
+          );
+        } else {
+          alert(`ERROR: ${err.status}\n ${err.stack}`);
+        }
+      });
+  };
 
 
   //----------------------S3 functions end
 
 
-  const onSave = () => {
-    handleClose()
-    handleImage(img)
+  // const onSave = () => {
+  //   handleClose()
+  //   handleImage(img)
+  // }
+
+  const handleSubmit = async () => {
+    if (!aboutMe || imageURI === null || !imgFile) {
+      // setError(true);
+      return;
+    }
+
+    await getSignedRequest(imgFile);
+    
+    // setSuccess(true);
+    // props.history.push('/admin/applications');    
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
-        Edit Profile
-      </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+    // <div>
+    //   <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
+    //     Edit Profile
+    //   </Button>
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={props.edit}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Enter info
         </DialogTitle>
-        <DialogContent dividers>
-          <Avatar alt="Remy Sharp" src=""/>
-          <br/>
-          <input
+        <DialogContent dividers className={classes.dialogContentContainer}>
+          {/* <Avatar alt="Remy Sharp" src="" className={classes.avatar} /> */}
+          <ProfileImagePreview setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
+          {/* <br/>
+          <TextField
             placeholder='profile pic'
             type='file'
             id='image-file'
-          />
-          <h3>NickName</h3>
-          <input
-            placeholder='nickname'
+          /> */}
+          {/* <h3>NickName</h3> */}
+          <TextField
+            label='Nickname'
+            variant='outlined'
+            value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
-          <h3>About</h3>
-          <textarea onChange={(e) => setAboutMe(e.target.value)} placeholder='About me' rows="4" cols="50" id='about-me-input'/>
+          {/* <h3>About</h3> */}
+          <TextField 
+            label='About'
+            variant='outlined'
+            multiline 
+            rows="4"
+            value={aboutMe} 
+            onChange={(e) => setAboutMe(e.target.value)} 
+            id='about-me-input' />
 
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => onSave()} color="primary">
+          <Button autoFocus onClick={() => handleSubmit()} color="primary">
             Save changes
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    // </div>
   );
 }
+
+const useStyles = makeStyles({
+  dialogContentContainer: {
+    height: '70vh',
+
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  avatar: {
+    width: 100,
+    height: 100
+  }
+})

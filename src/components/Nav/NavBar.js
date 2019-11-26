@@ -11,7 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import "./navBar.css";
 import { Link } from "react-router-dom";
 // import { connect } from 'http2';
-import { getUser, logout } from "../../redux/userReducer";
+import { getUser, logout } from "../../redux/reducers/userReducer";
 import { connect } from "react-redux";
 
 //controls the styling of material ui components... its an alternative to using the css

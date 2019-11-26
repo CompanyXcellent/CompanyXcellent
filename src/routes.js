@@ -14,7 +14,7 @@ export default (
     <Switch>
         <Route exact path='/' component={Landing}/>
         <Route path='/team' component={Team}/>
-        <Route path='/profile' component={Profile}/>
+        <Route path='/profile/:id' component={Profile}/>
         <Route path='/messages' component={Messages}/>
         <Route path='/conversation' component={Conversation}/>
         <Route path='/employees' component={Employees}/>
