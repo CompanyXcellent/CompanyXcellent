@@ -53,6 +53,7 @@ app.post('/api/makePost', userCtrl.makePost)
 app.delete('/api/deletePost/:id', userCtrl.deletePost)
 app.get('/api/getUserInfo/:id', userCtrl.getUserInfo)
 app.get('/api/getTeam/:id', userCtrl.getTeam)
+app.get('/api/getPoll', userCtrl.getPoll)
 
 
 // --------S3---------

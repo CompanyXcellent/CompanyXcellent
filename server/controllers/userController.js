@@ -67,5 +67,10 @@ module.exports={
         const db = req.app.get('db')
         let team = await db.get_my_team(id)
         res.status(200).send(team)
+    },
+    getPoll: async (req, res) => {
+        const db = req.app.get('db')
+        let poll = await db.get_poll()
+        res.status(200).send(poll)
     }
 }

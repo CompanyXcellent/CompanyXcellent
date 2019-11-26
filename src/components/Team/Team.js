@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Avatar from '@material-ui/core/Avatar'
-
 import axios from 'axios'
 
 const Team = () => {
@@ -16,7 +15,7 @@ const Team = () => {
     axios.get(`/api/getTeam/${3}`)
     .then(res => setTeam(res.data))
   }
-  console.log(team)
+
   return (
     <Container className={classes.mainContainer}>
       <h1>Team</h1>
@@ -25,7 +24,6 @@ const Team = () => {
           <Avatar src={e.profile_img}/>
           <div  id='username-and-dialog-employees-div'>
             <h3>{e.username}</h3>
-            <button>test rating button</button>
           </div>
         </div>
       )})}
