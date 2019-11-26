@@ -12,7 +12,7 @@ import Dialog from '@material-ui/core/Dialog';
 
 // import EditEmployeeDialog from './EditEmployeeDialog';
 
-const Employees = () => {
+const Employees = (props) => {
   const classes = useStyles();
   const [employees, setEmployees] = useState([]);
   const [showEdit, setShowEdit] = useState(false);
@@ -25,6 +25,7 @@ const Employees = () => {
         setEmployees(res.data)
       })
   }, [])
+  console.log(props)
 
   return (
     <Container className={classes.mainContainer}>

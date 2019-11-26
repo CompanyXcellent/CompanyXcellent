@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config({path: __dirname + "/../.env"})
 const express = require("express");
 const session = require("express-session");
 const massive = require("massive");
@@ -54,6 +54,11 @@ app.get('/api/employees/:userId', compCtrl.getEmployee);
 //------------user endpoints-------------------------
 app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts);
 app.put('/api/profile/:id', userCtrl.updateProfile);
+app.post('/api/makePost', userCtrl.makePost)
+app.delete('/api/deletePost/:id', userCtrl.deletePost)
+app.get('/api/getUserInfo/:id', userCtrl.getUserInfo)
+app.get('/api/getTeam/:id', userCtrl.getTeam)
+app.get('/api/getPoll', userCtrl.getPoll)
 
 
 // --------S3---------

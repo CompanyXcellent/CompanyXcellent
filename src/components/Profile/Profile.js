@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import RatingDialog from './RatingDialog'
 import EditProfileDialog from './EditProfileDialog';
 import EditEmployeeDialog from './EditEmployeeDialog';
 
@@ -116,6 +117,7 @@ const Profile = (props) => {
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
+      <RatingDialog/>
     </Container>
   )
 }

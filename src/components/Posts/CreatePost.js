@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-
+import axios from 'axios'
 
 const styles = theme => ({
   root: {
@@ -51,11 +51,11 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs() {
+
+
+function CustomizedDialogs(props) {
   const [open, setOpen] = React.useState(false);
   const [aboutMe, setAboutMe] = React.useState('')
-
-  console.log(aboutMe)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -64,28 +64,38 @@ export default function CustomizedDialogs() {
     setOpen(false);
   };
 
+  const makeNewPost = () => {
+    axios.post('/api/makePost', {content: aboutMe, id: props.props.userReducer.user.user_id})
+    props.getMyPosts()
+  }
+
+  const send = () => {
+    handleClose()
+    makeNewPost()
+  }
   return (
     <div>
       <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
-        New Post
+        Make Post
       </Button>
       <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Enter info
+          What do you want to say?
         </DialogTitle>
         <DialogContent dividers>
           <Avatar alt="Remy Sharp" src=""/>
           <br/>
-          <h3>Title</h3>
+          {/* <h3>Title</h3>
           <input
             placeholder='Title'
-          />
+          /> */}
+          {/* right here some extra functionality, making it so that the posts can have a title as well. it will require minor changes to posts in the data base, as well as some of the display and code on the backend and the Posts component */}
           <h3>Content</h3>
           <textarea onChange={(e) => setAboutMe(e.target.value)} placeholder='Content' rows="4" cols="50" id='about-me-input'/>
 
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
+          <Button autoFocus onClick={send} color="primary">
             Create Post
           </Button>
         </DialogActions>
@@ -93,3 +103,6 @@ export default function CustomizedDialogs() {
     </div>
   );
 }
+
+
+export default CustomizedDialogs
