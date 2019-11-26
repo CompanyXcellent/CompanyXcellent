@@ -43,6 +43,15 @@ module.exports={
 
         res.status(200).send(mySubscribedPosts)
     },
+    updateProfile: (req, res) => {
+        const db = req.app.get('db');
+        const { profileImg, about, nickname } = req.body;
+        const { id } = req.params;
+
+        db.update_profile(profileImg, about, nickname, id);
+
+        res.sendStatus(200);
+    },
     makePost: async (req, res) => {
         const {content, id} = req.body
         const db = req.app.get('db')
