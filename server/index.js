@@ -46,6 +46,7 @@ app.use(
 
 //---------------company endPoints------------------
 app.get('/api/allEmployees', compCtrl.getAllEmployees)
+app.post('/api/makePoll', compCtrl.makePoll)
 
 //------------user endpoints-------------------------
 app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts)

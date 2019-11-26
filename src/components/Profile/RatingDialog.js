@@ -165,7 +165,7 @@ export default function RatingDialog() {
   IconContainer.propTypes = {
     value: PropTypes.number.isRequired,
   };
-  console.log(question0, question1, question2, question3)
+
   return (
     <div>
       <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
@@ -179,6 +179,7 @@ export default function RatingDialog() {
           
             {/* rating */}
             {poll.map((e, i) => {
+              if(e.question !== ''){
                 let id = i
                     return (
                         <div key={`question: ${id}`}>  
@@ -196,7 +197,7 @@ export default function RatingDialog() {
                             </Box>
                         </div>
                     );
-            })}
+            }})}
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleSubmitPoll} color="primary">
