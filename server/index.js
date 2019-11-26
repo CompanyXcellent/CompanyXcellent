@@ -52,7 +52,8 @@ app.get('/api/employees', compCtrl.getAllEmployees);
 app.get('/api/employees/:userId', compCtrl.getEmployee);
 
 //------------user endpoints-------------------------
-app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts)
+app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts);
+app.put('/api/profile/:id', userCtrl.updateProfile);
 
 
 // --------S3---------

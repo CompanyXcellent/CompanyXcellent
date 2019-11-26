@@ -66,19 +66,13 @@ const EditEmployeeDialog = (props) => {
   const [team, setTeam] = useState('');
   const [jobTitle, setJobTitle] = useState('');
 
-  // useEffect(() => {
-  //   console.log(props.userId)
-  //   axios.get(`/api/employees/${props.userId}`)
-  //   .then(res => {
-  //     console.log(res);
-  //     // setSelectedEmployee(res.data);
-  //     setFirstName(res.data.first_name);
-  //     setLastName(res.data.last_name);
-  //     setTeam(res.data.group_id);
-  //     setJobTitle(res.data.job_title);
-  //   })
-  //   .catch(err => console.log(err));
-  // }, [props.showEdit]);
+  useEffect(() => {
+  //   axios.get(`/api/employees/${props.match.params.id}`)
+    setFirstName(props.employee.first_name);
+    setLastName(props.employee.last_name);
+    setTeam(props.employee.group_name);
+    setJobTitle(props.employee.job_title);
+  }, [props.employee])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -87,21 +81,23 @@ const EditEmployeeDialog = (props) => {
     setOpen(false);
   };
 
-  console.log(props);
+  const handleSubmit = () => {
+
+  }
 
   return (
-      // <Dialog 
-      //   aria-labelledby="customized-dialog-title" 
-      //   open={props.showEdit} >
-      <>
+      <Dialog
+        aria-labelledby="customized-dialog-title" 
+        open={props.update} >
         <DialogTitle>
           Enter info
         </DialogTitle>
-        <Container className={classes.mainContainerTest}>
-          <Avatar alt="Remy Sharp" src="" className={classes.icon}/>
+        <DialogContent className={classes.DialogContentContainer}>
+          {/* <Avatar alt="Remy Sharp" src="" className={classes.icon}/> */}
           <TextField
             name='firstName'
             label='First Name'
+            variant='outlined'
             fullWidth
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -109,6 +105,7 @@ const EditEmployeeDialog = (props) => {
           <TextField
             name='lastName'
             label='Last Name'
+            variant='outlined'
             fullWidth
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -116,8 +113,10 @@ const EditEmployeeDialog = (props) => {
           <TextField
             name='team'
             label='Team'
+            variant='outlined'
             fullWidth
             value={team}
+            select
             onChange={(e) => setTeam(e.target.value)}
           >
             <MenuItem value={1}>Accounting</MenuItem>
@@ -127,28 +126,32 @@ const EditEmployeeDialog = (props) => {
           <TextField
             name='jobTitle'
             label='Job Title'
+            variant='outlined'
             fullWidth
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
           />
-        </Container>
+        </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => props.setShowEdit(false)} color="primary">
+          <Button autoFocus onClick={() => props.setUpdate(false)} color="primary">
             Cancel
           </Button>
           <Button autoFocus onClick={handleClose} color="primary">
             Save changes
           </Button>
         </DialogActions>
-      {/* </Dialog> */}
-      </>
+      </Dialog>
   );
 }
 
 export default EditEmployeeDialog;
 
 const useStyles = makeStyles({
-  mainContainer: {
-    width: '100vw'
+  DialogContentContainer: {
+    height: '45vh',
+
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly'
   },
 })

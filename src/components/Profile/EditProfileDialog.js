@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {v4 as randomString} from 'uuid'
 
@@ -63,57 +63,23 @@ const DialogActions = withStyles(theme => ({
 export default function CustomizedDialogs(props) {
   const classes = useStyles();
 
-  // const [open, setOpen] = React.useState(false);
   const [aboutMe, setAboutMe] = React.useState('');
   const [nickname, setNickname] = React.useState('');
-  // const [img, setImg] = React.useState('');
   const [imgFile, setImgFile] = useState('');
   const [imageURI, setImageURI] = useState(null);
 
-  // console.log({aboutMe: aboutMe, nickname: nickname, imgURL: img})
+  useEffect(() => {
+    setAboutMe(props.employee.about);
+    setNickname(props.employee.nickname);
+    setImgFile(props.employee.profile_img);
+  }, [props.employee])
 
-  const handleClickOpen = () => {
-    props.setEdit(true);
-  };
   const handleClose = () => {
+    setImageURI(null);
     props.setEdit(false);
   };
 
   //--------------------S3 functions start----------------------
-
-  // const upLoadFile = (file, signedRequest, url) => {
-  //   const options = {
-  //       headers: {
-  //           'Content-Type': file.type
-  //       }
-  //   }
-  //   setImg(url)
-  //   axios.put(signedRequest, file, options)
-  //   //this put request goes and edits the file giving it an acutal value
-  //   .catch(err => console.log(err))
-  // }
-
-  // const handleImage = () => {
-  //   const file = document.getElementById('image-file').files[0]
-
-  //   //makes it so that if we upload the same image twice they wont have conflicting names
-  //   const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
-    
-  //   //here it makes the file and then calls upLoadFile which sends the file to s3 storage.
-  //   axios.get('/api/signs3',{
-  //       params:{
-  //           'file-name': fileName,
-  //           'file-type': file.type
-  //       }
-  //   })
-  //   .then(res => {
-  //       const{signedRequest, url} = res.data
-  //       setImg(signedRequest)
-  //       // makes the value of img on state to be the URL of the image in the s3 storage. through this url is how it is accessed later on the runner side.
-  //       upLoadFile(file, signedRequest, url)
-  //   })
-  //   .catch(err => console.log(err))        
-  // }
 
   const getSignedRequest = (imgFile) => {
     const fileName = `${randomString()}-${imgFile.name.replace(/\s/g, '-')}`
@@ -143,7 +109,9 @@ export default function CustomizedDialogs(props) {
     axios
       .put(signedRequest, file, options)
       .then(res => {
-        // Put profile img into our database
+        axios.put(`/api/profile/${props.user.user_id}`, {profileImg: url, about: aboutMe, nickname})
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
       })
       .catch(err => {
         if (err.response.status === 403) {
@@ -161,54 +129,38 @@ export default function CustomizedDialogs(props) {
 
   //----------------------S3 functions end
 
-
-  // const onSave = () => {
-  //   handleClose()
-  //   handleImage(img)
-  // }
-
   const handleSubmit = async () => {
-    if (!aboutMe || imageURI === null || !imgFile) {
-      // setError(true);
-      return;
-    }
+    // if (!aboutMe || !nickname || imageURI === null || !imgFile) {
+    //   // setError(true);
+    //   return;
+    // }
 
     await getSignedRequest(imgFile);
+
+    
     
     // setSuccess(true);
-    // props.history.push('/admin/applications');    
+    // props.history.push('/admin/applications');
   }
 
   return (
-    // <div>
-    //   <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
-    //     Edit Profile
-    //   </Button>
       <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={props.edit}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Enter info
         </DialogTitle>
         <DialogContent dividers className={classes.dialogContentContainer}>
-          {/* <Avatar alt="Remy Sharp" src="" className={classes.avatar} /> */}
-          <ProfileImagePreview setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
-          {/* <br/>
-          <TextField
-            placeholder='profile pic'
-            type='file'
-            id='image-file'
-          /> */}
-          {/* <h3>NickName</h3> */}
+          <ProfileImagePreview profileImg={imgFile} setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
           <TextField
             label='Nickname'
             variant='outlined'
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
-          {/* <h3>About</h3> */}
           <TextField 
             label='About'
             variant='outlined'
-            multiline 
+            multiline
+            fullWidth
             rows="4"
             value={aboutMe} 
             onChange={(e) => setAboutMe(e.target.value)} 
@@ -221,7 +173,6 @@ export default function CustomizedDialogs(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    // </div>
   );
 }
 

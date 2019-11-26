@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
 
-import EditEmployeeDialog from './EditEmployeeDialog';
+// import EditEmployeeDialog from './EditEmployeeDialog';
 
 const Employees = () => {
   const classes = useStyles();

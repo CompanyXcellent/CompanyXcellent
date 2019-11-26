@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import EditProfileDialog from './EditProfileDialog';
+import EditEmployeeDialog from './EditEmployeeDialog';
 
 const Profile = (props) => {
   const classes = useStyles();
@@ -28,20 +29,26 @@ const Profile = (props) => {
       .catch(err => console.log(err))
   }, [])
 
-  console.log(props)
-
   const handleClick = (e) => {
     console.log(e.target.innerText)
 
     if(e.target.innerText === 'EDIT'){
       setEdit(true);
     }
+
+    if(e.target.innerText === 'SUBSCRIBE'){
+      // Add functionality to update subscription in database
+    }
+  }
+
+  const handleAdminUpdate = (e) => {
+
   }
 
   return (
     <Container className={classes.mainContainer}>
       <Container className={classes.avatarNameTeamJob}>
-        <Avatar className={classes.avatar} />
+        <Avatar className={classes.avatar} src={employee.profile_img} />
         <Container className={classes.nameTeamJob}>
           <Typography variant='h4' className={classes.paddingTopBottom6}>{employee.first_name} {employee.last_name}</Typography>
           <Typography variant='subtitle2' className={classes.paddingTopBottom6}>{employee.group_name} - {employee.job_title}</Typography>
@@ -53,6 +60,7 @@ const Profile = (props) => {
                 variant='contained'
                 color='primary'
                 className={classes.button}
+                onClick={() => setUpdate(true)}
               >
                 Update
               </Button>
@@ -106,7 +114,8 @@ const Profile = (props) => {
       <Container className={classes.posts}>
 
       </Container>
-      <EditProfileDialog edit={edit} setEdit={setEdit} />
+      <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
+      <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
     </Container>
   )
 }
