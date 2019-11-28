@@ -45,7 +45,7 @@ const Profile = (props) => {
   const handleAdminUpdate = (e) => {
 
   }
-
+  console.log('props', props.match.params.id)
   return (
     <Container className={classes.mainContainer}>
       <Container className={classes.avatarNameTeamJob}>
@@ -117,7 +117,7 @@ const Profile = (props) => {
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
-      <RatingDialog/>
+      <RatingDialog empId={props.match.params.id}/>
     </Container>
   )
 }

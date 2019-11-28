@@ -54,7 +54,7 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-export default function RatingDialog() {
+export default function RatingDialog(props) {
   const [open, setOpen] = React.useState(false);
   //rating
   const[poll, setPoll] = React.useState([])
@@ -95,14 +95,6 @@ export default function RatingDialog() {
     {num:15, func:setQuestion15, out:question15},
     
   ]
-
-  const findWhichFunctionToCall = (int, newValue) => {
-    for(let i=0; i < stateFunctions.length; i++){
-      if(stateFunctions[i].num == int){
-        stateFunctions[i].func(newValue)
-      }
-    }
-  }
   
   useEffect(() => {
     axios.get('/api/getPoll').then(res => setPoll(res.data))
@@ -110,6 +102,26 @@ export default function RatingDialog() {
 
   const handleSubmitPoll = () => {
     //axios call here to send the results to the back end---------------before you do this you need to develop the profile component so that you have access to the your own user_id as well as the user_id of the person that you are rating..
+    let questionsArr = [
+      question0,
+      question1,
+      question2,
+      question3,
+      question4,
+      question5,
+      question6,
+      question7,
+      question8,
+      question9,
+      question10,
+      question11,
+      question12,
+      question13,
+      question14,
+      question15,
+    ]
+    // map through the array and if the answer is less than zero it will not send it to the backend
+
     handleClose()
     setQuestion0(0)
     setQuestion1(0)
@@ -165,7 +177,7 @@ export default function RatingDialog() {
   IconContainer.propTypes = {
     value: PropTypes.number.isRequired,
   };
-
+  console.log(props)
   return (
     <div>
       <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
@@ -191,7 +203,7 @@ export default function RatingDialog() {
                                 precision={.5}
                                 IconContainerComponent={IconContainer}
                                 onChange={(event, newValue) => {
-                                    findWhichFunctionToCall(id, newValue)
+                                    stateFunctions[id].func(newValue)
                                 }}
                                 />
                             </Box>
