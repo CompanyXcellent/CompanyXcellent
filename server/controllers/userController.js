@@ -1,14 +1,14 @@
 const aws = require('aws-sdk')
-const{S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY} = process.env
+const { S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env
 
-module.exports={
+module.exports = {
     storeProfilePic: (req, res) => {
         aws.config = {
             region: 'us-west-1',
             accessKeyId: AWS_ACCESS_KEY_ID,
             secretAccessKey: AWS_SECRET_ACCESS_KEY
         }
-        const s3 = new aws.S3({signatureVersion: 'v4'})
+        const s3 = new aws.S3({ signatureVersion: 'v4' })
         const fileName = req.query['file-name']
         const fileType = req.query['file-type']
         const s3Params = {
@@ -19,7 +19,7 @@ module.exports={
             ACL: 'public-read'
         }
         s3.getSignedUrl('putObject', s3Params, (err, data) => {
-            if(err){
+            if (err) {
                 console.log(err)
                 return res.end()
             }
@@ -33,9 +33,9 @@ module.exports={
     getMySubscribedPosts: async (req, res) => {
         console.log('hit posts')
         const db = req.app.get('db')
-        const {id} = req.params
-        console.log(id)
-        const mySubscribedPosts = await db.get_user_subscribed_posts(id)
+        const { userId } = req.params
+        console.log(userId)
+        const mySubscribedPosts = await db.get_user_subscribed_posts(userId)
 
         res.status(200).send(mySubscribedPosts)
     },
@@ -49,17 +49,17 @@ module.exports={
         res.sendStatus(200);
     },
     makePost: async (req, res) => {
-        const {content, id} = req.body
+        const { content, id } = req.body
         const db = req.app.get('db')
         db.make_post(content, id)
         res.sendStatus(200)
 
     },
     deletePost: async (req, res) => {
-        const {id} = req.params
+        const { id } = req.params
         const db = req.app.get('db')
         db.delete_post(id)
-        res.sendStatus(200)       
+        res.sendStatus(200)
     },
     getUserInfo: async (req, res) => {
         const db = req.app.get('db');
@@ -71,7 +71,7 @@ module.exports={
         res.status(200).send(userInfo);
     },
     getTeam: async (req, res) => {
-        const {id} = req.params
+        const { id } = req.params
         const db = req.app.get('db')
         let team = await db.get_my_team(id)
         res.status(200).send(team)
@@ -101,19 +101,21 @@ module.exports={
     unsubscribe: (req, res) => {
         const db = req.app.get('db');
         const { subscriptionId } = req.params;
-        
+
         db.unsubscribe(subscriptionId);
 
         res.sendStatus(200);
     },
     submitPollResponse: (req, res) => {
-        const {questionId, value, responderId, receiverId} = req.body
+        const { questionId, value, responderId, receiverId } = req.body
         const db = req.app.get('db')
         db.submit_response_to_poll(questionId, value, responderId, receiverId)
         res.sendStatus(200)
     },
+
     getEmployeeRating: async (req, res) => {
         const {questionId, receiverId} = req.body
+
         const db = req.app.get('db')
         const averageRating = await db.get_employee_ratings(receiverId, questionId)
         res.status(200).send(averageRating)

@@ -1,4 +1,2 @@
-select *
-from messages
-where room_id = $1
+select * from messages where chat_room_id = $1
 order by message_id
