@@ -112,10 +112,12 @@ module.exports = {
         db.submit_response_to_poll(questionId, value, responderId, receiverId)
         res.sendStatus(200)
     },
-    getEmployeeRating: (req, res) => {
-        const { id } = req.params
+
+    getEmployeeRating: async (req, res) => {
+        const {questionId, receiverId} = req.body
+
         const db = req.app.get('db')
-        db.get_employee_ratings(id)
-        res.sendStatus(200)
-    }
+        const averageRating = await db.get_employee_ratings(receiverId, questionId)
+        res.status(200).send(averageRating)
+     }
 }
