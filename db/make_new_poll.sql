@@ -1,4 +1,7 @@
 delete from poll;
+delete from response;
+
+-- these two first queries clear the old poll and its responses.
 
 insert into poll (
     question

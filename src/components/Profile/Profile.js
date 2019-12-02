@@ -23,11 +23,14 @@ const Profile = (props) => {
   const [edit, setEdit] = useState(false);
   const [update, setUpdate] = useState(false);
 
-  // Grabs Employee Info
+  // Grabs Employee Info, and ratings
   useEffect(() => {
     axios.get(`/api/employees/${props.match.params.id}`)
       .then(res => setEmployee(res.data))
       .catch(err => console.log(err))
+    // axios.get(`/api/getEmployeeRatings/${props.match.params.id}`)
+    //   .then(res => console.log('ratings', res.data))
+    //this second part is so that the ratings show up at the begining
   }, [])
 
   const handleClick = (e) => {

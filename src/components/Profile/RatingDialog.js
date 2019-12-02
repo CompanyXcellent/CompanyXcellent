@@ -54,7 +54,7 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-export default function RatingDialog(props) {
+function RatingDialog(props) {
   const [open, setOpen] = React.useState(false);
   //rating
   const[poll, setPoll] = React.useState([])
@@ -100,8 +100,7 @@ export default function RatingDialog(props) {
     axios.get('/api/getPoll').then(res => setPoll(res.data))
   }, [])
 
-  const handleSubmitPoll = () => {
-    //axios call here to send the results to the back end---------------before you do this you need to develop the profile component so that you have access to the your own user_id as well as the user_id of the person that you are rating..
+  const handleSubmitPoll = async () => {
     let questionsArr = [
       question0,
       question1,
@@ -120,7 +119,12 @@ export default function RatingDialog(props) {
       question14,
       question15,
     ]
-    // map through the array and if the answer is less than zero it will not send it to the backend
+    await questionsArr.map((e, i) => {      
+      if(e !== 0){
+        axios.post('/api/submitPollResponse', {questionId: i, value: e, responderId: 2, receiverId: props.empId})
+      }
+    })
+    // you need to change the responder id to be the if value of the person who is logged in. you chould be able to access it through redux once the auth 0 is working
 
     handleClose()
     setQuestion0(0)
@@ -177,7 +181,7 @@ export default function RatingDialog(props) {
   IconContainer.propTypes = {
     value: PropTypes.number.isRequired,
   };
-  console.log(props)
+  console.log('empId', props.empId)
   return (
     <div>
       <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
@@ -204,6 +208,7 @@ export default function RatingDialog(props) {
                                 IconContainerComponent={IconContainer}
                                 onChange={(event, newValue) => {
                                     stateFunctions[id].func(newValue)
+                                    console.log('question index', i)
                                 }}
                                 />
                             </Box>
@@ -220,3 +225,5 @@ export default function RatingDialog(props) {
     </div>
   );
 }
+
+export default RatingDialog
