@@ -87,29 +87,24 @@ const io = socket(server);
 
 io.on('connection', (socket) => {
   console.log('Socket Connection')
-  socket.on('enter', async user => {
-    console.log(user)
+  socket.on('enter', async (user) => {
+    console.log(socket.id)
     const db = app.get('db')
     // send user id and get chat room id from chat_room_participants
     const [room] = await db.get_room(user)
-    console.log(room)
+    // console.log(room)
     // send chat room id to get all messages then emit 'joined'
     const messages = await db.get_messages(room.chat_room_id)
-    console.log(messages)
+    // console.log(messages)
     socket.emit('joined', messages, room.chat_room_id)
   })
   socket.on('send message', async (message, roomId, userId) => {
     console.log(message, roomId, userId)
     const db = app.get('db')
-    // const sentMessage = await send_message(message)
+    let newMessage = await db.send_message(userId, roomId, message)
+    newMessage = newMessage[0]
+    socket.emit('new message', newMessage)
   })
-
-
-  //   socket.on('join', async ({chat_room_id, chat_room_name, user_id}, callback) => {
-  //     console.log(chat_room_id, chat_room_name, user_id);
-
-  //     const room = await chatCtrl.getChatRoom(app, chat_room_id);
-
 })
 
 // })
@@ -125,33 +120,33 @@ io.on('connection', (socket) => {
 
 app.get("/api/getRoomName/:socket_room_id");
 
-io.on("connection", socket => {
-  console.log("CONNECTED TO SOCKET");
-  socket.on("enter room", async data => {
-    let { selectedRoom, roomName } = data;
-    const db = app.get("db");
-    console.log("Now Joined to ", selectedRoom);
-    const [existingRoom] = await db.get_rooms(selectedRoom); //build this sql
-    if (!existingRoom) await db.create_room(roomName, selectedRoom); //build this sql
-    let messages = await db.get_messages(selectedRoom); //build this sql
-    socket.join(selectedRoom);
-    io.in(selectedRoom).emit("room entered", messages);
-  });
-  //?send messages
-  socket.on("send message", async data => {
-    const { selectedRoom, message, sender } = data;
-    const db = app.get("db");
-    await db.send_message(+selectedRoom, message, +sender); //!build this sql
-    let messages = await db.get_messages(selectedRoom); //build this sql
-    if (messages.length <= 1)
-      io.to(selectedRoom).emit("room entered", messages);
-    io.to(data.selectedRoom).emit("message sent", messages);
-  });
-  //disconnected
-  socket.on('disconnect', () => {
-    console.log('Disconnected from room')
-  })
-});
+// io.on("connection", socket => {
+//   console.log("CONNECTED TO SOCKET");
+//   socket.on("enter room", async data => {
+//     let { selectedRoom, roomName } = data;
+//     const db = app.get("db");
+//     console.log("Now Joined to ", selectedRoom);
+//     const [existingRoom] = await db.get_rooms(selectedRoom); //build this sql
+//     if (!existingRoom) await db.create_room(roomName, selectedRoom); //build this sql
+//     let messages = await db.get_messages(selectedRoom); //build this sql
+//     socket.join(selectedRoom);
+//     io.in(selectedRoom).emit("room entered", messages);
+//   });
+//   //?send messages
+//   socket.on("send message", async data => {
+//     const { selectedRoom, message, sender } = data;
+//     const db = app.get("db");
+//     await db.send_message(+selectedRoom, message, +sender); //!build this sql
+//     let messages = await db.get_messages(selectedRoom); //build this sql
+//     if (messages.length <= 1)
+//       io.to(selectedRoom).emit("room entered", messages);
+//     io.to(data.selectedRoom).emit("message sent", messages);
+//   });
+//   //disconnected
+//   socket.on('disconnect', () => {
+//     console.log('Disconnected from room')
+//   })
+// });
 
 //?----- Auth0 ------------
 app.use(passport.initialize());
