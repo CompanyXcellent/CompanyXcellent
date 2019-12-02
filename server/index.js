@@ -259,5 +259,5 @@ app.post('/api/register', async (req, res) => {
         res.status(200).send('User successfully created.');
       }
     }
-  }))
+  }))})
 //?---- End Auth0 -----
