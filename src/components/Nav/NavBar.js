@@ -10,7 +10,9 @@ import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
 import "./navBar.css";
 import { Link } from "react-router-dom";
-import { getUser, logout } from "../../redux/userReducer";
+// import { connect } from 'http2';
+import { getUser, logout, getUserInfo } from "../../redux/userReducer";
+
 import { connect } from "react-redux";
 
 //controls the styling of material ui components... its an alternative to using the css
@@ -41,13 +43,19 @@ function TemporaryDrawer(props) {
   //?to make useEffect not re-render try setting loggedIn to true and on the logout set to false
 
   useEffect(() => {
-    console.log("hit navBar");
     props.getUser();
-
     return () => {
       props.logout();
     };
   }, []);
+
+  useEffect(() => {
+    if(props.userReducer.user.user_id){
+      props.getUserInfo(props.userReducer.user.user_id)
+    }
+  }, [props.userReducer.user.user_id])
+
+  
 
   const checkOut = () => {
     window.location.href = "http://localhost:3030/api/logout";
@@ -116,14 +124,14 @@ function TemporaryDrawer(props) {
 
   return (
     <div id="nav-bar-header">
-      <Avatar alt="Remy Sharp" src="" className={classes.smallAvatar} />
-      <h3>Rate my Coworker</h3>
+      <Avatar alt="Remy Sharp" src={props.userReducer.userInfo.length > 0 ? props.userReducer.userInfo[0].profile_img : null} className={classes.smallAvatar} />
+      {props.userReducer.userInfo.length > 0 ? <h2>{props.userReducer.userInfo[0].nickname}</h2> : null}
       <Button onClick={toggleDrawer("left", true)}>
         <i className="fas fa-bars fa-2x" id="hamburger-icon" />
       </Button>
       <Drawer open={state.left} onClose={toggleDrawer("left", false)}>
         <Grid container justify="center" alignItems="center">
-          <Avatar alt="Remy Sharp" src="" className={classes.bigAvatar} />
+          <Avatar alt="Remy Sharp" src={props.userReducer.userInfo.length > 0 ? props.userReducer.userInfo[0].profile_img : null} className={classes.bigAvatar} />
         </Grid>
         {sideList("left")}
       </Drawer>
@@ -137,4 +145,4 @@ const mapStateToProps = rootReducer => {
   };
 };
 
-export default connect(mapStateToProps, { getUser })(TemporaryDrawer);
+export default connect(mapStateToProps, { getUser, getUserInfo })(TemporaryDrawer);

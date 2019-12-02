@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux'
-import { getUser } from '../../redux/userReducer'
+import { getUser } from '../../redux/reducers/userReducer'
 
 import Container from '@material-ui/core/Container';
 

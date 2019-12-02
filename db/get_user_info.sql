@@ -1,3 +1,2 @@
-select *
-from user_info
-where user_id = $1
+select * from user_info
+where user_id = $1;

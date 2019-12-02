@@ -35,12 +35,51 @@ module.exports={
         })
     },
     getMySubscribedPosts: async (req, res) => {
-        console.log('hti get posts')
+        console.log('hit posts')
         const db = req.app.get('db')
-        const {userId} = req.params
-        console.log(userId)
-        const mySubscribedPosts = await db.get_user_subscribed_posts(userId)
+        const {id} = req.params
+        console.log(id)
+        const mySubscribedPosts = await db.get_user_subscribed_posts(id)
 
         res.status(200).send(mySubscribedPosts)
+    },
+    updateProfile: (req, res) => {
+        const db = req.app.get('db');
+        const { profileImg, about, nickname } = req.body;
+        const { id } = req.params;
+
+        db.update_profile(profileImg, about, nickname, id);
+
+        res.sendStatus(200);
+    },
+    makePost: async (req, res) => {
+        const {content, id} = req.body
+        const db = req.app.get('db')
+        db.make_post(content, id)
+        res.sendStatus(200)
+
+    },
+    deletePost: async (req, res) => {
+        const {id} = req.params
+        const db = req.app.get('db')
+        db.delete_post(id)
+        res.sendStatus(200)       
+    },
+    getUserInfo: async (req, res) => {
+        const {id} = req.params
+        const db = req.app.get('db')
+        let userInfo = await db.get_user_info(id)
+        res.status(200).send(userInfo)
+    },
+    getTeam: async (req, res) => {
+        const {id} = req.params
+        const db = req.app.get('db')
+        let team = await db.get_my_team(id)
+        res.status(200).send(team)
+    },
+    getPoll: async (req, res) => {
+        const db = req.app.get('db')
+        let poll = await db.get_poll()
+        res.status(200).send(poll)
     }
 }

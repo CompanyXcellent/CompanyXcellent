@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config({path: __dirname + "/../.env"})
 const express = require("express");
 const session = require("express-session");
 const massive = require("massive");
@@ -7,7 +7,9 @@ const Auth0Strategy = require("passport-auth0");
 const auth0 = require("auth0");
 const nodemailer = require("nodemailer");
 
-const socket = require("socket.io");
+const socket = require('socket.io')
+
+const randomatic = require('randomatic');
 
 const userCtrl = require("./controllers/userController");
 const compCtrl = require("./controllers/compController");
@@ -21,7 +23,8 @@ const {
   CLIENT_ID,
   CLIENT_SECRET,
   CLIENT_ID_TWO,
-  CLIENT_SECRET_TWO
+  CLIENT_SECRET_TWO,
+  EMAIL_PASSWORD
 } = process.env;
 
 app.use(express.json());
@@ -48,10 +51,17 @@ app.use(
 );
 
 //---------------company endPoints------------------
-app.get("/api/allEmployees", compCtrl.getAllEmployees);
+app.get('/api/employees', compCtrl.getAllEmployees);
+app.get('/api/employees/:userId', compCtrl.getEmployee);
 
 //------------user endpoints-------------------------
-app.get("/api/getMySubscribedPosts/:id", userCtrl.getMySubscribedPosts);
+app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts);
+app.put('/api/profile/:id', userCtrl.updateProfile);
+app.post('/api/makePost', userCtrl.makePost)
+app.delete('/api/deletePost/:id', userCtrl.deletePost)
+app.get('/api/getUserInfo/:id', userCtrl.getUserInfo)
+app.get('/api/getTeam/:id', userCtrl.getTeam)
+app.get('/api/getPoll', userCtrl.getPoll)
 
 // --------S3---------
 app.get("/api/signs3", userCtrl.storeProfilePic);
@@ -103,24 +113,16 @@ passport.use(
       clientSecret: CLIENT_SECRET,
       callbackURL: "/api/auth"
     },
-    function(accessToken, refreshToken, extraParams, profile, done) {
+
+    function (accessToken, refreshToken, extraParams, profile, done) {
+      // const db = req.app.get('db');
       let { id } = profile;
       let { value } = profile.emails[0];
-      console.log(id);
-      app
-        .get("db")
-        .get_user([id])
+
+      app.get('db').get_user([id])
         .then(response => {
           if (!response[0]) {
-            // console.log( res )
-            //!Change to make it add to the user_info table
-            app
-              .get("db")
-              .create_user([id, value])
-              .then(created => {
-                // console.log(created)
-                return done(null, created[0]);
-              });
+            console.log('User does not exist');
           } else {
             return done(null, response[0]);
           }
@@ -138,7 +140,6 @@ passport.deserializeUser(function(obj, done) {
 
 app.get("/api/getUser", (req, res, next) => {
   if (req.session.passport.user) {
-    console.log("hit end");
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
 });
@@ -175,70 +176,85 @@ const auth0ManagementClient = new ManagementClient({
   scope: "read:users update:users"
 });
 
-app.post("/api/register", (req, res) => {
-  const db = req.app.get("db");
-  const { userId, firstName, lastName, email, password } = req.body;
-  // console.log(req.body)
-  // console.log(req.body.user_id)
-  auth0ManagementClient.getUsersByEmail(email, (err, users) => {
-    // console.log(users.length)
-    if (users !== undefined && users.length >= 1) {
-      return res.status(409).send("Email already in use.");
-    } else {
-      auth0ManagementClient.getUser({ id: `auth0|${userId}` }, (err, user) => {
-        if (err) {
+app.post('/api/register', async (req, res) => {
+  const db = req.app.get('db');
+  const {
+    email,
+    roleId,
+    auth0Id, 
+    firstName,
+    lastName,
+    groupId,
+    jobTitle,
+    password } = req.body;
+
+  let user = await db.get_user_by_auth0_id(auth0Id);
+  user = user[0];
+
+  let uniqueAuth0Id = auth0Id;
+
+  if(user){
+    do {
+      uniqueAuth0Id = randomatic('Aa0', 25)
+      // uniqueAuth0Id = uniqueAuth0Id
+      user = db.get_user_by_auth0_id(uniqueAuth0Id);
+      user = user[0];
+    } while (user);
+  }
+
+  user = await db.get_user_by_email(email);
+  user = user[0];
+
+  if(user){
+    return res.status(409).send('Email already in use.');
+  }
+
+  console.log('auth0 activating')
+  auth0ManagementClient.createUser({
+    user_id: uniqueAuth0Id,
+    email: email,
+    password: password,
+    given_name: firstName,
+    family_name: lastName,
+    name: `${firstName} ${lastName}`,
+    connection: 'Username-Password-Authentication'
+  }, (async err => {
+    console.log(err);
+    if(!err){
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+               user: 'companyxcellent@gmail.com',
+               pass: EMAIL_PASSWORD
+           }
+       });
+    
+       const mailOptions = {
+        from: 'companyxcellent@gmail.com', // sender address
+        to: `${email}`, // list of receivers
+        subject: 'Login Credentials', // Subject line
+        text: `Hello ${firstName},\n\nThe following are your login credentials for the CompanyXcellent Software that your company uses.\n\nEmail: ${email}\nPassword: ${password}\n\nSincerly,\nThe CompanyXcellent Team`// plain text body
+      };
+    
+      transporter.sendMail(mailOptions, (err, info) => {
+        if(err){
           console.log(err);
-          return;
+        } else {
+          console.log(info);
         }
+     });
 
-        if (user) {
-          return res.status(409).send("User Id already in use.");
-        }
+      let newUser = await db.create_user({email, roleId, auth0Id: `auth0|${uniqueAuth0Id}`});
+      newUser = newUser[0];
 
-        auth0ManagementClient.createUser(
-          {
-            user_id: userId,
-            password: password,
-            given_name: firstName,
-            family_name: lastName,
-            name: `${firstName} ${lastName}`
-          },
-          err => {
-            if (!err) {
-              const transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                  user: "companyxcellent@gmail.com",
-                  pass: "da2340kkj"
-                }
-              });
+      let newUserInfo = await db.add_user_info({userId: newUser.user_id, firstName, lastName, groupId, jobTitle});
+      newUserInfo = newUserInfo[0];
 
-              const mailOptions = {
-                from: "companyxcellent@gmail.com", // sender address
-                to: "john.redd702@gmail.com", // list of receivers
-                subject: "Subject of your email", // Subject line
-                text: "Hi" // plain text body
-              };
+      newUser = {...newUser, ...newUserInfo}
 
-              transporter.sendMail(mailOptions, function(err, info) {
-                if (err) console.log(err);
-                else console.log(info);
-              });
-
-              // db.
-
-              auth0.getUser({ id: `auth0|${userId}` }, (err, user) => {
-                if (err) {
-                  return res.send(err);
-                }
-
-                res.status(200).send(user);
-              });
-            }
-          }
-        );
-      });
+      if(newUser.user_id){
+        res.status(200).send('User successfully created.');
+      }
     }
-  });
-});
+  }))
 //?---- End Auth0 ------

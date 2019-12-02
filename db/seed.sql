@@ -24,7 +24,8 @@ create table user_info(
     nickname varchar(100),
     profile_img text,
     about varchar(700),
-    group_id integer references groups(group_id)
+    group_id integer references groups(group_id),
+    job_title varchar(50)
 );
 
 create table poll(
