@@ -11,15 +11,6 @@ import Button from '@material-ui/core/Button'
 const Posts = (props) => {
   const classes = useStyles();
   const [posts, setPosts] = useState([])
-  const [reRender, setReRender] = useState(false)
-
-  const checkRerender = () => {
-    if(reRender === false){
-      setReRender(true)
-    }
-    setReRender(false)
-    console.log('rerendered')
-  }
 
   useEffect(() => {
     props.getUser()
