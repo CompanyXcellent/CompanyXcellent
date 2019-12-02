@@ -60,14 +60,12 @@ const EditEmployeeDialog = (props) => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  // const [selectedEmployee, setSelectedEmployee] = useState({});
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [team, setTeam] = useState('');
   const [jobTitle, setJobTitle] = useState('');
 
   useEffect(() => {
-  //   axios.get(`/api/employees/${props.match.params.id}`)
     setFirstName(props.employee.first_name);
     setLastName(props.employee.last_name);
     setTeam(props.employee.group_name);
@@ -82,7 +80,16 @@ const EditEmployeeDialog = (props) => {
   };
 
   const handleSubmit = () => {
+    if(!firstName || !lastName || !team || !jobTitle){
+      return
+    }
 
+    axios.put(`/api/employees/${props.employee.user_id}`, {firstName, lastName, team, jobTitle})
+    .then(res => {
+      console.log(res);
+      props.setUpdate(false);
+    })
+    .catch(err => console.log(err));
   }
 
   return (
@@ -93,7 +100,6 @@ const EditEmployeeDialog = (props) => {
           Enter info
         </DialogTitle>
         <DialogContent className={classes.DialogContentContainer}>
-          {/* <Avatar alt="Remy Sharp" src="" className={classes.icon}/> */}
           <TextField
             name='firstName'
             label='First Name'
@@ -119,9 +125,10 @@ const EditEmployeeDialog = (props) => {
             select
             onChange={(e) => setTeam(e.target.value)}
           >
-            <MenuItem value={1}>Accounting</MenuItem>
-            <MenuItem value={2}>Marketiing</MenuItem>
-            <MenuItem value={3}>Dev Team</MenuItem>
+            <MenuItem value={8}>Accounting</MenuItem>
+            <MenuItem value={7}>Marketing</MenuItem>
+            <MenuItem value={4}>Dev Team</MenuItem>
+            <MenuItem value={6}>Sales</MenuItem>
           </TextField>
           <TextField
             name='jobTitle'
@@ -136,7 +143,7 @@ const EditEmployeeDialog = (props) => {
           <Button autoFocus onClick={() => props.setUpdate(false)} color="primary">
             Cancel
           </Button>
-          <Button autoFocus onClick={handleClose} color="primary">
+          <Button autoFocus onClick={() => handleSubmit()} color="primary">
             Save changes
           </Button>
         </DialogActions>

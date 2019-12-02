@@ -19,4 +19,14 @@ module.exports = {
         res.status(200).send(employee);
     },
 
+    updateEmployeeInfo: (req, res) => {
+        const db = req.app.get('db');
+        const { userId } = req.params;
+        const { firstName, lastName, team, jobTitle } = req.body;
+
+        db.update_employee_info({userId, firstName, lastName, team, jobTitle});
+
+        res.sendStatus(200);
+    }
+
 }

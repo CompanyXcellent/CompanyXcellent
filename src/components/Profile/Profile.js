@@ -10,9 +10,11 @@ import Button from '@material-ui/core/Button';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import RatingDialog from './RatingDialog'
+import RatingDialog from './RatingDialog';
 import EditProfileDialog from './EditProfileDialog';
 import EditEmployeeDialog from './EditEmployeeDialog';
+
+import { getUserSubscriptions } from '../../redux/reducers/userReducer';
 
 const Profile = (props) => {
   const classes = useStyles();
@@ -22,33 +24,52 @@ const Profile = (props) => {
   const [posts, setPosts] = useState([]);
   const [edit, setEdit] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [subscriptionId, setSubscriptionId] = useState(false);
 
   // Grabs Employee Info, and ratings
   useEffect(() => {
     axios.get(`/api/employees/${props.match.params.id}`)
       .then(res => setEmployee(res.data))
       .catch(err => console.log(err))
-    // axios.get(`/api/getEmployeeRatings/${props.match.params.id}`)
-    //   .then(res => console.log('ratings', res.data))
-    //this second part is so that the ratings show up at the begining
-  }, [])
+  }, [edit, update])
 
   const handleClick = (e) => {
-    console.log(e.target.innerText)
-
     if(e.target.innerText === 'EDIT'){
       setEdit(true);
+      return
     }
 
     if(e.target.innerText === 'SUBSCRIBE'){
+      axios.post(`/api/profile/${props.user.user_id}/subscriptions`, { subId: employee.user_id})
+      .then(res => {
+        console.log(res);
+        setSubscriptionId(employee.user_id);
+      })
+      .catch(err => console.log(err));
       // Add functionality to update subscription in database
+    } else if (e.target.innerText === 'UNSUBSCRIBE'){
+      axios.delete(`/api/profile/${props.user.user_id}/subscriptions/${subscriptionId}`)
+      .then(res => {
+        console.log(res);
+        setSubscriptionId(false);
+        props.getUserSubscriptions(props.user.user_id);
+      })
+      .catch(err => console.log(err));
     }
+
+    // if()
   }
 
-  const handleAdminUpdate = (e) => {
+  useEffect(() => {
+    if(props.userSubscriptions){
+      props.userSubscriptions.forEach(e => {
+          if(e.friend_user_id === employee.user_id){
+            setSubscriptionId(e.subscription_id);
+          }
+        });
+    }
+  }, [props.userSubscriptions, employee])
 
-  }
-  console.log('props', props.match.params.id)
   return (
     <Container className={classes.mainContainer}>
       <Container className={classes.avatarNameTeamJob}>
@@ -78,7 +99,7 @@ const Profile = (props) => {
               className={classes.button}
               onClick={e => handleClick(e)}
             >
-              {props.user.user_id === employee.user_id ? 'Edit' : 'Subscribe'}
+              {props.user.user_id === employee.user_id ? 'Edit' : subscriptionId ? 'Unsubscribe' : 'Subscribe'}
             </Button>
           </Container>
         </Container>
@@ -126,14 +147,19 @@ const Profile = (props) => {
 }
 
 const mapStateToProps = reduxState => {
-  const { user } = reduxState.userReducer;
+  const { user, userSubscriptions } = reduxState.userReducer;
 
   return {
-    user
+    user,
+    userSubscriptions
   }
 }
 
-export default connect(mapStateToProps, null)(Profile);
+const mapDispatchToProps = {
+  getUserSubscriptions
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const useStyles = makeStyles({
   mainContainer: {
