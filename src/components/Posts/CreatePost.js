@@ -66,12 +66,13 @@ function CustomizedDialogs(props) {
 
   const makeNewPost = () => {
     axios.post('/api/makePost', {content: aboutMe, id: props.props.userReducer.user.user_id})
-    props.getMyPosts()
+    
   }
 
-  const send = () => {
+  const send = async () => {
+    await makeNewPost()
     handleClose()
-    makeNewPost()
+    props.getMyPosts()
   }
   return (
     <div>

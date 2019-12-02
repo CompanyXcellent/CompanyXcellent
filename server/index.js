@@ -69,8 +69,8 @@ app.get('/api/getTeam/:id', userCtrl.getTeam)
 
 // Polls
 app.get('/api/getPoll', userCtrl.getPoll)
-app.post('/api/submitPollResponse', userCtrl.submitPollResponse)
-app.get('/api/getEmployeeRatings', userCtrl.getEmployeeRating)
+app.post('/api/pollResponseSubmition', userCtrl.submitPollResponse)
+app.post('/api/employeeRatingsRetrieval', userCtrl.getEmployeeRating)
 
 // --------S3---------
 app.get("/api/signs3", userCtrl.storeProfilePic);

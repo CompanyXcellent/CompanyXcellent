@@ -100,6 +100,7 @@ function RatingDialog(props) {
     axios.get('/api/getPoll').then(res => setPoll(res.data))
   }, [])
 
+  
   const handleSubmitPoll = async () => {
     let questionsArr = [
       question0,
@@ -121,10 +122,10 @@ function RatingDialog(props) {
     ]
     await questionsArr.map((e, i) => {      
       if(e !== 0){
-        axios.post('/api/submitPollResponse', {questionId: i, value: e, responderId: 2, receiverId: props.empId})
+        axios.post('/api/pollResponseSubmition', {questionId: i, value: e, responderId: 2, receiverId: props.empId})
       }
     })
-    // you need to change the responder id to be the if value of the person who is logged in. you chould be able to access it through redux once the auth 0 is working
+    // if you want  people to only be able to vote one time, you will have to incorporate redux and use the id value of the person logged in to go in the responderId value in place of 2, and then revamp a little the code so that before anything else it checks to make sure that the user hasnt already voted
 
     handleClose()
     setQuestion0(0)
@@ -143,6 +144,7 @@ function RatingDialog(props) {
     setQuestion13(0)
     setQuestion14(0)
     setQuestion15(0)
+    props.keepUpdated()
   }
 
   const handleClickOpen = () => {
@@ -181,7 +183,7 @@ function RatingDialog(props) {
   IconContainer.propTypes = {
     value: PropTypes.number.isRequired,
   };
-  console.log('empId', props.empId)
+  // console.log('empId', props.empId)
   return (
     <div>
       <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
@@ -208,7 +210,6 @@ function RatingDialog(props) {
                                 IconContainerComponent={IconContainer}
                                 onChange={(event, newValue) => {
                                     stateFunctions[id].func(newValue)
-                                    console.log('question index', i)
                                 }}
                                 />
                             </Box>
