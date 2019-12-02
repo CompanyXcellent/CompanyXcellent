@@ -24,7 +24,8 @@ create table user_info(
     nickname varchar(100),
     profile_img text,
     about varchar(700),
-    group_id integer references groups(group_id)
+    group_id integer references groups(group_id),
+    job_title varchar(50)
 );
 
 create table poll(
@@ -32,13 +33,13 @@ create table poll(
     question varchar(300)
 );
 
-create table messages(
-    message_id serial primary key,
-    post_time timestamp,
-    content varchar(1000),
-    user_id integer references users(user_id),
-    room_id integer references rooms(room_id)
-);
+-- create table messages(
+--     message_id serial primary key,
+--     post_time timestamp,
+--     content varchar(1000),
+--     user_id integer references users(user_id),
+--     room_id integer
+-- );
 
 create table user_subscription(
     subscription_id serial primary key,
@@ -48,10 +49,10 @@ create table user_subscription(
 
 create table response(
     response_id serial primary key,
-    question_id integer references poll(question_id),
+    question_id integer,
     value integer,
-    responder_id integer references users(user_id),
-    respondee_id integer references users(user_id)
+    responder_id integer,
+    respondee_id integer
 );
 
 
@@ -60,5 +61,22 @@ create table posts(
     post_time timestamp,
     content text,
     user_id integer references users(user_id)
-)
+);
 
+create table chat_rooms (
+  chat_room_id serial primary key,
+  chat_room_name varchar(100)
+);
+
+create table chat_room_participants (
+  chat_room_id int references chat_rooms(chat_room_id),
+  user_id int references users(user_id)
+);
+
+create table messages (
+  message_id serial primary key,
+  sender int references users(user_id),
+  chat_room_id int references chat_rooms(chat_room_id),
+  message text,
+  time_stamp varchar(100)
+);

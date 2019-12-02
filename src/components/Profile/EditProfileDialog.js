@@ -1,17 +1,23 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {v4 as randomString} from 'uuid'
+
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import TextField from '@material-ui/core/TextField';
+
+import CloseIcon from '@material-ui/icons/Close';
+
+import ProfileImagePreview from './ProfileImgPreview';
+
 import './EditProfileDialog.css'
-import {v4 as randomString} from 'uuid'
-import axios from 'axios'
 
 
 const styles = theme => ({
@@ -54,98 +60,135 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs() {
-  const [open, setOpen] = React.useState(false);
-  const [aboutMe, setAboutMe] = React.useState('')
-  const [nickname, setNickname] = React.useState('')
-  const [img, setImg] = React.useState('')
+export default function CustomizedDialogs(props) {
+  const classes = useStyles();
 
-  console.log({aboutMe: aboutMe, nickname: nickname, imgURL: img})
+  const [aboutMe, setAboutMe] = React.useState('');
+  const [nickname, setNickname] = React.useState('');
+  const [profileImg, setProfileImg] = useState('');
+  const [imgFile, setImgFile] = useState('');
+  const [imageURI, setImageURI] = useState(null);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    setAboutMe(props.employee.about);
+    setNickname(props.employee.nickname);
+    setProfileImg(props.employee.profile_img);
+  }, [props.employee])
+
   const handleClose = () => {
-    setOpen(false);
+    setImageURI(null);
+    props.setEdit(false);
   };
 
   //--------------------S3 functions start----------------------
 
-  const upLoadFile = (file, signedRequest, url) => {
+  const getSignedRequest = (imgFile) => {
+    console.log(imgFile);
+    const fileName = `${randomString()}-${imgFile.name.replace(/\s/g, '-')}`
+
+    axios.get('/api/signs3', {
+      params: {
+        'file-name': fileName,
+        'file-type': imgFile.type
+      }
+    })
+      .then((res) => {
+        const { signedRequest, url } = res.data
+        uploadFile(imgFile, signedRequest, url)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const uploadFile = (file, signedRequest, url) => {
     const options = {
-        headers: {
-            'Content-Type': file.type
-        }
-    }
-    setImg(url)
-    axios.put(signedRequest, file, options)
-    //this put request goes and edits the file giving it an acutal value
-    .catch(err => console.log(err))
-  }
+      headers: {
+        'Content-Type': file.type,
+      },
+    };
 
-  const handleImage = () => {
-    const file = document.getElementById('image-file').files[0]
-
-    //makes it so that if we upload the same image twice they wont have conflicting names
-    const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
-    
-    //here it makes the file and then calls upLoadFile which sends the file to s3 storage.
-    axios.get('/api/signs3',{
-        params:{
-            'file-name': fileName,
-            'file-type': file.type
+    axios
+      .put(signedRequest, file, options)
+      .then(res => {
+        axios.put(`/api/profile/${props.user.user_id}`, {profileImg: url, about: aboutMe, nickname})
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
+      })
+      .catch(err => {
+        if (err.response.status === 403) {
+          alert(
+            `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${
+            err.stack
+            }`
+          );
+        } else {
+          alert(`ERROR: ${err.status}\n ${err.stack}`);
         }
-    })
-    .then(res => {
-        const{signedRequest, url} = res.data
-        setImg(signedRequest)
-        // makes the value of img on state to be the URL of the image in the s3 storage. through this url is how it is accessed later on the runner side.
-        upLoadFile(file, signedRequest, url)
-    })
-    .catch(err => console.log(err))        
-  }
+      });
+  };
 
 
   //----------------------S3 functions end
 
+  const handleSubmit = async () => {
+    // if (!aboutMe || !nickname || imageURI === null || !imgFile) {
+    //   // setError(true);
+    //   return;
+    // }
 
-  const onSave = () => {
-    handleClose()
-    handleImage(img)
+    await getSignedRequest(imgFile);
+
+    
+    
+    // setSuccess(true);
+    // props.history.push('/admin/applications');
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
-        Edit Profile
-      </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={props.edit}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Enter info
         </DialogTitle>
-        <DialogContent dividers>
-          <Avatar alt="Remy Sharp" src=""/>
-          <br/>
-          <input
-            placeholder='profile pic'
-            type='file'
-            id='image-file'
-          />
-          <h3>NickName</h3>
-          <input
-            placeholder='nickname'
+        <DialogContent dividers className={classes.dialogContentContainer}>
+          <ProfileImagePreview profileImg={profileImg} setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
+          <TextField
+            label='Nickname'
+            variant='outlined'
+            value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
-          <h3>About</h3>
-          <textarea onChange={(e) => setAboutMe(e.target.value)} placeholder='About me' rows="4" cols="50" id='about-me-input'/>
+          <TextField 
+            label='About'
+            variant='outlined'
+            multiline
+            fullWidth
+            rows="4"
+            value={aboutMe} 
+            onChange={(e) => setAboutMe(e.target.value)} 
+            id='about-me-input' />
 
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => onSave()} color="primary">
+          <Button autoFocus onClick={() => handleSubmit()} color="primary">
             Save changes
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
   );
 }
+
+const useStyles = makeStyles({
+  dialogContentContainer: {
+    height: '70vh',
+
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  avatar: {
+    width: 100,
+    height: 100
+  }
+})

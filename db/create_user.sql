@@ -1,4 +1,11 @@
-insert into users ( auth0_id, username ) 
-values ( $1, $2 );
+insert into users ( 
+  username,
+  role_id, 
+  auth0_id
+) values (
+  ${email},
+  ${roleId},
+  ${auth0Id}
+);
 
-select * from users where auth0_id = $1;
+select * from users where auth0_id = ${auth0Id};

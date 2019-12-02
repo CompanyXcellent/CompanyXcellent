@@ -4,15 +4,15 @@ let theme = createMuiTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#BF8888',
+      main: '#2a475e',
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
     secondary: {
-      light: '#0066ff',
-      main: '#0044ff',
-      // dark: will be calculated from palette.secondary.main,
-      contrastText: '#ffcc00',
+      // light: '#cadce7',
+      main: '#c7d5e0',
+      // dark: '#6b7b85',
+      // contrastText: '#000000',
     },
     status: {
       danger: 'red',

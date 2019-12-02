@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client'
-import { makeStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux'
-import { getUser } from '../../redux/userReducer'
-// import axios from 'axios'
-import Container from '@material-ui/core/Container';
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
+import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import { getUser } from "../../redux/reducers/userReducer";
 
-let socket
+import Container from "@material-ui/core/Container";
+
+let socket;
 
 const Conversation = (props) => {
   const classes = useStyles();
@@ -64,29 +64,26 @@ const Conversation = (props) => {
         <form>
           {/* input */}
           <input
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null} />
-          <button type='submit' onClick={(e) => sendMessage(e)}>Send</button>
+            onChange={e => setMessage(e.target.value)}
+            onKeyPress={e => (e.key === "Enter" ? sendMessage(e) : null)}
+          />
+          <button type="submit" onClick={e => sendMessage(e)}>
+            Send
+          </button>
         </form>
       </div>
     </Container>
-  )
-}
+  );
+};
 
-
-
-
-const mapStateToProps = (rootReducer) => {
-
+const mapStateToProps = rootReducer => {
   return {
     userReducer: rootReducer.userReducer
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, { getUser })(Conversation);
 
 const useStyles = makeStyles({
-  mainContainer: {
-
-  }
-})
+  mainContainer: {}
+});
