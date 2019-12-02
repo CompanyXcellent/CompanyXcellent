@@ -81,5 +81,17 @@ module.exports={
         const db = req.app.get('db')
         let poll = await db.get_poll()
         res.status(200).send(poll)
+    },
+    submitPollResponse: (req, res) => {
+        const {questionId, value, responderId, receiverId} = req.body
+        const db = req.app.get('db')
+        db.submit_response_to_poll(questionId, value, responderId, receiverId)
+        res.sendStatus(200)
+    },
+    getEmployeeRating: (req, res) => {
+        const {id} = req.params
+        const db = req.app.get('db')
+        db.get_employee_ratings(id)
+        res.sendStatus(200)
     }
 }

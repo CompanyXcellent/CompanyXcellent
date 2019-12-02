@@ -23,11 +23,14 @@ const Profile = (props) => {
   const [edit, setEdit] = useState(false);
   const [update, setUpdate] = useState(false);
 
-  // Grabs Employee Info
+  // Grabs Employee Info, and ratings
   useEffect(() => {
     axios.get(`/api/employees/${props.match.params.id}`)
       .then(res => setEmployee(res.data))
       .catch(err => console.log(err))
+    // axios.get(`/api/getEmployeeRatings/${props.match.params.id}`)
+    //   .then(res => console.log('ratings', res.data))
+    //this second part is so that the ratings show up at the begining
   }, [])
 
   const handleClick = (e) => {
@@ -45,7 +48,7 @@ const Profile = (props) => {
   const handleAdminUpdate = (e) => {
 
   }
-
+  console.log('props', props.match.params.id)
   return (
     <Container className={classes.mainContainer}>
       <Container className={classes.avatarNameTeamJob}>
@@ -117,7 +120,7 @@ const Profile = (props) => {
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
-      <RatingDialog/>
+      <RatingDialog empId={props.match.params.id}/>
     </Container>
   )
 }

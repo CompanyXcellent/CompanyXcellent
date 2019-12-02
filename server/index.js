@@ -51,6 +51,7 @@ app.use(
 );
 
 //---------------company endPoints------------------
+app.post('/api/makePoll', compCtrl.makePoll)
 app.get('/api/employees', compCtrl.getAllEmployees);
 app.get('/api/employees/:userId', compCtrl.getEmployee);
 
@@ -62,6 +63,8 @@ app.delete('/api/deletePost/:id', userCtrl.deletePost)
 app.get('/api/getUserInfo/:id', userCtrl.getUserInfo)
 app.get('/api/getTeam/:id', userCtrl.getTeam)
 app.get('/api/getPoll', userCtrl.getPoll)
+app.post('/api/submitPollResponse', userCtrl.submitPollResponse)
+app.get('/api/getEmployeeRatings', userCtrl.getEmployeeRating)
 
 // --------S3---------
 app.get("/api/signs3", userCtrl.storeProfilePic);
@@ -256,5 +259,5 @@ app.post('/api/register', async (req, res) => {
         res.status(200).send('User successfully created.');
       }
     }
-  }))
-//?---- End Auth0 ------
+  }))})
+//?---- End Auth0 -----

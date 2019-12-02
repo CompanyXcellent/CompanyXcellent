@@ -45,7 +45,7 @@ const Employees = (props) => {
                     size="small" 
                     color="primary" 
                     >
-                    Edit
+                    View Profile
                   </Button>
                 </Link>
               </Container>
