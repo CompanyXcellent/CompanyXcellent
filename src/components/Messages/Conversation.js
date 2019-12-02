@@ -14,11 +14,11 @@ const Conversation = (props) => {
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
   const [room, setRoom] = useState(0)
-  console.log(user)
-  console.log(props)
-  console.log(messages)
-  console.log(room)
-
+  // console.log(user)
+  // console.log(props)
+  // console.log(messages)
+  // console.log(room)
+  console.log(socket)
 
   useEffect(() => {
 
@@ -26,6 +26,7 @@ const Conversation = (props) => {
     socket.emit('enter', props.userReducer.user.user_id, () => {
     })
     socket.on('joined', (messages, roomId) => {
+      console.log(roomId)
       setMessages(messages)
       setRoom(roomId)
     }, [])
@@ -35,15 +36,15 @@ const Conversation = (props) => {
       socket.off()
     }
   }, [])
-  // useEffect(() => {
-  //   socket.on('message', (message) => {
-  //     console.log(message)
-  //     setMessage([...messages, message])
-  //   }, [messages])
-  // })
+  useEffect(() => {
+    socket.on('new message', (newMessage) => {
+
+      setMessages([...messages, newMessage])
+    })
+  }, [messages])
   const sendMessage = (e) => {
     e.preventDefault()
-    const newMessage = ''
+
     if (message) {
       socket.emit('send message', message, room, props.userReducer.user.user_id, () => setMessage(''))
     }
