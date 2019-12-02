@@ -11,14 +11,11 @@ import Input from '@material-ui/core/Input';
 const ImageFile = (props) => {
   const classes = useStyles();
 
-  const [id, setId] = useState('someUniqueId');
-  const [displayImg, setDisplayImg] = useState(props.profileImg);
-
   const readURI = (file) => {
     if (file) {
       let reader = new FileReader();
       reader.onload = (ev) => {
-        setDisplayImg(ev.target.result);
+        props.setImageURI(ev.target.result);
       }
       reader.readAsDataURL(file);
     }
@@ -26,7 +23,7 @@ const ImageFile = (props) => {
 
   const handleChange = (acceptedFiles) => {
     let file = acceptedFiles[0];
-    // props.setImgFile(file);
+    props.setImgFile(file);
     readURI(file); // maybe call this with webworker or async library?
     if (props.onChange !== undefined)
       props.onChange(file); // propagate to parent component
@@ -37,7 +34,7 @@ const ImageFile = (props) => {
         <CardMedia
           component='img'
           className={classes.img}
-          src={ displayImg ? displayImg : 'https://resol-donee-pictures.s3-us-west-1.amazonaws.com/upload-icon-png-8.jpg'}
+          src={ props.imageURI ? props.imageURI : props.profileImg ? props.profileImg : 'https://resol-donee-pictures.s3-us-west-1.amazonaws.com/upload-icon-png-8.jpg'}
         />
       <Dropzone onDrop={acceptedFiles => handleChange(acceptedFiles)}>
         {({ getRootProps, getInputProps }) => (

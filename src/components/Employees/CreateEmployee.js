@@ -29,7 +29,7 @@ const CreateEmployee = (props) => {
   const [success, setSuccess] = useState(false);
 
   const submit = () => {
-    if( !email || !roleId || !auth0Id || !firstName || !lastName || !groupId || !jobTitle || !password ){
+    if (!email || !roleId || !auth0Id || !firstName || !lastName || !groupId || !jobTitle || !password) {
       setErrorMessage(`Missing information. Please double check to make sure input boxes are filled out.`)
       return
     }
@@ -47,19 +47,19 @@ const CreateEmployee = (props) => {
       jobTitle,
       password
     })
-    .then(res => {
-      setEmail('');
-      setRoleId(2);
-      setAuth0Id('');
-      setFirstName('');
-      setLastName('');
-      setGroupId('');
-      setJobTitle('');
-      setPassword('');
-      setSuccess(true);
-      console.log(res)
-    })
-    .catch(err => console.log(err))
+      .then(res => {
+        setEmail('');
+        setRoleId(2);
+        setAuth0Id('');
+        setFirstName('');
+        setLastName('');
+        setGroupId('');
+        setJobTitle('');
+        setPassword('');
+        setSuccess(true);
+        console.log(res)
+      })
+      .catch(err => console.log(err))
   }
 
   useEffect(() => {
@@ -116,9 +116,9 @@ const CreateEmployee = (props) => {
         select
         value={roleId}
         onChange={(e) => setRoleId(e.target.value)}
-       >
-         <MenuItem value={1}>Yes</MenuItem>
-         <MenuItem value={2}>No</MenuItem>
+      >
+        <MenuItem value={1}>Yes</MenuItem>
+        <MenuItem value={2}>No</MenuItem>
       </TextField>
       <TextField
         name='groupId'
@@ -128,10 +128,11 @@ const CreateEmployee = (props) => {
         select
         value={groupId}
         onChange={(e) => setGroupId(e.target.value)}
-       >
-         <MenuItem value={1}>Accounting</MenuItem>
-         <MenuItem value={2}>Marketiing</MenuItem>
-         <MenuItem value={3}>Dev Team</MenuItem>
+      >
+        <MenuItem value={8}>Accounting</MenuItem>
+        <MenuItem value={6}>Marketiing</MenuItem>
+        <MenuItem value={4}>Dev Team</MenuItem>
+        <MenuItem value={6}>Sales</MenuItem>
       </TextField>
       <TextField
         name='jobTitle'
@@ -156,7 +157,7 @@ const CreateEmployee = (props) => {
         <DialogTitle>Incomplete Form</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            { errorMessage }
+            {errorMessage}
           </DialogContentText>
           <DialogActions>
             <Button onClick={() => setErrorMessage('')}>OK</Button>
