@@ -41,12 +41,12 @@ module.exports = {
     let conversations = await db.get_conversations(id);
     let other_users_id = [];
     // const newConversations = await conversations.map(async e => {
-    // //   console.log(e.chat_room_id);
+    //   console.log(e.chat_room_id);
     //   let other_user = await db.get_names(e.chat_room_id, e.user_id);
     //   other_user = other_user[0];
     //   console.log(other_user);
     //   e.other_user = other_user;
-    // //   console.log(e)
+    //   console.log(e)
     // return e;
     // });
 
