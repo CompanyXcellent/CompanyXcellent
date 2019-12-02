@@ -15,6 +15,7 @@ const Conversation = () => { //params will be user stuff
   const classes = useStyles();
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
+  const [room, setRoom] = useState(0)
 
 
   useEffect(() => {

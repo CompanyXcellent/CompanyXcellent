@@ -6,13 +6,14 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux'
 
 // import Conversation from './Conversation';
-// import axios from 'axios';
+
 
 const Messages = (props) => {
   console.log(props)
   const classes = useStyles();
   const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
+  const [newMessageInput, setNewMessageInput] = useState('')
 
   useEffect(() => {
     setUser(props.userReducer.user)

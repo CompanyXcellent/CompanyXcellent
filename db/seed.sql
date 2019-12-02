@@ -57,8 +57,8 @@ create table response(
 
 create table room(
     room_id serial primary key,
-    user_1 integer references user_info(user_info_id),
-    user_2 integer references user_info(user_info_id)
+    name varchar(20),
+    room_name varchar(100)
 );
 
 create table posts(
