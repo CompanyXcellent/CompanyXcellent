@@ -12,6 +12,7 @@ import "./navBar.css";
 import { Link } from "react-router-dom";
 // import { connect } from 'http2';
 import { getUser, logout, getUserInfo } from "../../redux/userReducer";
+
 import { connect } from "react-redux";
 
 //controls the styling of material ui components... its an alternative to using the css
