@@ -13,6 +13,7 @@ const randomatic = require('randomatic');
 
 const userCtrl = require("./controllers/userController");
 const compCtrl = require("./controllers/compController");
+const socketCtrl = require("./controllers/socketCtrl");
 
 const app = express();
 const {
@@ -71,6 +72,9 @@ app.get('/api/getTeam/:id', userCtrl.getTeam)
 app.get('/api/getPoll', userCtrl.getPoll)
 app.post('/api/submitPollResponse', userCtrl.submitPollResponse)
 app.get('/api/getEmployeeRatings', userCtrl.getEmployeeRating)
+
+//Messages
+app.get('/api/conversations/:id', socketCtrl.getConversations)
 
 // --------S3---------
 app.get("/api/signs3", userCtrl.storeProfilePic);
