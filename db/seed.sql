@@ -55,11 +55,6 @@ create table response(
     respondee_id integer
 );
 
-create table room(
-    room_id serial primary key,
-    name varchar(20),
-    room_name varchar(100)
-);
 
 create table posts(
     post_id serial primary key,

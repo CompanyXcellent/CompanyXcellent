@@ -1,4 +1,4 @@
-require('dotenv').config({path: __dirname + "/../.env"})
+require('dotenv').config({ path: __dirname + "/../.env" })
 const express = require("express");
 const session = require("express-session");
 const massive = require("massive");
@@ -80,51 +80,48 @@ app.get('/api/conversations/:id', socketCtrl.getConversations)
 app.get("/api/signs3", userCtrl.storeProfilePic);
 
 //?----- Sockets.io -------
-// const http = require('http');
-// const server = http.createServer(app);
+const http = require('http');
+const server = http.createServer(app);
 // const socketCtrl = require('./controllers/socketCtrl')
-// const io = socket(server);
+const io = socket(server);
 
-// io.on('connection', (socket) => {
-//   console.log('Socket Connection');
-//   // socket.on('join', async ({ nickname, user_info_id, group_id }) => {
+io.on('connection', (socket) => {
+  console.log('Socket Connection')
+  socket.on('enter', async user => {
+    console.log(user)
+    const db = app.get('db')
+    // send user id and get chat room id from chat_room_participants
+    const [room] = await db.get_room(user)
+    console.log(room)
+    // send chat room id to get all messages then emit 'joined'
+    const messages = await db.get_messages(room.chat_room_id)
+    console.log(messages)
+    socket.emit('joined', messages, room.chat_room_id)
+  })
+  socket.on('send message', async (message, roomId, userId) => {
+    console.log(message, roomId, userId)
+    const db = app.get('db')
+    // const sentMessage = await send_message(message)
+  })
 
-//   //   // socket.broadcast.emit('message', { text: `${nickname} has joined` })
-//   //   // console.log(nickname)
 
-//   // })
+  //   socket.on('join', async ({chat_room_id, chat_room_name, user_id}, callback) => {
+  //     console.log(chat_room_id, chat_room_name, user_id);
 
-//   // socket.on('send message', message => {
-//   //   socket.broadcast.emit('chat-message', message)
-//   //   console.log(message)
-//   // })
+  //     const room = await chatCtrl.getChatRoom(app, chat_room_id);
 
-//   socket.on('join', async ({chat_room_id, chat_room_name, user_id}, callback) => {
-//     console.log(chat_room_id, chat_room_name, user_id);
+})
 
-//     const room = await chatCtrl.getChatRoom(app, chat_room_id);
-
-//     if(room){
-//       socket.join(room.chat_room_name);
-//       return;
-//     }
-
-//     const newRoom = await chatCtrl.createRoom(app, user_id, otherUser);
-
-//     socket.join(newRoom.chat_room_name);
-//   })
-
-//   socket.on('sendMessage', ({ userId, message }, callback) => {
-//     // sendMessage function that creates the message in the database with the appropriate user id, room id, content, and time stamp. It should return the new message, pass it into the callback function which will append it to the messages array displaying on the front end.
+// })
 
 //     io.to(roomId).emit('newMessage', { stuff });
 
 //     callback();
 //   });
 
-const http = require("http");
-const server = http.createServer(app);
-const io = socket(server);
+// const http = require("http");
+// const server = http.createServer(app);
+// const io = socket(SERVER_PORT);
 
 app.get("/api/getRoomName/:socket_room_id");
 
@@ -186,10 +183,10 @@ passport.use(
   )
 );
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
 
@@ -236,7 +233,7 @@ app.post('/api/register', async (req, res) => {
   const {
     email,
     roleId,
-    auth0Id, 
+    auth0Id,
     firstName,
     lastName,
     groupId,
@@ -248,7 +245,7 @@ app.post('/api/register', async (req, res) => {
 
   let uniqueAuth0Id = auth0Id;
 
-  if(user){
+  if (user) {
     do {
       uniqueAuth0Id = randomatic('Aa0', 25)
       // uniqueAuth0Id = uniqueAuth0Id
@@ -260,7 +257,7 @@ app.post('/api/register', async (req, res) => {
   user = await db.get_user_by_email(email);
   user = user[0];
 
-  if(user){
+  if (user) {
     return res.status(409).send('Email already in use.');
   }
 
@@ -275,39 +272,39 @@ app.post('/api/register', async (req, res) => {
     connection: 'Username-Password-Authentication'
   }, (async err => {
     console.log(err);
-    if(!err){
+    if (!err) {
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-               user: 'companyxcellent@gmail.com',
-               pass: EMAIL_PASSWORD
-           }
-       });
-    
-       const mailOptions = {
+          user: 'companyxcellent@gmail.com',
+          pass: EMAIL_PASSWORD
+        }
+      });
+
+      const mailOptions = {
         from: 'companyxcellent@gmail.com', // sender address
         to: `${email}`, // list of receivers
         subject: 'Login Credentials', // Subject line
         text: `Hello ${firstName},\n\nThe following are your login credentials for the CompanyXcellent Software that your company uses.\n\nEmail: ${email}\nPassword: ${password}\n\nSincerly,\nThe CompanyXcellent Team`// plain text body
       };
-    
+
       transporter.sendMail(mailOptions, (err, info) => {
-        if(err){
+        if (err) {
           console.log(err);
         } else {
           console.log(info);
         }
-     });
+      });
 
-      let newUser = await db.create_user({email, roleId, auth0Id: `auth0|${uniqueAuth0Id}`});
+      let newUser = await db.create_user({ email, roleId, auth0Id: `auth0|${uniqueAuth0Id}` });
       newUser = newUser[0];
 
-      let newUserInfo = await db.add_user_info({userId: newUser.user_id, firstName, lastName, groupId, jobTitle});
+      let newUserInfo = await db.add_user_info({ userId: newUser.user_id, firstName, lastName, groupId, jobTitle });
       newUserInfo = newUserInfo[0];
 
-      newUser = {...newUser, ...newUserInfo}
+      newUser = { ...newUser, ...newUserInfo }
 
-      if(newUser.user_id){
+      if (newUser.user_id) {
         res.status(200).send('User successfully created.');
       }
     }

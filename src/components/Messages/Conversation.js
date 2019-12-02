@@ -8,43 +8,59 @@ import Container from "@material-ui/core/Container";
 
 let socket;
 
-// const test = { user_info_id: 2, user_id: 1, first_name: 'test', last_name: 'test', profile_img: 'test', about: 'blah blah', group_id: 3 }
-
-const Conversation = () => {
-  //params will be user stuff
+const Conversation = (props) => {
   const classes = useStyles();
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-  const [room, setRoom] = useState(0);
-  const ENDPOINT = "localhost:3030";
+  const [user, setUser] = useState({})
+  const [messages, setMessages] = useState([])
+  const [message, setMessage] = useState('')
+  const [room, setRoom] = useState(0)
+  console.log(user)
+  console.log(props)
+  console.log(messages)
+  console.log(room)
+
 
   useEffect(() => {
-    const { user_info_id, group_id } = test;
-    socket = io(ENDPOINT);
-    socket.emit("join", { user_info_id, group_id }, () => {});
+
+    socket = io()
+    socket.emit('enter', props.userReducer.user.user_id, () => {
+    })
+    socket.on('joined', (messages, roomId) => {
+      setMessages(messages)
+      setRoom(roomId)
+    }, [])
+
     return () => {
-      socket.emit("disconnect");
-      socket.off();
-    };
-  });
-  useEffect(() => {
-    socket.on("message", message => {
-      setMessage([...messages, message]);
-    });
-  }, [messages]);
-  const sendMessage = e => {
-    e.preventDefault();
-
-    socket.emit("send message", message, () => {
-      setMessage("");
-    });
-  };
+      socket.emit('disconnect')
+      socket.off()
+    }
+  }, [])
+  // useEffect(() => {
+  //   socket.on('message', (message) => {
+  //     console.log(message)
+  //     setMessage([...messages, message])
+  //   }, [messages])
+  // })
+  const sendMessage = (e) => {
+    e.preventDefault()
+    const newMessage = ''
+    if (message) {
+      socket.emit('send message', message, room, props.userReducer.user.user_id, () => setMessage(''))
+    }
+  }
 
   return (
     <Container className={classes.mainContainer}>
       <div>
-        <div>{/* top */}</div>
-        <div>{/* messages */}</div>
+        <div>
+          {/* top */}
+        </div>
+        <div>
+          {/* messages */}
+          {messages.map((el, i) => (
+            <div>{el.message}</div>
+          ))}
+        </div>
         <form>
           {/* input */}
           <input

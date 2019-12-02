@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { connect } from 'react-redux'
 
-import Container from "@material-ui/core/Container";
-import Avatar from "@material-ui/core/Avatar";
-import { Typography } from "@material-ui/core";
+import Container from '@material-ui/core/Container';
+import Avatar from '@material-ui/core/Avatar';
+import { Typography } from '@material-ui/core';
 
-// import Conversation from './Conversation';
+import Conversation from './Conversation';
+
 
 const Messages = props => {
   console.log(props);
@@ -32,7 +33,7 @@ const Messages = props => {
           <Container className={classes.conversationListItemContainer}>
             <Avatar />
             <Container>
-      <Typography variant="h6">{e.other_user.first_name}</Typography>
+              <Typography variant="h6">{e.other_user.first_name}</Typography>
               {/* <Typography variant='body2'>You: Last Message</Typography> */}
             </Container>
           </Container>
