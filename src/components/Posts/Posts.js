@@ -30,13 +30,9 @@ const Posts = (props) => {
     getMyPosts()
   }
 
-  const logout = () => {
-    window.location.href = 'http://localhost:3030/api/logout'
-  }
   return (
     <Container className={classes.mainContainer}>
       <h1>Posts</h1>
-      <button onClick={logout}>Logout</button>
       <CreatPost props={props} getMyPosts={getMyPosts}/>
       {
         posts.map((e, i) => {

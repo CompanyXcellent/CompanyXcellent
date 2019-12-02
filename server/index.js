@@ -50,15 +50,26 @@ app.use(
 //---------------company endPoints------------------
 app.get('/api/employees', compCtrl.getAllEmployees);
 app.get('/api/employees/:userId', compCtrl.getEmployee);
+app.put('/api/employees/:userId', compCtrl.updateEmployeeInfo);
 
 //------------user endpoints-------------------------
+// Subscriptions
 app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts);
+app.get('/api/profile/:id/subscriptions', userCtrl.getSubscriptions);
+app.post('/api/profile/:id/subscriptions', userCtrl.subscribe);
+app.delete('/api/profile/:id/subscriptions/:subscriptionId', userCtrl.unsubscribe);
+
+// Posts
+app.post('/api/makePost', userCtrl.makePost);
+app.delete('/api/deletePost/:id', userCtrl.deletePost);
+
+// User Data
+app.get('/api/profile/:id', userCtrl.getUserInfo);
 app.put('/api/profile/:id', userCtrl.updateProfile);
-app.post('/api/makePost', userCtrl.makePost)
-app.delete('/api/deletePost/:id', userCtrl.deletePost)
-app.get('/api/getUserInfo/:id', userCtrl.getUserInfo)
 app.get('/api/getTeam/:id', userCtrl.getTeam)
-app.get('/api/getPoll', userCtrl.getPoll)
+
+// Polls
+app.get('/api/getPoll', userCtrl.getPoll);
 
 
 // --------S3---------
@@ -68,24 +79,47 @@ app.get('/api/signs3', userCtrl.storeProfilePic)
 
 
 //?----- Sockets.io -------
+const http = require('http');
+const server = http.createServer(app);
 const socketCtrl = require('./controllers/socketCtrl')
-const io = socket(
-  app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
-);
+const io = socket(server);
 
 io.on('connection', (socket) => {
-  console.log('Socket Connection')
-  socket.on('enter', async ({ nickname, user_info_id, group_id }) => {
+  console.log('Socket Connection');
+  // socket.on('join', async ({ nickname, user_info_id, group_id }) => {
 
-    socket.broadcast.emit('message', { text: `${nickname} has joined` })
-    console.log(nickname)
+  //   // socket.broadcast.emit('message', { text: `${nickname} has joined` })
+  //   // console.log(nickname)
 
-  })
+  // })
 
   // socket.on('send message', message => {
   //   socket.broadcast.emit('chat-message', message)
   //   console.log(message)
   // })
+
+  socket.on('join', async ({chat_room_id, chat_room_name, user_id}, callback) => {
+    console.log(chat_room_id, chat_room_name, user_id);
+
+    const room = await chatCtrl.getChatRoom(app, chat_room_id);
+
+    if(room){
+      socket.join(room.chat_room_name);
+      return;
+    }
+
+    const newRoom = await chatCtrl.createRoom(app, user_id, otherUser);
+
+    socket.join(newRoom.chat_room_name);
+  })
+
+  socket.on('sendMessage', ({ userId, message }, callback) => {
+    // sendMessage function that creates the message in the database with the appropriate user id, room id, content, and time stamp. It should return the new message, pass it into the callback function which will append it to the messages array displaying on the front end.
+
+    io.to(roomId).emit('newMessage', { stuff });
+
+    callback();
+  });
 
   socket.on('disconnect', () => {
 
@@ -109,7 +143,7 @@ passport.use(
     function (accessToken, refreshToken, extraParams, profile, done) {
       // const db = req.app.get('db');
       let { id } = profile;
-      let { value } = profile.emails[0];
+      // let { value } = profile.emails[0];
 
       console.log(profile)
 
@@ -315,3 +349,5 @@ app.post('/api/register', async (req, res) => {
   // })
 })
 //?---- End Auth0 ------
+
+server.listen(SERVER_PORT, () => console.log(`Server has started on port ${SERVER_PORT}`));

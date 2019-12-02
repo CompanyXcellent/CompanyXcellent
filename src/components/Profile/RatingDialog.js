@@ -12,7 +12,7 @@ import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
-import axios from 'axios'
+import axios from 'axios';
 
 const styles = theme => ({
   root: {

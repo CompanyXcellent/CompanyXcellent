@@ -3,15 +3,26 @@ import axios from "axios";
 const initialState = {
   user: {},
   loggedIn: false,
-  userInfo: {}
+  userInfo: {},
+  userSubscriptions: []
 };
 
-const GET_USER = 'GET_USER'
-const LOGOUT = 'LOGOUT'
-const GET_USER_INFO = 'GET_USER_INFO'
+const GET_USER = 'GET_USER';
+const LOGOUT = 'LOGOUT';
+const GET_USER_INFO = 'GET_USER_INFO';
+const GET_USER_SUBSCRIPTIONS = 'GET_USER_SUBSCRIPTIONS';
+
+export const getUserSubscriptions = (id) => {
+  const userSubscriptions = axios.get(`/api/profile/${id}/subscriptions`).then(res => res.data);
+
+  return {
+    type: GET_USER_SUBSCRIPTIONS,
+    payload: userSubscriptions
+  }
+}
 
 export const getUserInfo = (id) => {
-  const userInfo = axios.get(`/api/getUserInfo/${id}`).then(res => res.data)
+  const userInfo = axios.get(`/api/profile/${id}`).then(res => res.data)
   return{
     type: GET_USER_INFO,
     payload: userInfo
@@ -19,7 +30,6 @@ export const getUserInfo = (id) => {
 }
 
 export const getUser = () => {
-    console.log('hit userReducer')
     const user = axios.get('/api/getUser').then(res => res.data)
     return {
         type: GET_USER,
@@ -43,6 +53,8 @@ export default function(state = initialState, action) {
       return {...state, user: {loggedIn: false}}
     case GET_USER_INFO + "_FULFILLED":
       return{...state, userInfo: payload}
+    case GET_USER_SUBSCRIPTIONS + "_FULFILLED":
+      return{...state, userSubscriptions: payload}
     default:
       return state;
   }

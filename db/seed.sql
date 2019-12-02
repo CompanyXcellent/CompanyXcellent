@@ -33,13 +33,13 @@ create table poll(
     question varchar(300)
 );
 
-create table messages(
-    message_id serial primary key,
-    post_time timestamp,
-    content varchar(1000),
-    user_id integer references users(user_id),
-    room_id integer
-);
+-- create table messages(
+--     message_id serial primary key,
+--     post_time timestamp,
+--     content varchar(1000),
+--     user_id integer references users(user_id),
+--     room_id integer
+-- );
 
 create table user_subscription(
     subscription_id serial primary key,
@@ -56,16 +56,33 @@ create table response(
 );
 
 
-create table room(
-    room_id serial primary key,
-    user_1 integer references user_info(user_info_id),
-    user_2 integer references user_info(user_info_id)
-);
+-- create table room(
+--     room_id serial primary key,
+--     user_1 integer references user_info(user_info_id),
+--     user_2 integer references user_info(user_info_id)
+-- );
 
 create table posts(
     post_id serial primary key,
     post_time timestamp,
     content text,
     user_id integer references users(user_id)
-)
+);
 
+create table chat_rooms (
+  chat_room_id serial primary key,
+  chat_room_name varchar(100)
+);
+
+create table chat_room_participants (
+  chat_room_id int references chat_rooms(chat_room_id),
+  user_id int references users(user_id)
+);
+
+create table messages (
+  message_id serial primary key,
+  sender int references users(user_id),
+  chat_room_id int references chat_rooms(chat_room_id),
+  message text,
+  time_stamp varchar(100)
+);

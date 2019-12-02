@@ -65,13 +65,14 @@ export default function CustomizedDialogs(props) {
 
   const [aboutMe, setAboutMe] = React.useState('');
   const [nickname, setNickname] = React.useState('');
+  const [profileImg, setProfileImg] = useState('');
   const [imgFile, setImgFile] = useState('');
   const [imageURI, setImageURI] = useState(null);
 
   useEffect(() => {
     setAboutMe(props.employee.about);
     setNickname(props.employee.nickname);
-    setImgFile(props.employee.profile_img);
+    setProfileImg(props.employee.profile_img);
   }, [props.employee])
 
   const handleClose = () => {
@@ -82,6 +83,7 @@ export default function CustomizedDialogs(props) {
   //--------------------S3 functions start----------------------
 
   const getSignedRequest = (imgFile) => {
+    console.log(imgFile);
     const fileName = `${randomString()}-${imgFile.name.replace(/\s/g, '-')}`
 
     axios.get('/api/signs3', {
@@ -149,7 +151,7 @@ export default function CustomizedDialogs(props) {
           Enter info
         </DialogTitle>
         <DialogContent dividers className={classes.dialogContentContainer}>
-          <ProfileImagePreview profileImg={imgFile} setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
+          <ProfileImagePreview profileImg={profileImg} setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
           <TextField
             label='Nickname'
             variant='outlined'

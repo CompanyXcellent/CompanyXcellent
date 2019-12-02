@@ -25,7 +25,6 @@ const Employees = (props) => {
         setEmployees(res.data)
       })
   }, [])
-  console.log(props)
 
   return (
     <Container className={classes.mainContainer}>
@@ -45,7 +44,7 @@ const Employees = (props) => {
                     size="small" 
                     color="primary" 
                     >
-                    Edit
+                    View
                   </Button>
                 </Link>
               </Container>
