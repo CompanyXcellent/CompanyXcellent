@@ -31,7 +31,6 @@ const Employees = (props) => {
       <Typography variant='h2' className={classes.title}>Employees</Typography>
       {employees.map(e => {
         return (
-          // <>
             <Container key={e.user_id} className={classes.listItemContainer}>
               <Container className={classes.topLine}>
                 <Container className={classes.avatarAndName} >
@@ -52,25 +51,12 @@ const Employees = (props) => {
                 <Typography variant='h6' className={classes.department}>{e.group_name}</Typography>
                 <Typography variant='subtitle1' className={classes.jobTitle}>{e.job_title}</Typography>
                 <Typography variant='subtitle1'>{e.username}</Typography>
-                {/* <Dialog
-                  open={showEdit}
-                >
-
-                  <EditEmployeeDialog showEdit={showEdit} setShowEdit={setShowEdit} employee={e} />
-                </Dialog> */}
               </Container>
               <Typography variant='body2'>{e.about}</Typography>
               <Divider />
             </Container>
-          // </>
         )
       })}
-      
-        {/* <Switch>
-          <Route exact path='/employees' component={Employees} />
-          <Route path='/employees/:id' component={EditEmployeeDialog} />
-        </Switch> */}
-      
     </Container>
   )
 }

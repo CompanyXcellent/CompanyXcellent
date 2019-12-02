@@ -26,7 +26,7 @@ const Profile = (props) => {
   const [update, setUpdate] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState(false);
 
-  // Grabs Employee Info
+  // Grabs Employee Info, and ratings
   useEffect(() => {
     axios.get(`/api/employees/${props.match.params.id}`)
       .then(res => setEmployee(res.data))
@@ -141,7 +141,7 @@ const Profile = (props) => {
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
-      <RatingDialog/>
+      <RatingDialog empId={props.match.params.id}/>
     </Container>
   )
 }

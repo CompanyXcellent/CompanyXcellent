@@ -9,13 +9,14 @@ import Avatar from '@material-ui/core/Avatar';
 import { Typography } from '@material-ui/core';
 
 // import Conversation from './Conversation';
-// import axios from 'axios';
+
 
 const Messages = (props) => {
   console.log(props)
   const classes = useStyles();
   const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
+  const [newMessageInput, setNewMessageInput] = useState('')
 
   useEffect(() => {
     setUser(props.user)

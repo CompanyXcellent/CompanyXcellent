@@ -9,12 +9,10 @@ const nodemailer = require("nodemailer");
 
 const socket = require('socket.io')
 
-const userCtrl = require('./controllers/userController')
-const compCtrl = require('./controllers/compController')
-
 const randomatic = require('randomatic');
 
-
+const userCtrl = require("./controllers/userController");
+const compCtrl = require("./controllers/compController");
 
 const app = express();
 const {
@@ -33,7 +31,7 @@ app.use(express.json());
 
 massive(CONNECTION_STRING).then(db => {
   app.set("db", db);
-  console.log("db connected");
+  console.log('db connected');
 });
 
 app.use(
@@ -48,6 +46,7 @@ app.use(
 );
 
 //---------------company endPoints------------------
+app.post('/api/makePoll', compCtrl.makePoll)
 app.get('/api/employees', compCtrl.getAllEmployees);
 app.get('/api/employees/:userId', compCtrl.getEmployee);
 app.put('/api/employees/:userId', compCtrl.updateEmployeeInfo);
@@ -69,64 +68,89 @@ app.put('/api/profile/:id', userCtrl.updateProfile);
 app.get('/api/getTeam/:id', userCtrl.getTeam)
 
 // Polls
-app.get('/api/getPoll', userCtrl.getPoll);
-
+app.get('/api/getPoll', userCtrl.getPoll)
+app.post('/api/submitPollResponse', userCtrl.submitPollResponse)
+app.get('/api/getEmployeeRatings', userCtrl.getEmployeeRating)
 
 // --------S3---------
-app.get('/api/signs3', userCtrl.storeProfilePic)
-
-
-
+app.get("/api/signs3", userCtrl.storeProfilePic);
 
 //?----- Sockets.io -------
-const http = require('http');
+// const http = require('http');
+// const server = http.createServer(app);
+// const socketCtrl = require('./controllers/socketCtrl')
+// const io = socket(server);
+
+// io.on('connection', (socket) => {
+//   console.log('Socket Connection');
+//   // socket.on('join', async ({ nickname, user_info_id, group_id }) => {
+
+//   //   // socket.broadcast.emit('message', { text: `${nickname} has joined` })
+//   //   // console.log(nickname)
+
+//   // })
+
+//   // socket.on('send message', message => {
+//   //   socket.broadcast.emit('chat-message', message)
+//   //   console.log(message)
+//   // })
+
+//   socket.on('join', async ({chat_room_id, chat_room_name, user_id}, callback) => {
+//     console.log(chat_room_id, chat_room_name, user_id);
+
+//     const room = await chatCtrl.getChatRoom(app, chat_room_id);
+
+//     if(room){
+//       socket.join(room.chat_room_name);
+//       return;
+//     }
+
+//     const newRoom = await chatCtrl.createRoom(app, user_id, otherUser);
+
+//     socket.join(newRoom.chat_room_name);
+//   })
+
+//   socket.on('sendMessage', ({ userId, message }, callback) => {
+//     // sendMessage function that creates the message in the database with the appropriate user id, room id, content, and time stamp. It should return the new message, pass it into the callback function which will append it to the messages array displaying on the front end.
+
+//     io.to(roomId).emit('newMessage', { stuff });
+
+//     callback();
+//   });
+
+const http = require("http");
 const server = http.createServer(app);
-const socketCtrl = require('./controllers/socketCtrl')
 const io = socket(server);
 
-io.on('connection', (socket) => {
-  console.log('Socket Connection');
-  // socket.on('join', async ({ nickname, user_info_id, group_id }) => {
+app.get("/api/getRoomName/:socket_room_id");
 
-  //   // socket.broadcast.emit('message', { text: `${nickname} has joined` })
-  //   // console.log(nickname)
-
-  // })
-
-  // socket.on('send message', message => {
-  //   socket.broadcast.emit('chat-message', message)
-  //   console.log(message)
-  // })
-
-  socket.on('join', async ({chat_room_id, chat_room_name, user_id}, callback) => {
-    console.log(chat_room_id, chat_room_name, user_id);
-
-    const room = await chatCtrl.getChatRoom(app, chat_room_id);
-
-    if(room){
-      socket.join(room.chat_room_name);
-      return;
-    }
-
-    const newRoom = await chatCtrl.createRoom(app, user_id, otherUser);
-
-    socket.join(newRoom.chat_room_name);
-  })
-
-  socket.on('sendMessage', ({ userId, message }, callback) => {
-    // sendMessage function that creates the message in the database with the appropriate user id, room id, content, and time stamp. It should return the new message, pass it into the callback function which will append it to the messages array displaying on the front end.
-
-    io.to(roomId).emit('newMessage', { stuff });
-
-    callback();
+io.on("connection", socket => {
+  console.log("CONNECTED TO SOCKET");
+  socket.on("enter room", async data => {
+    let { selectedRoom, roomName } = data;
+    const db = app.get("db");
+    console.log("Now Joined to ", selectedRoom);
+    const [existingRoom] = await db.get_rooms(selectedRoom); //build this sql
+    if (!existingRoom) await db.create_room(roomName, selectedRoom); //build this sql
+    let messages = await db.get_messages(selectedRoom); //build this sql
+    socket.join(selectedRoom);
+    io.in(selectedRoom).emit("room entered", messages);
   });
-
+  //?send messages
+  socket.on("send message", async data => {
+    const { selectedRoom, message, sender } = data;
+    const db = app.get("db");
+    await db.send_message(+selectedRoom, message, +sender); //!build this sql
+    let messages = await db.get_messages(selectedRoom); //build this sql
+    if (messages.length <= 1)
+      io.to(selectedRoom).emit("room entered", messages);
+    io.to(data.selectedRoom).emit("message sent", messages);
+  });
+  //disconnected
   socket.on('disconnect', () => {
-
-
+    console.log('Disconnected from room')
   })
-})
-
+});
 
 //?----- Auth0 ------------
 app.use(passport.initialize());
@@ -140,12 +164,11 @@ passport.use(
       clientSecret: CLIENT_SECRET,
       callbackURL: "/api/auth"
     },
+
     function (accessToken, refreshToken, extraParams, profile, done) {
       // const db = req.app.get('db');
       let { id } = profile;
       // let { value } = profile.emails[0];
-
-      console.log(profile)
 
       app.get('db').get_user([id])
         .then(response => {
@@ -159,10 +182,10 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user);
 });
-passport.deserializeUser(function (obj, done) {
+passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
@@ -201,7 +224,7 @@ const auth0ManagementClient = new ManagementClient({
   domain: `${AUTH0_DOMAIN}`,
   clientId: CLIENT_ID_TWO,
   clientSecret: CLIENT_SECRET_TWO,
-  scope: 'read:users update:users'
+  scope: "read:users update:users"
 });
 
 app.post('/api/register', async (req, res) => {
@@ -285,69 +308,7 @@ app.post('/api/register', async (req, res) => {
       }
     }
   }))
-
-  // Checks auth0's database for duplicate users using the email and auth0id, but we shouldn't need these lines of code because above we are checking our database that should always reflect the same thing.
-  
-  // auth0ManagementClient.getUsersByEmail(email, (err ,users) => {
-  //   // console.log(users.length)
-  //   if(users !== undefined && users.length >= 1 ){
-  //     return res.status(409).send('Email already in use.')
-  //   } else {
-  //     auth0ManagementClient.getUser({id: `auth0|${userId}`}, (err, user) => {
-  //       if(err){
-  //         console.log(err)
-  //         return
-  //       }
-
-  //       if(user){
-  //         return res.status(409).send('User Id already in use.')
-  //       }
-
-  //       auth0ManagementClient.createUser({
-  //         user_id: userId,
-  //         password: password,
-  //         given_name: firstName,
-  //         family_name: lastName,
-  //         name: `${firstName} ${lastName}`,
-  //       }, (err => {
-  //         if(!err){
-  //           const transporter = nodemailer.createTransport({
-  //             service: 'gmail',
-  //             auth: {
-  //                    user: 'companyxcellent@gmail.com',
-  //                    pass: 'da2340kkj'
-  //                }
-  //            });
-          
-  //            const mailOptions = {
-  //             from: 'companyxcellent@gmail.com', // sender address
-  //             to: 'john.redd702@gmail.com', // list of receivers
-  //             subject: 'Subject of your email', // Subject line
-  //             text: 'Hi'// plain text body
-  //           };
-          
-  //           transporter.sendMail(mailOptions, function (err, info) {
-  //             if(err)
-  //               console.log(err)
-  //             else
-  //               console.log(info);
-  //          });
-
-  //           // db.
-
-  //           auth0.getUser({id: `auth0|${userId}`}, (err, user) => {
-  //             if(err){
-  //               return res.send(err)
-  //             }
-
-  //             res.status(200).send(user);
-  //           })
-  //         }
-  //       }))
-  //     })
-  //   }
-  // })
 })
-//?---- End Auth0 ------
+//?---- End Auth0 -----
 
 server.listen(SERVER_PORT, () => console.log(`Server has started on port ${SERVER_PORT}`));

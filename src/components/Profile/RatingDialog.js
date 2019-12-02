@@ -54,7 +54,7 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-export default function RatingDialog() {
+function RatingDialog(props) {
   const [open, setOpen] = React.useState(false);
   //rating
   const[poll, setPoll] = React.useState([])
@@ -95,21 +95,37 @@ export default function RatingDialog() {
     {num:15, func:setQuestion15, out:question15},
     
   ]
-
-  const findWhichFunctionToCall = (int, newValue) => {
-    for(let i=0; i < stateFunctions.length; i++){
-      if(stateFunctions[i].num == int){
-        stateFunctions[i].func(newValue)
-      }
-    }
-  }
   
   useEffect(() => {
     axios.get('/api/getPoll').then(res => setPoll(res.data))
   }, [])
 
-  const handleSubmitPoll = () => {
-    //axios call here to send the results to the back end---------------before you do this you need to develop the profile component so that you have access to the your own user_id as well as the user_id of the person that you are rating..
+  const handleSubmitPoll = async () => {
+    let questionsArr = [
+      question0,
+      question1,
+      question2,
+      question3,
+      question4,
+      question5,
+      question6,
+      question7,
+      question8,
+      question9,
+      question10,
+      question11,
+      question12,
+      question13,
+      question14,
+      question15,
+    ]
+    await questionsArr.map((e, i) => {      
+      if(e !== 0){
+        axios.post('/api/submitPollResponse', {questionId: i, value: e, responderId: 2, receiverId: props.empId})
+      }
+    })
+    // you need to change the responder id to be the if value of the person who is logged in. you chould be able to access it through redux once the auth 0 is working
+
     handleClose()
     setQuestion0(0)
     setQuestion1(0)
@@ -165,7 +181,7 @@ export default function RatingDialog() {
   IconContainer.propTypes = {
     value: PropTypes.number.isRequired,
   };
-  console.log(question0, question1, question2, question3)
+  console.log('empId', props.empId)
   return (
     <div>
       <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
@@ -179,6 +195,7 @@ export default function RatingDialog() {
           
             {/* rating */}
             {poll.map((e, i) => {
+              if(e.question !== ''){
                 let id = i
                     return (
                         <div key={`question: ${id}`}>  
@@ -190,13 +207,14 @@ export default function RatingDialog() {
                                 precision={.5}
                                 IconContainerComponent={IconContainer}
                                 onChange={(event, newValue) => {
-                                    findWhichFunctionToCall(id, newValue)
+                                    stateFunctions[id].func(newValue)
+                                    console.log('question index', i)
                                 }}
                                 />
                             </Box>
                         </div>
                     );
-            })}
+            }})}
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleSubmitPoll} color="primary">
@@ -207,3 +225,5 @@ export default function RatingDialog() {
     </div>
   );
 }
+
+export default RatingDialog

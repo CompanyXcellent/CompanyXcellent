@@ -49,18 +49,17 @@ create table user_subscription(
 
 create table response(
     response_id serial primary key,
-    question_id integer references poll(question_id),
+    question_id integer,
     value integer,
-    responder_id integer references users(user_id),
-    respondee_id integer references users(user_id)
+    responder_id integer,
+    respondee_id integer
 );
 
-
--- create table room(
---     room_id serial primary key,
---     user_1 integer references user_info(user_info_id),
---     user_2 integer references user_info(user_info_id)
--- );
+create table room(
+    room_id serial primary key,
+    name varchar(20),
+    room_name varchar(100)
+);
 
 create table posts(
     post_id serial primary key,
