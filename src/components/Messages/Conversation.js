@@ -1,44 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client'
-import { makeStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux'
-import { getUser } from '../../redux/reducers/userReducer'
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
+import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import { getUser } from "../../redux/reducers/userReducer";
 
-import Container from '@material-ui/core/Container';
+import Container from "@material-ui/core/Container";
 
-let socket
+let socket;
 
-const test = { user_info_id: 2, user_id: 1, first_name: 'test', last_name: 'test', nickname: 'test', profile_img: 'test', about: 'blah blah', group_id: 3 }
-
-
-const Conversation = () => { //params will be user stuff
+const Conversation = (props) => {
   const classes = useStyles();
+  const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
   const [room, setRoom] = useState(0)
+  console.log(user)
+  console.log(props)
+  console.log(messages)
+  console.log(room)
 
 
   useEffect(() => {
-    const { nickname, user_info_id, group_id } = test
+
     socket = io()
-    socket.emit('enter', { nickname, user_info_id, group_id }, () => { })
+    socket.emit('enter', props.userReducer.user.user_id, () => {
+    })
+    socket.on('joined', (messages, roomId) => {
+      setMessages(messages)
+      setRoom(roomId)
+    }, [])
+
     return () => {
       socket.emit('disconnect')
       socket.off()
     }
-  })
-  useEffect(() => {
-    socket.on('message', (message) => {
-      setMessage([...messages, message])
-    })
-  }, [messages])
+  }, [])
+  // useEffect(() => {
+  //   socket.on('message', (message) => {
+  //     console.log(message)
+  //     setMessage([...messages, message])
+  //   }, [messages])
+  // })
   const sendMessage = (e) => {
     e.preventDefault()
-
-    socket.emit('send message', message, () => {
-      setMessage('')
-
-    })
+    const newMessage = ''
+    if (message) {
+      socket.emit('send message', message, room, props.userReducer.user.user_id, () => setMessage(''))
+    }
   }
 
   return (
@@ -49,30 +57,33 @@ const Conversation = () => { //params will be user stuff
         </div>
         <div>
           {/* messages */}
+          {messages.map((el, i) => (
+            <div>{el.message}</div>
+          ))}
         </div>
         <form>
           {/* input */}
           <input
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null} />
-          <button type='submit' onClick={(e) => sendMessage(e)}>Send</button>
+            onChange={e => setMessage(e.target.value)}
+            onKeyPress={e => (e.key === "Enter" ? sendMessage(e) : null)}
+          />
+          <button type="submit" onClick={e => sendMessage(e)}>
+            Send
+          </button>
         </form>
       </div>
     </Container>
-  )
-}
+  );
+};
 
-const mapStateToProps = (rootReducer) => {
-
+const mapStateToProps = rootReducer => {
   return {
     userReducer: rootReducer.userReducer
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, { getUser })(Conversation);
 
 const useStyles = makeStyles({
-  mainContainer: {
-
-  }
-})
+  mainContainer: {}
+});

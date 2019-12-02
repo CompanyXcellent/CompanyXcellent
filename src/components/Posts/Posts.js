@@ -19,10 +19,12 @@ const Posts = (props) => {
 
 
   const getMyPosts = async () => {
+    console.log(props.userReducer.user)
     if(props.userReducer.user.user_id){
       await axios.get(`/api/getMySubscribedPosts/${props.userReducer.user.user_id}`)
       .then(res => {
         setPosts(res.data)
+        console.log(res.data)
       })
     }     
   }
