@@ -7,12 +7,10 @@ const Auth0Strategy = require("passport-auth0");
 const auth0 = require("auth0");
 const nodemailer = require("nodemailer");
 
-const socket = require('socket.io')
+const socket = require("socket.io");
 
-const userCtrl = require('./controllers/userController')
-const compCtrl = require('./controllers/compController')
-
-
+const userCtrl = require("./controllers/userController");
+const compCtrl = require("./controllers/compController");
 
 const app = express();
 const {
@@ -30,7 +28,12 @@ app.use(express.json());
 
 massive(CONNECTION_STRING).then(db => {
   app.set("db", db);
-  console.log("db connected");
+  const io = socket(
+    app.listen(SERVER_PORT, () => {
+      console.log(`server listening on ${SERVER_PORT}`);
+      console.log("db connected");
+    })
+  );
 });
 
 app.use(
@@ -45,44 +48,48 @@ app.use(
 );
 
 //---------------company endPoints------------------
-app.get('/api/allEmployees', compCtrl.getAllEmployees)
+app.get("/api/allEmployees", compCtrl.getAllEmployees);
 
 //------------user endpoints-------------------------
-app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts)
-
+app.get("/api/getMySubscribedPosts/:id", userCtrl.getMySubscribedPosts);
 
 // --------S3---------
-app.get('/api/signs3', userCtrl.storeProfilePic)
-
-
-
+app.get("/api/signs3", userCtrl.storeProfilePic);
 
 //?----- Sockets.io -------
-const socketCtrl = require('./controllers/socketCtrl')
-const io = socket(
-  app.listen(SERVER_PORT, () => console.log(`Server running on port ${SERVER_PORT}.`))
-);
+const http = require("http");
+const server = http.createServer(app);
+const io = socket(server);
 
-io.on('connection', (socket) => {
-  console.log('Socket Connection')
-  socket.on('enter', async ({ nickname, user_info_id, group_id }) => {
+app.get("/api/getRoomName/:socket_room_id");
 
-    socket.broadcast.emit('message', { text: `${nickname} has joined` })
-    console.log(nickname)
-
-  })
-
-  // socket.on('send message', message => {
-  //   socket.broadcast.emit('chat-message', message)
-  //   console.log(message)
-  // })
-
+io.on("connection", socket => {
+  console.log("CONNECTED TO SOCKET");
+  socket.on("enter room", async data => {
+    let { selectedRoom, roomName } = data;
+    const db = app.get("db");
+    console.log("Now Joined to ", selectedRoom);
+    const [existingRoom] = await db.get_rooms(selectedRoom); //build this sql
+    if (!existingRoom) await db.create_room(roomName, selectedRoom); //build this sql
+    let messages = await db.get_messages(selectedRoom); //build this sql
+    socket.join(selectedRoom);
+    io.in(selectedRoom).emit("room entered", messages);
+  });
+  //?send messages
+  socket.on("send message", async data => {
+    const { selectedRoom, message, sender } = data;
+    const db = app.get("db");
+    await db.send_message(+selectedRoom, message, +sender); //!build this sql
+    let messages = await db.get_messages(selectedRoom); //build this sql
+    if (messages.length <= 1)
+      io.to(selectedRoom).emit("room entered", messages);
+    io.to(data.selectedRoom).emit("message sent", messages);
+  });
+  //disconnected
   socket.on('disconnect', () => {
-
-
+    console.log('Disconnected from room')
   })
-})
-
+});
 
 //?----- Auth0 ------------
 app.use(passport.initialize());
@@ -96,10 +103,10 @@ passport.use(
       clientSecret: CLIENT_SECRET,
       callbackURL: "/api/auth"
     },
-    function (accessToken, refreshToken, extraParams, profile, done) {
+    function(accessToken, refreshToken, extraParams, profile, done) {
       let { id } = profile;
       let { value } = profile.emails[0];
-      console.log(id)
+      console.log(id);
       app
         .get("db")
         .get_user([id])
@@ -122,10 +129,10 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user);
 });
-passport.deserializeUser(function (obj, done) {
+passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
@@ -165,77 +172,73 @@ const auth0ManagementClient = new ManagementClient({
   domain: `${AUTH0_DOMAIN}`,
   clientId: CLIENT_ID_TWO,
   clientSecret: CLIENT_SECRET_TWO,
-  scope: 'read:users update:users'
+  scope: "read:users update:users"
 });
 
-app.post('/api/register', (req, res) => {
-  const db = req.app.get('db');
-  const {
-    userId, 
-    firstName, 
-    lastName, 
-    email, 
-    password } = req.body;
+app.post("/api/register", (req, res) => {
+  const db = req.app.get("db");
+  const { userId, firstName, lastName, email, password } = req.body;
   // console.log(req.body)
   // console.log(req.body.user_id)
-  auth0ManagementClient.getUsersByEmail(email, (err ,users) => {
+  auth0ManagementClient.getUsersByEmail(email, (err, users) => {
     // console.log(users.length)
-    if(users !== undefined && users.length >= 1 ){
-      return res.status(409).send('Email already in use.')
+    if (users !== undefined && users.length >= 1) {
+      return res.status(409).send("Email already in use.");
     } else {
-      auth0ManagementClient.getUser({id: `auth0|${userId}`}, (err, user) => {
-        if(err){
-          console.log(err)
-          return
+      auth0ManagementClient.getUser({ id: `auth0|${userId}` }, (err, user) => {
+        if (err) {
+          console.log(err);
+          return;
         }
 
-        if(user){
-          return res.status(409).send('User Id already in use.')
+        if (user) {
+          return res.status(409).send("User Id already in use.");
         }
 
-        auth0ManagementClient.createUser({
-          user_id: userId,
-          password: password,
-          given_name: firstName,
-          family_name: lastName,
-          name: `${firstName} ${lastName}`,
-        }, (err => {
-          if(!err){
-            const transporter = nodemailer.createTransport({
-              service: 'gmail',
-              auth: {
-                     user: 'companyxcellent@gmail.com',
-                     pass: 'da2340kkj'
-                 }
-             });
-          
-             const mailOptions = {
-              from: 'companyxcellent@gmail.com', // sender address
-              to: 'john.redd702@gmail.com', // list of receivers
-              subject: 'Subject of your email', // Subject line
-              text: 'Hi'// plain text body
-            };
-          
-            transporter.sendMail(mailOptions, function (err, info) {
-              if(err)
-                console.log(err)
-              else
-                console.log(info);
-           });
+        auth0ManagementClient.createUser(
+          {
+            user_id: userId,
+            password: password,
+            given_name: firstName,
+            family_name: lastName,
+            name: `${firstName} ${lastName}`
+          },
+          err => {
+            if (!err) {
+              const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                  user: "companyxcellent@gmail.com",
+                  pass: "da2340kkj"
+                }
+              });
 
-            // db.
+              const mailOptions = {
+                from: "companyxcellent@gmail.com", // sender address
+                to: "john.redd702@gmail.com", // list of receivers
+                subject: "Subject of your email", // Subject line
+                text: "Hi" // plain text body
+              };
 
-            auth0.getUser({id: `auth0|${userId}`}, (err, user) => {
-              if(err){
-                return res.send(err)
-              }
+              transporter.sendMail(mailOptions, function(err, info) {
+                if (err) console.log(err);
+                else console.log(info);
+              });
 
-              res.status(200).send(user);
-            })
+              // db.
+
+              auth0.getUser({ id: `auth0|${userId}` }, (err, user) => {
+                if (err) {
+                  return res.send(err);
+                }
+
+                res.status(200).send(user);
+              });
+            }
           }
-        }))
-      })
+        );
+      });
     }
-  })
-})
+  });
+});
 //?---- End Auth0 ------
