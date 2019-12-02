@@ -28,9 +28,6 @@ const Profile = (props) => {
     axios.get(`/api/employees/${props.match.params.id}`)
       .then(res => setEmployee(res.data))
       .catch(err => console.log(err))
-    // axios.get(`/api/getEmployeeRatings/${props.match.params.id}`)
-    //   .then(res => console.log('ratings', res.data))
-    //this second part is so that the ratings show up at the begining
   }, [])
 
   const handleClick = (e) => {
@@ -45,9 +42,16 @@ const Profile = (props) => {
     }
   }
 
-  const handleAdminUpdate = (e) => {
+  // const handleAdminUpdate = (e) => {
+//dont know what it does or who made it.
+  // }
 
+
+  const testAxiosGetRatings = () => {
+    axios.get(`/api/getEmployeeRatings/${props.match.params.id}`)
+    .then(res => console.log('ratings', res.data))
   }
+
   console.log('props', props.match.params.id)
   return (
     <Container className={classes.mainContainer}>

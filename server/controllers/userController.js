@@ -93,5 +93,5 @@ module.exports={
         const db = req.app.get('db')
         db.get_employee_ratings(id)
         res.sendStatus(200)
-    }
+     }
 }
