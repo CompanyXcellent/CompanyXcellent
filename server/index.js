@@ -45,6 +45,7 @@ app.get('/api/allEmployees', compCtrl.getAllEmployees)
 
 //------------user endpoints-------------------------
 app.get('/api/getMySubscribedPosts/:id', userCtrl.getMySubscribedPosts)
+app.get('/api/getUserInfo/:id', userCtrl.getUserInfo)
 
 
 // --------S3---------
@@ -61,22 +62,29 @@ const io = socket(
 
 io.on('connection', (socket) => {
   console.log('Socket Connection')
-  socket.on('enter', async ({ nickname, user_info_id, group_id }) => {
-
-    socket.broadcast.emit('message', { text: `${nickname} has joined` })
-    console.log(nickname)
-
+  socket.on('enter', async user => {
+    console.log(user)
+    const db = app.get('db')
+    // send user id and get chat room id from chat_room_participants
+    const [room] = await db.get_room(user)
+    console.log(room)
+    // send chat room id to get all messages then emit 'joined'
+    const messages = await db.get_messages(room.chat_room_id)
+    console.log(messages)
+    socket.emit('joined', messages, room.chat_room_id)
+  })
+  socket.on('send message', async (message, roomId, userId) => {
+    console.log(message, roomId, userId)
+    const db = app.get('db')
+    // const sentMessage = await send_message(message)
   })
 
-  // socket.on('send message', message => {
-  //   socket.broadcast.emit('chat-message', message)
-  //   console.log(message)
-  // })
 
   socket.on('disconnect', () => {
 
 
   })
+
 })
 
 

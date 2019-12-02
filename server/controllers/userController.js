@@ -1,7 +1,7 @@
 const aws = require('aws-sdk')
-const{S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY} = process.env
+const { S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env
 
-module.exports={
+module.exports = {
     storeProfilePic: (req, res) => {
         // console.log('hit backend')
         aws.config = {
@@ -9,7 +9,7 @@ module.exports={
             accessKeyId: AWS_ACCESS_KEY_ID,
             secretAccessKey: AWS_SECRET_ACCESS_KEY
         }
-        const s3 = new aws.S3({signatureVersion: 'v4'})
+        const s3 = new aws.S3({ signatureVersion: 'v4' })
         const fileName = req.query['file-name']
         const fileType = req.query['file-type']
         const s3Params = {
@@ -21,7 +21,7 @@ module.exports={
         }
         s3.getSignedUrl('putObject', s3Params, (err, data) => {
             // console.log('hit get signedurl', err, data)
-            if(err){
+            if (err) {
                 console.log(err)
                 return res.end()
             }
@@ -37,10 +37,16 @@ module.exports={
     getMySubscribedPosts: async (req, res) => {
         console.log('hti get posts')
         const db = req.app.get('db')
-        const {userId} = req.params
+        const { userId } = req.params
         console.log(userId)
         const mySubscribedPosts = await db.get_user_subscribed_posts(userId)
 
         res.status(200).send(mySubscribedPosts)
+    },
+    getUserInfo: async (req, res) => {
+        const db = req.app.get('db')
+        const { id } = req.params
+        const userInfo = await db.get_user_info(id)
+        res.status(200).send(userInfo)
     }
 }

@@ -3,41 +3,50 @@ import io from 'socket.io-client'
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux'
 import { getUser } from '../../redux/userReducer'
-
+// import axios from 'axios'
 import Container from '@material-ui/core/Container';
 
 let socket
 
-const test = { user_info_id: 2, user_id: 1, first_name: 'test', last_name: 'test', nickname: 'test', profile_img: 'test', about: 'blah blah', group_id: 3 }
-
-
-const Conversation = () => { //params will be user stuff
+const Conversation = (props) => {
   const classes = useStyles();
+  const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
+  const [room, setRoom] = useState(0)
+  console.log(user)
+  console.log(props)
+  console.log(messages)
+  console.log(room)
 
 
   useEffect(() => {
-    const { nickname, user_info_id, group_id } = test
+
     socket = io()
-    socket.emit('enter', { nickname, user_info_id, group_id }, () => { })
+    socket.emit('enter', props.userReducer.user.user_id, () => {
+    })
+    socket.on('joined', (messages, roomId) => {
+      setMessages(messages)
+      setRoom(roomId)
+    }, [])
+
     return () => {
       socket.emit('disconnect')
       socket.off()
     }
-  })
-  useEffect(() => {
-    socket.on('message', (message) => {
-      setMessage([...messages, message])
-    })
-  }, [messages])
+  }, [])
+  // useEffect(() => {
+  //   socket.on('message', (message) => {
+  //     console.log(message)
+  //     setMessage([...messages, message])
+  //   }, [messages])
+  // })
   const sendMessage = (e) => {
     e.preventDefault()
-
-    socket.emit('send message', message, () => {
-      setMessage('')
-
-    })
+    const newMessage = ''
+    if (message) {
+      socket.emit('send message', message, room, props.userReducer.user.user_id, () => setMessage(''))
+    }
   }
 
   return (
@@ -48,6 +57,9 @@ const Conversation = () => { //params will be user stuff
         </div>
         <div>
           {/* messages */}
+          {messages.map((el, i) => (
+            <div>{el.message}</div>
+          ))}
         </div>
         <form>
           {/* input */}
@@ -60,6 +72,9 @@ const Conversation = () => { //params will be user stuff
     </Container>
   )
 }
+
+
+
 
 const mapStateToProps = (rootReducer) => {
 

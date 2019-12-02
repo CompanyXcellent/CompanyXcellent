@@ -37,7 +37,7 @@ create table messages(
     post_time timestamp,
     content varchar(1000),
     user_id integer references users(user_id),
-    room_id integer
+    room_id integer references rooms(room_id)
 );
 
 create table user_subscription(
@@ -54,12 +54,6 @@ create table response(
     respondee_id integer references users(user_id)
 );
 
-
-create table room(
-    room_id serial primary key,
-    user_1 integer references user_info(user_info_id),
-    user_2 integer references user_info(user_info_id)
-);
 
 create table posts(
     post_id serial primary key,
