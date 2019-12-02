@@ -6,15 +6,26 @@ import { connect } from 'react-redux'
 import Container from '@material-ui/core/Container';
 import { RootRef } from '@material-ui/core';
 import axios from 'axios'
+import Button from '@material-ui/core/Button'
 
 const Posts = (props) => {
   const classes = useStyles();
+  const [posts, setPosts] = useState([])
+  const [reRender, setReRender] = useState(false)
+
+  const checkRerender = () => {
+    if(reRender === false){
+      setReRender(true)
+    }
+    setReRender(false)
+    console.log('rerendered')
+  }
+
   useEffect(() => {
     props.getUser()
     getMyPosts()
   }, [props.userReducer.user.user_id])
 
-  const [posts, setPosts] = useState([])
 
   const getMyPosts = async () => {
     if(props.userReducer.user.user_id){
@@ -41,9 +52,9 @@ const Posts = (props) => {
               <h3>{e.username}</h3>
               <p>{e.content}</p>
               {e.user_id === props.userReducer.user.user_id ?
-                <button
+                <Button
                   onClick={() => deletePost(e.post_id)}
-                >delete</button> :
+                >delete</Button> :
                 null
               }              
             </div>
