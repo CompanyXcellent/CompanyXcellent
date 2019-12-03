@@ -14,8 +14,6 @@ import Typography from '@material-ui/core/Typography';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
-import "./navBar.css";
-
 import { getUser, logout, getUserInfo, getUserSubscriptions } from "../../redux/reducers/userReducer";
 import theme from "../../theme/theme";
 
@@ -23,10 +21,10 @@ function TemporaryDrawer(props) {
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   //?to make useEffect not re-render try setting loggedIn to true and on the logout set to false
-  
+
   let prevScrollpos = window.pageYOffset;
   window.onscroll = function () {
-    if(window.screen.availWidth > 1280){
+    if (window.screen.availWidth > 1280) {
       let currentScrollPos = window.pageYOffset;
       if (prevScrollpos > currentScrollPos) {
         document.getElementById("navbar").style.top = "0";
@@ -53,7 +51,7 @@ function TemporaryDrawer(props) {
   }, []);
 
   useEffect(() => {
-    if(props.userReducer.user.user_id){
+    if (props.userReducer.user.user_id) {
       props.getUserInfo(props.userReducer.user.user_id);
       props.getUserSubscriptions(props.userReducer.user.user_id);
     }
@@ -72,7 +70,7 @@ function TemporaryDrawer(props) {
     setShowMenu(prevState => !prevState);
   };
 
-  //code for the slideout navBar, that when it is toggeled to be "open" is displayed
+  console.log(props.userReducer.user.role_id);
   const sideList = side => (
     <div
       className={classes.list}
@@ -85,17 +83,23 @@ function TemporaryDrawer(props) {
           <Avatar className={classes.avatar} src={props.userReducer.userInfo.profile_img} />
           <Typography variant='h6'>{props.userReducer.userInfo.first_name} {props.userReducer.userInfo.last_name}</Typography>
         </Container>
-        {[['Posts', '/posts'], ['Employees', '/employees'], ['Messages', '/messages'], ['Create Poll', '/createPoll'], ['Team', '/team']].map((text, index) => (
-          <Link to={text[1]} key={text[0]} className={classes.link}>
-            <ListItem button key={text[0]}>
-              <ListItemText primary={text[0]} />
-            </ListItem>
-          </Link>
-        ))}
+        {[['Posts', '/posts', 2], ['Employees', '/employees', 2], ['Messages', '/messages', 2], ['Create Poll', '/createPoll', 1], ['Team', '/team', 2]].map((text, index) => (props.userReducer.user.role_id !== 1 && text[2] === 1) ?
+          (
+            null
+          )
+          :
+          (
+            <Link to={text[1]} key={text[0]} className={classes.link}>
+              <ListItem button key={text[0]}>
+                <ListItemText primary={text[0]} />
+              </ListItem>
+            </Link>
+          )
+        )}
       </List>
       <Divider />
       <List>
-      {[['Profile', `/profile/${props.userReducer.user.user_id}`]].map((text, index) => (
+        {[['Profile', `/profile/${props.userReducer.user.user_id}`]].map((text, index) => (
           <Link to={text[1]} key={text[0]} className={classes.link}>
             <ListItem button key={text[0]}>
               <ListItemText primary={text[0]} />
@@ -110,11 +114,11 @@ function TemporaryDrawer(props) {
   );
 
   return (
-    <Container 
-      component='nav' 
-      id='navbar' 
+    <Container
+      component='nav'
+      id='navbar'
       className={classes.mainContainer}
-      maxWidth='none' >
+      maxWidth={false} >
       <Typography variant='h4'>CompanyXcellent</Typography>
 
       {/* Mobile Nav */}
@@ -133,31 +137,37 @@ function TemporaryDrawer(props) {
       <List className={classes.desktopNavContainer}>
         {/* <List> */}
 
-      {[['Posts', '/posts'], ['Employees', '/employees'], ['Messages', '/messages'], ['Create Poll', '/createPoll'], ['Team', '/team']].map((text, index) => (
-        <Link to={text[1]} key={text[0]} className={classes.link}>
+        {[['Posts', '/posts', 2], ['Messages', '/messages', 2], ['Team', '/team', 2], ['Employees', '/employees', 2], ['Create Poll', '/createPoll', 1]].map((text, index) => (props.userReducer.user.role_id !== 1 && text[2] === 1) ?
+          (
+            null
+          )
+          :
+          (
+            <Link to={text[1]} key={text[0]} className={classes.link}>
+              <ListItem button key={text[0]}>
+                <ListItemText primary={text[0]} />
+              </ListItem>
+            </Link>
+          )
+        )}
+
+        {/* <Divider orientation='vertical' fullWidth /> */}
+
+        {[['Profile', `/profile/${props.userReducer.user.user_id}`]].map((text, index) => (
+          <Link to={text[1]} key={text[0]} className={classes.link}>
             <ListItem button key={text[0]}>
               <ListItemText primary={text[0]} />
             </ListItem>
           </Link>
         ))}
-
-      <Divider orientation='vertical' fullWidth />
-
-      {[['Profile', `/profile/${props.userReducer.user.user_id}`]].map((text, index) => (
-        <Link to={text[1]} key={text[0]} className={classes.link}>
-            <ListItem button key={text[0]}>
-              <ListItemText primary={text[0]} />
-            </ListItem>
-          </Link>
-        ))}
-        <ListItem 
-          className={classes.logoutButton} 
-          button 
+        <ListItem
+          className={classes.logoutButton}
+          button
           variant='contained'
           onClick={logout} >
           <ListItemText primary='Logout' />
         </ListItem>
-          {/* </List> */}
+        {/* </List> */}
       </List>
     </Container>
   );
@@ -172,7 +182,8 @@ const mapStateToProps = rootReducer => {
 const mapDispatchToProps = {
   getUser,
   getUserInfo,
-  getUserSubscriptions
+  getUserSubscriptions,
+  logout
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TemporaryDrawer);
@@ -193,7 +204,7 @@ const useStyles = makeStyles({
     zIndex: 3,
 
     [theme.breakpoints.up('lg')]: {
-      
+
     }
   },
   menuIcon: {

@@ -47,6 +47,7 @@ const AddConversation = (props) => {
       {/* <Typography variant='h2' className={classes.title}>Employees</Typography> */}
       <TextField
         name='filter'
+        label='Filter'
         variant='outlined'
         value={filter}
         className={classes.filter}
@@ -71,7 +72,6 @@ const AddConversation = (props) => {
                     </Container>
                   </Container>
                 </Container>
-                {/* <Divider /> */}
               </Container>
 
             </Link>

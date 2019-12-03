@@ -130,7 +130,7 @@ const CreateEmployee = (props) => {
         onChange={(e) => setGroupId(e.target.value)}
       >
         <MenuItem value={8}>Accounting</MenuItem>
-        <MenuItem value={6}>Marketiing</MenuItem>
+        <MenuItem value={7}>Marketing</MenuItem>
         <MenuItem value={4}>Dev Team</MenuItem>
         <MenuItem value={6}>Sales</MenuItem>
       </TextField>
