@@ -10,7 +10,7 @@ import { Typography } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/AddBox';
 
-import Conversation from './Conversation';
+// import Conversation from './Conversation';
 
 
 const Messages = props => {
