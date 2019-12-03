@@ -1,5 +1,7 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -9,7 +11,8 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import axios from 'axios'
+import TextField from '@material-ui/core/TextField';
+import Container from '@material-ui/core/Container';
 
 const styles = theme => ({
   root: {
@@ -54,18 +57,21 @@ const DialogActions = withStyles(theme => ({
 
 
 function CustomizedDialogs(props) {
+  const classes = useStyles();
+
   const [open, setOpen] = React.useState(false);
-  const [aboutMe, setAboutMe] = React.useState('')
+  const [postContent, setPostContent] = React.useState('')
 
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+    setPostContent('');
   };
 
   const makeNewPost = () => {
-    axios.post('/api/makePost', {content: aboutMe, id: props.props.userReducer.user.user_id})
+    axios.post('/api/makePost', {content: postContent, id: props.props.userReducer.user.user_id})
     
   }
 
@@ -75,24 +81,35 @@ function CustomizedDialogs(props) {
     props.getMyPosts()
   }
   return (
-    <div>
-      <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
+    <Container className={classes.mainContainer}>
+      <Button 
+        variant="contained" 
+        color="secondary"
+        className={classes.addPostButton} 
+        onClick={handleClickOpen}>
         Make Post
       </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      <Dialog 
+        onClose={handleClose} 
+        aria-labelledby="customized-dialog-title" 
+        open={open} 
+        className={classes.mainContainer}
+        // maxWidth='lg'
+        fullWidth >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           What do you want to say?
         </DialogTitle>
         <DialogContent dividers>
-          <Avatar alt="Remy Sharp" src=""/>
-          <br/>
-          {/* <h3>Title</h3>
-          <input
-            placeholder='Title'
-          /> */}
-          {/* right here some extra functionality, making it so that the posts can have a title as well. it will require minor changes to posts in the data base, as well as some of the display and code on the backend and the Posts component */}
-          <h3>Content</h3>
-          <textarea onChange={(e) => setAboutMe(e.target.value)} placeholder='Content' rows="4" cols="50" id='about-me-input'/>
+          <TextField 
+            name='post'
+            label='Post'
+            variant='outlined'
+            fullWidth
+            multiline
+            rows='4'
+            rowsMax='4'
+            value={postContent}
+            onChange={e => setPostContent(e.target.value)} />
 
         </DialogContent>
         <DialogActions>
@@ -101,9 +118,20 @@ function CustomizedDialogs(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Container>
   );
 }
 
 
-export default CustomizedDialogs
+export default CustomizedDialogs;
+
+const useStyles = makeStyles({
+  mainContainer: {
+    width: '100%'
+  },
+  addPostButton: {
+    position: 'fixed',
+    bottom: 16,
+    right: 16
+  }
+})
