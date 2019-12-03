@@ -80,14 +80,15 @@ module.exports = {
         let poll = await db.get_poll()
         res.status(200).send(poll)
     },
-    subscribe: (req, res) => {
+    subscribe: async (req, res) => {
         const db = req.app.get('db');
         const { id } = req.params;
         const { subId } = req.body;
 
-        db.subscribe(id, subId);
+        let newSubscription = await db.subscribe(id, subId);
+        newSubscription = newSubscription[0];
 
-        res.sendStatus(200);
+        res.status(200).send(newSubscription);
     },
     getSubscriptions: async (req, res) => {
         const db = req.app.get('db');
@@ -97,11 +98,12 @@ module.exports = {
 
         res.status(200).send(subscriptions);
     },
-    unsubscribe: (req, res) => {
+    unsubscribe: async (req, res) => {
         const db = req.app.get('db');
         const { subscriptionId } = req.params;
+        console.log(subscriptionId);
 
-        db.unsubscribe(subscriptionId);
+        const oldSubscription = await db.unsubscribe(subscriptionId);
 
         res.sendStatus(200);
     },

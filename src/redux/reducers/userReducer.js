@@ -14,6 +14,7 @@ const GET_USER_SUBSCRIPTIONS = 'GET_USER_SUBSCRIPTIONS';
 
 export const getUserSubscriptions = (id) => {
   const userSubscriptions = axios.get(`/api/profile/${id}/subscriptions`).then(res => res.data);
+  console.log(userSubscriptions);
 
   return {
     type: GET_USER_SUBSCRIPTIONS,
