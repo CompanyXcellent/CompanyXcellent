@@ -10,6 +10,8 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
 
+import AddIcon from '@material-ui/icons/AddBox';
+
 // import EditEmployeeDialog from './EditEmployeeDialog';
 
 const Employees = (props) => {
@@ -57,6 +59,14 @@ const Employees = (props) => {
             </Container>
         )
       })}
+      <Link to='/create-employee'>
+        <Button 
+          className={classes.fixedBottomRight}
+          variant='contained' >
+          Add Employee
+        </Button>
+        {/* <AddIcon className={classes.addIcon} color='secondary' /> */}
+      </Link>
     </Container>
   )
 }
@@ -117,5 +127,12 @@ const useStyles = makeStyles({
     width: '50%',
 
     textAlign: 'right'
+  },
+  fixedBottomRight: {
+    position: 'fixed',
+    bottom: 16,
+    right: 16,
+
+    // fontSize: 60,
   }
 })

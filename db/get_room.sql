@@ -1,1 +1,3 @@
-select * from chat_room_participants where user_id = $1
+select * 
+from chat_room_participants 
+where chat_room_id = $1 and user_id <> $2;

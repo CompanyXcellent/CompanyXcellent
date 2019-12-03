@@ -31,10 +31,9 @@ module.exports = {
         })
     },
     getMySubscribedPosts: async (req, res) => {
-        console.log('hit posts')
         const db = req.app.get('db')
         const { id } = req.params
-        console.log(id)
+
         const mySubscribedPosts = await db.get_user_subscribed_posts(id)
 
         res.status(200).send(mySubscribedPosts)

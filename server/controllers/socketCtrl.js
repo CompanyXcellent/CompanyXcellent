@@ -29,27 +29,17 @@ module.exports = {
   getConversations: async (req, res) => {
     const db = req.app.get("db");
     const { id } = req.params;
-    console.log("hit id");
+    console.log(id);
+
     let conversations = await db.get_conversations(id);
-    let other_users_id = [];
-    // const newConversations = await conversations.map(async e => {
-    //   console.log(e.chat_room_id);
-    //   let other_user = await db.get_names(e.chat_room_id, e.user_id);
-    //   other_user = other_user[0];
-    //   console.log(other_user);
-    //   e.other_user = other_user;
-    //   console.log(e)
-    // return e;
-    // });
+
     for (let i = 0; i < conversations.length; i++) {
       let other_user = await db.get_names(conversations[i].chat_room_id, conversations[i].user_id);
       other_user = other_user[0];
-      console.log(other_user);
+
       conversations[i].other_user = other_user;
-      //   console.log(e)
-      // return e;
     }
-    // console.log(newConversations)
+
     res.status(200).send(conversations);
   }
 }
