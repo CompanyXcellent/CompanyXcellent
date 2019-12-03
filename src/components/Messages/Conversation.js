@@ -18,7 +18,7 @@ let socket;
 
 const Conversation = (props) => {
   const classes = useStyles();
-  const [user, setUser] = useState({})
+  // const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
   const [room, setRoom] = useState(0)
