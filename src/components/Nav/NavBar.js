@@ -133,9 +133,16 @@ function TemporaryDrawer(props) {
   );
 
   return (
-    <Container component="nav" id="navbar" className={classes.mainContainer}>
-      <Typography variant="h4">CompanyXcellent</Typography>
-      <MenuIcon onClick={() => toggleDrawer()} />
+    <Container 
+      component='nav' 
+      id='navbar' 
+      className={classes.mainContainer}
+      maxWidth='none' >
+      <Typography variant='h4'>CompanyXcellent</Typography>
+
+      {/* Mobile Nav */}
+
+      <MenuIcon className={classes.menuIcon} onClick={() => toggleDrawer()} />
       <SwipeableDrawer
         open={showMenu}
         onClose={toggleDrawer}
@@ -143,6 +150,38 @@ function TemporaryDrawer(props) {
       >
         {sideList("left")}
       </SwipeableDrawer>
+
+      {/* Desktop Nav */}
+
+      <List className={classes.desktopNavContainer}>
+        {/* <List> */}
+
+      {[['Posts', '/posts'], ['Employees', '/employees'], ['Messages', '/messages'], ['Create Poll', '/createPoll'], ['Team', '/team']].map((text, index) => (
+        <Link to={text[1]} key={text[0]} className={classes.link}>
+            <ListItem button key={text[0]}>
+              <ListItemText primary={text[0]} />
+            </ListItem>
+          </Link>
+        ))}
+
+      <Divider orientation='vertical' fullWidth />
+
+      {[['Profile', `/profile/${props.userReducer.user.user_id}`]].map((text, index) => (
+        <Link to={text[1]} key={text[0]} className={classes.link}>
+            <ListItem button key={text[0]}>
+              <ListItemText primary={text[0]} />
+            </ListItem>
+          </Link>
+        ))}
+        <ListItem 
+          className={classes.logoutButton} 
+          button 
+          variant='contained'
+          onClick={logout} >
+          <ListItemText primary='Logout' />
+        </ListItem>
+          {/* </List> */}
+      </List>
     </Container>
   );
 }
@@ -173,8 +212,31 @@ const useStyles = makeStyles({
 
     position: "sticky",
     top: 0,
-    transition: "top 0.3s",
-    zIndex: 3
+    transition: 'top 0.3s',
+    zIndex: 3,
+
+    [theme.breakpoints.up('lg')]: {
+      
+    }
+  },
+  menuIcon: {
+    [theme.breakpoints.up('lg')]: {
+      display: 'none'
+    }
+  },
+  desktopNavContainer: {
+    display: 'none',
+
+    [theme.breakpoints.up('lg')]: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center'
+    }
+  },
+  logoutButton: {
+    width: 100,
+
+    textAlign: 'center'
   },
   userInfo: {
     width: "100%",

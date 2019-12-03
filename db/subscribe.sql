@@ -4,4 +4,5 @@ insert into user_subscription (
 ) values (
   $1,
   $2
-);
+)
+returning *;

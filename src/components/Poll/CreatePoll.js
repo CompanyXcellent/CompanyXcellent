@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button'
 import axios from 'axios'
+import './pollStyling.css'
 
 const CreatePoll = () => {
   const classes = useStyles();
@@ -60,27 +62,42 @@ const CreatePoll = () => {
 
   return (
     <Container className={classes.mainContainer}>
-      <h1>Poll form</h1>
-      <form>
-        Question 1: <input name='question1' value={question1} onChange={(e) => {setQuestion1(e.target.value)}}/>
-        Question 2: <input name='question2' value={question2} onChange={(e) => {setQuestion2(e.target.value)}}/>
-        Question 3: <input name='question3' value={question3} onChange={(e) => {setQuestion3(e.target.value)}}/>
-        Question 4: <input name='question4' value={question4} onChange={(e) => {setQuestion4(e.target.value)}}/>
-        Question 5: <input name='question5' value={question5} onChange={(e) => {setQuestion5(e.target.value)}}/>
-        Question 6: <input name='question6' value={question6} onChange={(e) => {setQuestion6(e.target.value)}}/>
-        Question 7: <input name='question7' value={question7} onChange={(e) => {setQuestion7(e.target.value)}}/>
-        Question 8: <input name='question8' value={question8} onChange={(e) => {setQuestion8(e.target.value)}}/>
-        Question 9: <input name='question9' value={question9} onChange={(e) => {setQuestion9(e.target.value)}}/>
-        Question 10: <input name='question10' value={question10} onChange={(e) => {setQuestion10(e.target.value)}}/>
-        Question 11: <input name='question11' value={question11} onChange={(e) => {setQuestion11(e.target.value)}}/>
-        Question 12: <input name='question12' value={question12} onChange={(e) => {setQuestion12(e.target.value)}}/>
-        Question 13: <input name='question13' value={question13} onChange={(e) => {setQuestion13(e.target.value)}}/>
-        Question 14: <input name='question14' value={question14} onChange={(e) => {setQuestion14(e.target.value)}}/>
-        Question 15: <input name='question15' value={question15} onChange={(e) => {setQuestion15(e.target.value)}}/>
-      </form>
-      <button
+      <h1 id='pollform'>Enter Questions</h1>
+      <div id='poll-input-container'>
+        <input className='poll-question-input' name='question1' value={question1} onChange={(e) => {setQuestion1(e.target.value)}}/>
+        
+        <input className='poll-question-input' name='question2' value={question2} onChange={(e) => {setQuestion2(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question3' value={question3} onChange={(e) => {setQuestion3(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question4' value={question4} onChange={(e) => {setQuestion4(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question5' value={question5} onChange={(e) => {setQuestion5(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question6' value={question6} onChange={(e) => {setQuestion6(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question7' value={question7} onChange={(e) => {setQuestion7(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question8' value={question8} onChange={(e) => {setQuestion8(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question9' value={question9} onChange={(e) => {setQuestion9(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question10' value={question10} onChange={(e) => {setQuestion10(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question11' value={question11} onChange={(e) => {setQuestion11(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question12' value={question12} onChange={(e) => {setQuestion12(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question13' value={question13} onChange={(e) => {setQuestion13(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question14' value={question14} onChange={(e) => {setQuestion14(e.target.value)}}/>
+
+        <input className='poll-question-input' name='question15' value={question15} onChange={(e) => {setQuestion15(e.target.value)}}/>
+      </div>
+      <Button
+        className={classes.submitButton}
         onClick={handleSubmit}
-      >Put Out Poll</button>
+      >Put Out Poll</Button>
     </Container>
   )
 }
@@ -90,5 +107,8 @@ export default CreatePoll;
 const useStyles = makeStyles({
   mainContainer: {
 
+  },
+  submitButton:{
+    margin: '20px'
   }
 })
