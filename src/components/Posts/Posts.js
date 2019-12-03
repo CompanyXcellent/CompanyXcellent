@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { RootRef } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
+import PostAddIcon from '@material-ui/icons/PostAdd';
 
 import { connect } from 'react-redux';
 import { getUser } from '../../redux/reducers/userReducer';
@@ -14,9 +19,13 @@ import { getUser } from '../../redux/reducers/userReducer';
 import CreatPost from './CreatePost';
 
 const Posts = (props) => {
-  const classes = useStyles();
-  const [posts, setPosts] = useState([])
-  const [reRender, setReRender] = useState(false)
+  const theme = useTheme();
+  const classes = useStyles(theme);
+
+  const [posts, setPosts] = useState([]);
+  const [reRender, setReRender] = useState(false);
+  const [post, setPost] = useState('');
+
 
   const checkRerender = () => {
     if(reRender === false){
@@ -33,8 +42,10 @@ const Posts = (props) => {
 
   const getMyPosts = async () => {
     if(props.userReducer.user.user_id){
+      console.log(props.userReducer)
       await axios.get(`/api/posts/${props.userReducer.user.user_id}`)
       .then(res => {
+        console.log(res.data);
         setPosts(res.data)
       })
     }     
@@ -45,16 +56,47 @@ const Posts = (props) => {
     getMyPosts()
   }
 
+  const makeNewPost = () => {
+    console.log('creating new post')
+    axios.post('/api/makePost', {content: post, id: props.userReducer.user.user_id})
+  }
+
+  const createPost = async (e) => {
+    e.preventDefault();
+
+    await makeNewPost();
+    setPost('');
+    getMyPosts();
+  }
+
   console.log(posts);
 
   return (
     <Container className={classes.mainContainer}>
-      <h1>Posts</h1>
       <CreatPost props={props} getMyPosts={getMyPosts}/>
+      <Container className={classes.makePostContainer}>
+        <TextField 
+          label='Make a post ...'
+          className={classes.makePostInput}
+          variant='filled'
+          InputProps={{
+            disableUnderline: true,
+            endAdornment: (
+              <InputAdornment className={classes.inputAdornment} position="end">
+                <PostAddIcon onClick={createPost} className={classes.icon} />
+              </InputAdornment>
+            ),
+         }}
+          multiline
+          rows='6'
+          value={post}
+          onChange={e => setPost(e.target.value)}
+          onKeyPress={e => e.key === 'Enter' ? createPost(e) : null} />
+      </Container>
       {
         posts.map((e, i) => {
           return(
-            <Container 
+            <Paper 
               key={e.post_id} 
               className={classes.postContainer}>
               <Container className={classes.avatarName}>
@@ -68,7 +110,7 @@ const Posts = (props) => {
                 >delete</Button> :
                 null
               }              
-            </Container>
+            </Paper>
           )
         })
       }
@@ -83,12 +125,56 @@ const mapStateToProps = (rootReducer) => {
 
 export default connect(mapStateToProps, { getUser })(Posts);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   mainContainer: {
+    [theme.breakpoints.up('lg')]: {
+      padding: 32,
 
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }
+  },
+  makePostContainer: {
+    display: 'none',
+
+    [theme.breakpoints.up('lg')]: {
+      width: '80%',
+      height: '100%',
+
+      display: 'flex',
+      flexDirection: 'column',
+
+    }
+  },
+  makePostInput: {
+    [theme.breakpoints.up('lg')]: {
+      // padding: 16
+    }
+  },
+  inputAdornment: {
+    // width: '100%',
+    height: '100px',
+    fontSize: 100,
+    
+    display: 'flex',
+    alignItems: 'flex-end'
+  },
+  icon: {
+    fontSize: 35
   },
   postContainer: {
-    padding: 0
+    padding: 0,
+
+    [theme.breakpoints.up('lg')]: {
+      width: '75%',
+
+      padding: 32,
+
+      marginTop: 16,
+
+      borderRadius: 20
+    }
   },
   avatarName: {
     display: 'flex',
@@ -102,4 +188,4 @@ const useStyles = makeStyles({
   name: {
     marginLeft: 16
   }
-})
+}))

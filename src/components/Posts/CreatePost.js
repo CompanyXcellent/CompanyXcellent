@@ -125,13 +125,17 @@ function CustomizedDialogs(props) {
 
 export default CustomizedDialogs;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( theme => ({
   mainContainer: {
-    width: '100%'
+    width: '100%',
+
+    [theme.breakpoints.up('lg')]: {
+      display: 'none'
+    }
   },
   addPostButton: {
     position: 'fixed',
     bottom: 16,
     right: 16
   }
-})
+}))

@@ -28,23 +28,24 @@ const Profile = (props) => {
   const [edit, setEdit] = useState(false);
   const [update, setUpdate] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState(false);
+  const [userSubscriptions, setUserSubscriptions] = useState([]);
 
-  const[question0, setQuestion0] = useState('')
-  const[question1, setQuestion1] = useState('')
-  const[question2, setQuestion2] = useState('')
-  const[question3, setQuestion3] = useState('')
-  const[question4, setQuestion4] = useState('')
-  const[question5, setQuestion5] = useState('')
-  const[question6, setQuestion6] = useState('')
-  const[question7, setQuestion7] = useState('')
-  const[question8, setQuestion8] = useState('')
-  const[question9, setQuestion9] = useState('')
-  const[question10, setQuestion10] = useState('')
-  const[question11, setQuestion11] = useState('')
-  const[question12, setQuestion12] = useState('')
-  const[question13, setQuestion13] = useState('')
-  const[question14, setQuestion14] = useState('')
-  const[question15, setQuestion15] = useState('')
+  const [question0, setQuestion0] = useState('')
+  const [question1, setQuestion1] = useState('')
+  const [question2, setQuestion2] = useState('')
+  const [question3, setQuestion3] = useState('')
+  const [question4, setQuestion4] = useState('')
+  const [question5, setQuestion5] = useState('')
+  const [question6, setQuestion6] = useState('')
+  const [question7, setQuestion7] = useState('')
+  const [question8, setQuestion8] = useState('')
+  const [question9, setQuestion9] = useState('')
+  const [question10, setQuestion10] = useState('')
+  const [question11, setQuestion11] = useState('')
+  const [question12, setQuestion12] = useState('')
+  const [question13, setQuestion13] = useState('')
+  const [question14, setQuestion14] = useState('')
+  const [question15, setQuestion15] = useState('')
 
   const [average0, setAverage0] = useState(0)
   const [average1, setAverage1] = useState(0)
@@ -64,43 +65,43 @@ const Profile = (props) => {
   const [average15, setAverage15] = useState(0)
 
   const stateFunctions = [
-    {num:0, func:setQuestion0, out:question0, avg:average0, setAvg:setAverage0}, 
-    {num:1, func:setQuestion1, out:question1, avg:average1, setAvg:setAverage1}, 
-    {num:2, func:setQuestion2, out:question2, avg:average2, setAvg:setAverage2}, 
-    {num:3, func:setQuestion3, out:question3, avg:average3, setAvg:setAverage3}, 
-    {num:4, func:setQuestion4, out:question4, avg:average4, setAvg:setAverage4}, 
-    {num:5, func:setQuestion5, out:question5, avg:average5, setAvg:setAverage5}, 
-    {num:6, func:setQuestion6, out:question6, avg:average6, setAvg:setAverage6}, 
-    {num:7, func:setQuestion7, out:question7, avg:average7, setAvg:setAverage7}, 
-    {num:8, func:setQuestion8, out:question8, avg:average8, setAvg:setAverage8}, 
-    {num:9, func:setQuestion9, out:question9, avg:average9, setAvg:setAverage9},
-    {num:10, func:setQuestion10, out:question10, avg:average10, setAvg:setAverage10},
-    {num:11, func:setQuestion11, out:question11, avg:average11, setAvg:setAverage11},
-    {num:12, func:setQuestion12, out:question12, avg:average12, setAvg:setAverage12},
-    {num:13, func:setQuestion13, out:question13, avg:average13, setAvg:setAverage13},
-    {num:14, func:setQuestion14, out:question14, avg:average14, setAvg:setAverage14},
-    {num:15, func:setQuestion15, out:question15, avg:average15, setAvg:setAverage15},
-    
+    { num: 0, func: setQuestion0, out: question0, avg: average0, setAvg: setAverage0 },
+    { num: 1, func: setQuestion1, out: question1, avg: average1, setAvg: setAverage1 },
+    { num: 2, func: setQuestion2, out: question2, avg: average2, setAvg: setAverage2 },
+    { num: 3, func: setQuestion3, out: question3, avg: average3, setAvg: setAverage3 },
+    { num: 4, func: setQuestion4, out: question4, avg: average4, setAvg: setAverage4 },
+    { num: 5, func: setQuestion5, out: question5, avg: average5, setAvg: setAverage5 },
+    { num: 6, func: setQuestion6, out: question6, avg: average6, setAvg: setAverage6 },
+    { num: 7, func: setQuestion7, out: question7, avg: average7, setAvg: setAverage7 },
+    { num: 8, func: setQuestion8, out: question8, avg: average8, setAvg: setAverage8 },
+    { num: 9, func: setQuestion9, out: question9, avg: average9, setAvg: setAverage9 },
+    { num: 10, func: setQuestion10, out: question10, avg: average10, setAvg: setAverage10 },
+    { num: 11, func: setQuestion11, out: question11, avg: average11, setAvg: setAverage11 },
+    { num: 12, func: setQuestion12, out: question12, avg: average12, setAvg: setAverage12 },
+    { num: 13, func: setQuestion13, out: question13, avg: average13, setAvg: setAverage13 },
+    { num: 14, func: setQuestion14, out: question14, avg: average14, setAvg: setAverage14 },
+    { num: 15, func: setQuestion15, out: question15, avg: average15, setAvg: setAverage15 },
+
   ]
 
   //this function gets all of the post questions and the average values of that employees ratings.
   const testAxiosGetRatings = () => {
     axios.get('/api/getPoll')
-    .then(res => {
-      res.data.map((e, i) => {
-        if(res.data[i].question !== ''){
-          stateFunctions[i].func(res.data[i].question)
-          axios.post('/api/employeeRatingsRetrieval', {questionId: i, receiverId:props.match.params.id})
-          .then(response => {
-            stateFunctions[i].setAvg(response.data[0].avg)
-          })
-        }
-      })      
-    })
+      .then(res => {
+        res.data.map((e, i) => {
+          if (res.data[i].question !== '') {
+            stateFunctions[i].func(res.data[i].question)
+            axios.post('/api/employeeRatingsRetrieval', { questionId: i, receiverId: props.match.params.id })
+              .then(response => {
+                stateFunctions[i].setAvg(response.data[0].avg)
+              })
+          }
+        })
+      })
   }
 
   const keepPageUpdated = () => {
-    if(reRender === false){
+    if (reRender === false) {
       setReRender(true)
     }
     setReRender(false)
@@ -108,7 +109,7 @@ const Profile = (props) => {
 
   useEffect(() => {
     testAxiosGetRatings()
-  },[reRender])
+  }, [reRender])
 
   // Grabs Employee Info
   useEffect(() => {
@@ -118,40 +119,53 @@ const Profile = (props) => {
   }, [edit, update])
 
   const handleClick = (e) => {
-    if(e.target.innerText === 'EDIT'){
+    if (e.target.innerText === 'EDIT') {
       setEdit(true);
       return
     }
 
-    if(e.target.innerText === 'SUBSCRIBE'){
-      axios.post(`/api/profile/${props.user.user_id}/subscriptions`, { subId: employee.user_id})
-      .then(res => {
-        console.log(res);
-        setSubscriptionId(employee.user_id);
-      })
-      .catch(err => console.log(err));
-      // Add functionality to update subscription in database
-    } else if (e.target.innerText === 'UNSUBSCRIBE'){
+    if (e.target.innerText === 'SUBSCRIBE') {
+      axios.post(`/api/profile/${props.user.user_id}/subscriptions`, { subId: employee.user_id })
+        .then(res => {
+          setSubscriptionId(res.data.subscription_id);
+        })
+        .catch(err => console.log(err));
+    } else if (e.target.innerText === 'UNSUBSCRIBE') {
       axios.delete(`/api/profile/${props.user.user_id}/subscriptions/${subscriptionId}`)
-      .then(res => {
-        console.log(res);
-        setSubscriptionId(false);
-        props.getUserSubscriptions(props.user.user_id);
-      })
-      .catch(err => console.log(err));
+        .then(res => {
+          getUserSubscriptions(props.user.user_id);
+        })
+        .catch(err => console.log(err));
     }
 
   }
 
+  const getUserSubscriptions = async (id) => {
+    await axios.get(`/api/profile/${id}/subscriptions`)
+    .then(res => {
+      setUserSubscriptions(res.data);
+    });
+    // console.log(userSubscriptions);
+  }
+
   useEffect(() => {
-    if(props.userSubscriptions){
-      props.userSubscriptions.forEach(e => {
-          if(e.friend_user_id === employee.user_id){
-            setSubscriptionId(e.subscription_id);
-          }
-        });
+    if(!userSubscriptions[0] && props.user.user_id){
+      getUserSubscriptions(props.user.user_id);
     }
-  }, [props.userSubscriptions, employee])
+    if (userSubscriptions[0]) {
+      let subscriptionFound = false;
+      userSubscriptions.forEach(e => {
+        if (e.friend_user_id === employee.user_id) {
+          setSubscriptionId(e.subscription_id);
+          subscriptionFound = true;
+        }
+      });
+
+      if (!subscriptionFound) {
+        setSubscriptionId(false);
+      }
+    }
+  }, [userSubscriptions, employee, props.user])
 
   // console.log(stateFunctions)
 
@@ -193,8 +207,8 @@ const Profile = (props) => {
       <Typography variant='body1' className={classes.description}>{employee.about}</Typography>
       <Container className={classes.skills}>
         {stateFunctions.map((e, i) => {
-          if(e.out !== ''){
-            return(
+          if (e.out !== '') {
+            return (
               <div key={`key${i}`}>
                 <Box className={classes.ratingBox} component="fieldset" mb={3} borderColor="transparent">
                   <Typography component="legend">{e.out}</Typography>
@@ -211,7 +225,7 @@ const Profile = (props) => {
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
-      <RatingDialog empId={props.match.params.id} keepUpdated={keepPageUpdated}/>
+      <RatingDialog empId={props.match.params.id} keepUpdated={keepPageUpdated} />
     </Container>
   )
 }
@@ -225,11 +239,7 @@ const mapStateToProps = reduxState => {
   }
 }
 
-const mapDispatchToProps = {
-  getUserSubscriptions
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, null)(Profile);
 
 const useStyles = makeStyles({
   mainContainer: {
