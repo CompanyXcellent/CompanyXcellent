@@ -11,7 +11,7 @@ import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import RatingDialog from './RatingDialog';
 import EditProfileDialog from './EditProfileDialog';
@@ -23,8 +23,8 @@ const Profile = (props) => {
   const classes = useStyles();
   const [reRender, setReRender] = useState(false)
   const [employee, setEmployee] = useState({});
-  const [skills, setSkills] = useState([]);
-  const [posts, setPosts] = useState([]);
+  // const [skills, setSkills] = useState([]);
+  // const [posts, setPosts] = useState([]);
   const [edit, setEdit] = useState(false);
   const [update, setUpdate] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState(false);

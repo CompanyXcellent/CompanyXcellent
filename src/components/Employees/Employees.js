@@ -8,16 +8,10 @@ import Avatar from '@material-ui/core/Avatar'
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import Dialog from '@material-ui/core/Dialog';
-
-import AddIcon from '@material-ui/icons/AddBox';
-
-// import EditEmployeeDialog from './EditEmployeeDialog';
 
 const Employees = (props) => {
   const classes = useStyles();
   const [employees, setEmployees] = useState([]);
-  const [showEdit, setShowEdit] = useState(false);
 
 
   // Grabs Employees Info

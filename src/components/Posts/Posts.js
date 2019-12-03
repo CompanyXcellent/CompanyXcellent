@@ -16,14 +16,6 @@ import CreatPost from './CreatePost';
 const Posts = (props) => {
   const classes = useStyles();
   const [posts, setPosts] = useState([])
-  const [reRender, setReRender] = useState(false)
-
-  const checkRerender = () => {
-    if(reRender === false){
-      setReRender(true)
-    }
-    setReRender(false)
-  }
 
   useEffect(() => {
     props.getUser()
