@@ -23,16 +23,7 @@ const Posts = (props) => {
   const classes = useStyles(theme);
 
   const [posts, setPosts] = useState([]);
-  const [reRender, setReRender] = useState(false);
   const [post, setPost] = useState('');
-
-
-  const checkRerender = () => {
-    if(reRender === false){
-      setReRender(true)
-    }
-    setReRender(false)
-  }
 
   useEffect(() => {
     props.getUser()
