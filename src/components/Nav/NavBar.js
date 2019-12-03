@@ -141,7 +141,7 @@ function TemporaryDrawer(props) {
           </Link>
         ))}
 
-      <Divider orientation='vertical' fullWidth />
+      <Divider orientation='vertical' fullwidth />
 
       {[['Profile', `/profile/${props.userReducer.user.user_id}`]].map((text, index) => (
         <Link to={text[1]} key={text[0]} className={classes.link}>

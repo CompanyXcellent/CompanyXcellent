@@ -156,6 +156,7 @@ const useStyles = makeStyles(theme => ({
   },
   postContainer: {
     padding: 0,
+    marginTop: 10,
 
     [theme.breakpoints.up('lg')]: {
       width: '75%',
