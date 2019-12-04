@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter, Link } from "react-router-dom";
 import renderer from "react-test-renderer";
 import { act } from "react-dom/test-utils";
-const { createPost } = require("./functions");
+const { createPost, testFunc, getEmployeeRating } = require("./functions");
 
 describe("Testing routing", () => {
   //?Derek1
@@ -103,8 +103,23 @@ describe("Testing routing", () => {
   //!end ROUTE tests
 });
 
+//! endpoints test
 describe("createPost", () => {
   it("this should be a function", () => {
     expect(typeof createPost).toBe("function");
   });
+
+  it('testing getEmployeeRating endpoint ', async () => {
+    
+    
+    // return getEmployeeRating().then(res => {
+    //   expect(res.data).toBe([])
+    // })
+    
+    // console.log(await getEmployeeRating())
+    // expect(typeof getEmployeeRating()).toBe('string')
+  })
+
+  
+
 });

@@ -14,7 +14,8 @@ import TextField from '@material-ui/core/TextField';
 
 import CloseIcon from '@material-ui/icons/Close';
 
-import ProfileImagePreview from './ProfileImgPreview';
+// import ProfileImagePreview from './ProfileImgPreview';
+import ImageFile from './ProfileImgPreview';
 
 const styles = theme => ({
   root: {
@@ -46,6 +47,7 @@ const DialogTitle = withStyles(styles)(props => {
 const DialogContent = withStyles(theme => ({
   root: {
     padding: theme.spacing(2),
+    overflow:'scroll'
   },
 }))(MuiDialogContent);
 
@@ -159,12 +161,13 @@ export default function CustomizedDialogs(props) {
           Enter info
         </DialogTitle>
         <DialogContent dividers className={classes.dialogContentContainer}>
-          <ProfileImagePreview profileImg={profileImg} setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
+          <ImageFile profileImg={profileImg} setImgFile={setImgFile} imageURI={imageURI} setImageURI={setImageURI} />
           <TextField
             label='Nickname'
             variant='outlined'
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
+            className={classes.nicknameInput}
           />
           <TextField 
             label='About'
@@ -174,7 +177,9 @@ export default function CustomizedDialogs(props) {
             rows="4"
             value={aboutMe} 
             onChange={(e) => setAboutMe(e.target.value)} 
-            id='about-me-input' />
+            id='about-me-input'
+            className={classes.aboutInput}
+          />
 
         </DialogContent>
         <DialogActions>
@@ -189,14 +194,22 @@ export default function CustomizedDialogs(props) {
 const useStyles = makeStyles({
   dialogContentContainer: {
     height: '70vh',
+    // paddingTop:
 
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
-    alignItems: 'center'
+    alignItems: 'center',
+    overflow: 'scroll'
   },
   avatar: {
     width: 100,
     height: 100
+  },
+  nicknameInput: {
+    marginTop: 10
+  },
+  aboutInput: {
+    marginTop: 10
   }
 })
