@@ -23,7 +23,7 @@ export default (
         <ProtectedRoute path='/add-conversation' component={AddConversation} adminRoute={false}/>
         <ProtectedRoute path='/employees' component={Employees} adminRoute={false}/>
         <ProtectedRoute path='/createPoll' component={CreatePoll} adminRoute={true}/>
-        <Route path='/posts' component={Posts} adminRoute={false}/>
+        <ProtectedRoute path='/posts' component={Posts} adminRoute={false}/>
         <ProtectedRoute path='/create-employee' component={CreateEmployee} adminRoute={true}/>
     </Switch>
 )

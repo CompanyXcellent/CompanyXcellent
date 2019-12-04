@@ -108,7 +108,10 @@ export default function CustomizedDialogs(props) {
       .put(signedRequest, file, options)
       .then(res => {
         axios.put(`/api/profile/${props.user.user_id}`, {profileImg: url, about: aboutMe, nickname})
-        .then(res => console.log(res))
+        .then(res => {
+          console.log(res)
+          props.setEdit(false);
+        })
         .catch(err => console.log(err))
       })
       .catch(err => {
@@ -128,6 +131,15 @@ export default function CustomizedDialogs(props) {
   //----------------------S3 functions end
 
   const handleSubmit = async () => {
+    if (imageURI === null || !imgFile) {
+      axios.put(`/api/profile/${props.user.user_id}`, {about: aboutMe, nickname})
+        .then(res => {
+          console.log(res)
+          props.setEdit(false);
+        })
+        .catch(err => console.log(err))
+      return;
+    }
     // if (!aboutMe || !nickname || imageURI === null || !imgFile) {
     //   // setError(true);
     //   return;

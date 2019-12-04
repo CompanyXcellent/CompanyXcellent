@@ -1,29 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from 'axios';
 
 
-class Landing extends React.Component{
-  
-  
-  componentDidMount(){
-    window.location.href = "http://localhost:3030/api/auth"
-  }
+const Landing = (props) => {
 
-  // userLogin = () => {
-  //   window.location.href = "http://localhost:3030/api/auth"
+  useEffect(() => {
+    axios.get('/api/getUser')
+    .then(res => {
+      if(res.data.user_id){
+        props.history.push('/posts');
+      }
+    })
+    .catch(err => {
+      if(err){
+        window.location.href = "http://localhost:3030/api/auth";
+      }
+    });
+  }, [])
 
-  // }
-
-  render(){
-    console.log('hit')
-
-    return(
+  return (
       <div>
-        <div>
-          {/* <button onClick={this.userLogin}>Login</button> */}
-        </div>
+
       </div>
     )
-  }
 }
 
 export default Landing;
