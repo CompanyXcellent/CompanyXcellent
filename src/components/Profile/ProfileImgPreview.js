@@ -29,6 +29,7 @@ const ImageFile = (props) => {
       props.onChange(file); // propagate to parent component
   }
 
+
   return (
     <Container className={classes.imagePreviewContainer}>
         <CardMedia
