@@ -2,19 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import Container from '@material-ui/core/Container';
+import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Typography from '@material-ui/core/Typography';
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import Typography from "@material-ui/core/Typography";
 
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from "@material-ui/icons/Menu";
 
-import { getUser, logout, getUserInfo, getUserSubscriptions } from "../../redux/reducers/userReducer";
+import {
+  getUser,
+  logout,
+  getUserInfo,
+  getUserSubscriptions
+} from "../../redux/reducers/userReducer";
 import theme from "../../theme/theme";
 
 function TemporaryDrawer(props) {
@@ -41,7 +46,7 @@ function TemporaryDrawer(props) {
       }
       prevScrollpos = currentScrollPos;
     }
-  }
+  };
 
   useEffect(() => {
     props.getUser();
@@ -55,7 +60,7 @@ function TemporaryDrawer(props) {
       props.getUserInfo(props.userReducer.user.user_id);
       props.getUserSubscriptions(props.userReducer.user.user_id);
     }
-  }, [props.userReducer.user.user_id])
+  }, [props.userReducer.user.user_id]);
 
   const logout = () => {
     window.location.href = "http://localhost:3030/api/logout";
@@ -63,7 +68,11 @@ function TemporaryDrawer(props) {
 
   //controls the out and in movement of the navBar using the state hook
   const toggleDrawer = event => {
-    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
       return;
     }
 
@@ -79,9 +88,15 @@ function TemporaryDrawer(props) {
       onKeyDown={toggleDrawer}
     >
       <List>
-        <Container className={classes.userInfo} >
-          <Avatar className={classes.avatar} src={props.userReducer.userInfo.profile_img} />
-          <Typography variant='h6'>{props.userReducer.userInfo.first_name} {props.userReducer.userInfo.last_name}</Typography>
+        <Container className={classes.userInfo}>
+          <Avatar
+            className={classes.avatar}
+            src={props.userReducer.userInfo.profile_img}
+          />
+          <Typography variant="h6">
+            {props.userReducer.userInfo.first_name}{" "}
+            {props.userReducer.userInfo.last_name}
+          </Typography>
         </Container>
         {[['Posts', '/posts', 2], ['Employees', '/employees', 2], ['Messages', '/messages', 2], ['Create Poll', '/createPoll', 1], ['Team', '/team', 2]].map((text, index) => (props.userReducer.user.role_id !== 1 && text[2] === 1) ?
           (
@@ -129,7 +144,7 @@ function TemporaryDrawer(props) {
         onClose={toggleDrawer}
         onOpen={toggleDrawer}
       >
-        {sideList('left')}
+        {sideList("left")}
       </SwipeableDrawer>
 
       {/* Desktop Nav */}
@@ -191,14 +206,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(TemporaryDrawer);
 const useStyles = makeStyles({
   mainContainer: {
     backgroundColor: theme.palette.secondary.main,
-    width: '100%',
-    height: '8vh',
+    width: "100%",
+    height: "8vh",
 
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
 
-    position: 'sticky',
+    position: "sticky",
     top: 0,
     transition: 'top 0.3s',
     zIndex: 3,
@@ -227,12 +242,12 @@ const useStyles = makeStyles({
     textAlign: 'center'
   },
   userInfo: {
-    width: '100%',
+    width: "100%",
 
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
   },
   avatar: {
     width: 100,
@@ -242,7 +257,7 @@ const useStyles = makeStyles({
     width: 250
   },
   link: {
-    color: 'black'
+    color: "black"
   },
   bigAvatar: {
     margin: 10,
