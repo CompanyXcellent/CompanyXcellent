@@ -41,7 +41,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7
+      maxAge: 1000 * 60 * 60
     }
   })
 );
@@ -168,6 +168,7 @@ passport.deserializeUser(function (obj, done) {
 });
 
 app.get("/api/getUser", (req, res, next) => {
+  // console.log(req.session)
   if (req.session.passport !== undefined) {
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
@@ -179,7 +180,7 @@ app.get(
     failureRedirect: "http://localhost:3000/#/"
   }),
   (req, res) => {
-    // console.log(req.session);
+    console.log(req.session);
 
     res.set('Location', 'http://localhost:3000/#/');
     res.status(302).send(req.session.passport.user);

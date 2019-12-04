@@ -34,7 +34,7 @@ function TemporaryDrawer(props) {
       if (prevScrollpos > currentScrollPos) {
         document.getElementById("navbar").style.top = "0";
       } else {
-        document.getElementById("navbar").style.top = "-10vh";
+        document.getElementById("navbar").style.top = "-12vh";
       }
       prevScrollpos = currentScrollPos;
     } else {
@@ -79,7 +79,6 @@ function TemporaryDrawer(props) {
     setShowMenu(prevState => !prevState);
   };
 
-  console.log(props.userReducer.user.role_id);
   const sideList = side => (
     <div
       className={classes.list}
@@ -219,7 +218,9 @@ const useStyles = makeStyles({
     zIndex: 3,
 
     [theme.breakpoints.up('lg')]: {
+      height: '12vh',
 
+      padding: '32px 7vw'
     }
   },
   menuIcon: {
