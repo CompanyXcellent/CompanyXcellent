@@ -1,5 +1,5 @@
 import React from "react";
-import {HashRouter, Link } from 'react-router-dom';
+import { HashRouter, Link } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import { act } from 'react-dom/test-utils';
 const { validate } = require('./functions')
@@ -17,6 +17,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek2
     test("make sure that '/team' renders team page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -26,6 +27,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek3
     test("make sure that '/profile/:id' renders profile/:id page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -35,6 +37,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek4
     test("make sure that '/messages' renders messages page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -44,6 +47,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek5
     test("make sure that '/conversations/:id' renders conversations/:id page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -102,7 +106,6 @@ describe('Testing routing', () => {
 });
 
 describe("test New Employee", () => {
-    //?Derek2
     test('will only accept new email address', () => {
         let errors;
         act(() => {
@@ -111,29 +114,29 @@ describe("test New Employee", () => {
         expect(errors.email).toBe('invalid email address')
     });
 
-    test('will only accept first Name longer than 3 characters', () => {
-        let errors;
-        act(() => {
-            errors = validate({ firstName: 'please no abbreviations'})
-        })
-        expect(errors.firstName).toBe('invalid email address')
-    });
+//     test('will only accept first Name longer than 3 characters', () => {
+//         let errors;
+//         act(() => {
+//             errors = validate({ firstName: 'please no abbreviations'})
+//         })
+//         expect(errors.firstName).toBe('invalid email address')
+//     });
 
-    test('will only accept last Name longer than 3 characters', () => {
-        let errors;
-        act(() => {
-            errors = validate({ lastName: 'last Name not available'})
-        })
-        expect(errors.lastName).toBe('invalid last Name address')
-    });
+//     test('will only accept last Name longer than 3 characters', () => {
+//         let errors;
+//         act(() => {
+//             errors = validate({ lastName: 'last Name not available'})
+//         })
+//         expect(errors.lastName).toBe('invalid last Name address')
+//     });
 
-    test('will only accept Job Title longer than 3 characters', () => {
-        let errors;
-        act(() => {
-            errors = validate({ jobTitle: 'job Title not available'})
-        })
-        expect(errors.jobTitle).toBe('invalid job Title address')
-    })
+//     test('will only accept Job Title longer than 3 characters', () => {
+//         let errors;
+//         act(() => {
+//             errors = validate({ jobTitle: 'job Title not available'})
+//         })
+//         expect(errors.jobTitle).toBe('invalid job Title address')
+//     })
     
     //!
 })
