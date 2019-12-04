@@ -97,7 +97,7 @@ function RatingDialog(props) {
   ]
   
   useEffect(() => {
-    axios.get('/api/getPoll').then(res => setPoll(res.data))
+    axios.get('/api/poll').then(res => setPoll(res.data))
   }, [])
 
   

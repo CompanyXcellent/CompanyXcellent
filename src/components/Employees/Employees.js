@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,7 +24,7 @@ const Employees = (props) => {
 
   return (
     <Container className={classes.mainContainer}>
-      <Typography variant='h2' className={classes.title}>Employees</Typography>
+      {/* <Typography variant='h2' className={classes.title}>Employees</Typography> */}
       {employees.map(e => {
         return (
             <Container key={e.user_id} className={classes.listItemContainer}>
@@ -70,7 +70,7 @@ export default Employees;
 const useStyles = makeStyles({
   mainContainer: {
     width: '100%',
-    minHeight: '90vh',
+    // minHeight: '90vh',
 
     display: 'flex',
     flexDirection: 'column',

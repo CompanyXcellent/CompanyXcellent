@@ -25,7 +25,7 @@ const CreatePoll = () => {
   const[question15, setQuestion15] = useState('')
 
   const handleSubmit = () => {
-    axios.post('/api/makePoll', {
+    axios.post('/api/poll', {
       q1: question1,
       q2: question2,
       q3: question3,

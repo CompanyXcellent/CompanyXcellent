@@ -63,7 +63,7 @@ const EditEmployeeDialog = (props) => {
   useEffect(() => {
     setFirstName(props.employee.first_name);
     setLastName(props.employee.last_name);
-    setTeam(props.employee.group_name);
+    setTeam(props.employee.group_id);
     setJobTitle(props.employee.job_title);
   }, [props.employee])
 

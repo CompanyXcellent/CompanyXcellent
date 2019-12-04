@@ -36,7 +36,7 @@ const Posts = (props) => {
       console.log(props.userReducer)
       await axios.get(`/api/posts/${props.userReducer.user.user_id}`)
       .then(res => {
-        console.log(res.data);
+        console.log(res);
         setPosts(res.data)
       })
     }     
@@ -49,7 +49,7 @@ const Posts = (props) => {
 
   const makeNewPost = () => {
     console.log('creating new post')
-    axios.post('/api/makePost', {content: post, id: props.userReducer.user.user_id})
+    axios.post('/api/post', {content: post, id: props.userReducer.user.user_id})
   }
 
   const createPost = async (e) => {
@@ -155,15 +155,14 @@ const useStyles = makeStyles(theme => ({
     fontSize: 35
   },
   postContainer: {
-    padding: 0,
-    marginTop: 10,
+    padding: 8,
+
+    marginTop: 16,
 
     [theme.breakpoints.up('lg')]: {
       width: '75%',
 
       padding: 32,
-
-      marginTop: 16,
 
       borderRadius: 20
     }

@@ -11,17 +11,19 @@ import Posts from './components/Posts/Posts'
 import CreateEmployee from './components/Employees/CreateEmployee'
 import AddConversation from './components/Messages/AddConversation'
 
+import ProtectedRoute from './util/ProtectedRoute';
+
 export default (
     <Switch>
         <Route exact path='/' component={Landing}/>
-        <Route path='/team' component={Team}/>
-        <Route path='/profile/:id' component={Profile}/>
-        <Route path='/messages' component={Messages}/>
-        <Route path='/conversation/:id' component={Conversation}/>
-        <Route path='/add-conversation' component={AddConversation}/>
-        <Route path='/employees' component={Employees}/>
-        <Route path='/createPoll' component={CreatePoll}/>
-        <Route path='/posts' component={Posts}/>
-        <Route path='/create-employee' component={CreateEmployee}/>
+        <ProtectedRoute path='/team' component={Team} adminRoute={false}/>
+        <ProtectedRoute path='/profile/:id' component={Profile} adminRoute={false}/>
+        <ProtectedRoute path='/messages' component={Messages} adminRoute={false}/>
+        <ProtectedRoute path='/conversation/:id' component={Conversation} adminRoute={false}/>
+        <ProtectedRoute path='/add-conversation' component={AddConversation} adminRoute={false}/>
+        <ProtectedRoute path='/employees' component={Employees} adminRoute={false}/>
+        <ProtectedRoute path='/createPoll' component={CreatePoll} adminRoute={true}/>
+        <Route path='/posts' component={Posts} adminRoute={false}/>
+        <ProtectedRoute path='/create-employee' component={CreateEmployee} adminRoute={true}/>
     </Switch>
 )

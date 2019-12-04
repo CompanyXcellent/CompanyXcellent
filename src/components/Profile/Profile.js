@@ -17,8 +17,6 @@ import RatingDialog from './RatingDialog';
 import EditProfileDialog from './EditProfileDialog';
 import EditEmployeeDialog from './EditEmployeeDialog';
 
-import { getUserSubscriptions } from '../../redux/reducers/userReducer';
-
 const Profile = (props) => {
   const classes = useStyles();
   const [reRender, setReRender] = useState(false)
@@ -86,7 +84,7 @@ const Profile = (props) => {
 
   //this function gets all of the post questions and the average values of that employees ratings.
   const testAxiosGetRatings = () => {
-    axios.get('/api/getPoll')
+    axios.get('/api/poll')
       .then(res => {
         res.data.map((e, i) => {
           if (res.data[i].question !== '') {
@@ -116,7 +114,7 @@ const Profile = (props) => {
     axios.get(`/api/employees/${props.match.params.id}`)
       .then(res => setEmployee(res.data))
       .catch(err => console.log(err))
-  }, [edit, update])
+  }, [edit, update, props.match.params.id])
 
   const handleClick = (e) => {
     if (e.target.innerText === 'EDIT') {

@@ -10,7 +10,6 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 
@@ -71,7 +70,7 @@ function CustomizedDialogs(props) {
   };
 
   const makeNewPost = () => {
-    axios.post('/api/makePost', {content: postContent, id: props.props.userReducer.user.user_id})
+    axios.post('/api/post', {content: postContent, id: props.props.userReducer.user.user_id})
     
   }
 

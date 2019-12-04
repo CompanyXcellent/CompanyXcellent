@@ -47,7 +47,7 @@ app.use(
 );
 
 //---------------company endPoints------------------
-app.post('/api/makePoll', compCtrl.makePoll)
+app.post('/api/poll', compCtrl.makePoll)
 app.get('/api/employees', compCtrl.getAllEmployees);
 app.get('/api/employees/:userId', compCtrl.getEmployee);
 app.put('/api/employees/:userId', compCtrl.updateEmployeeInfo);
@@ -60,16 +60,16 @@ app.delete('/api/profile/:id/subscriptions/:subscriptionId', userCtrl.unsubscrib
 
 // Posts
 app.get('/api/posts/:id', userCtrl.getMySubscribedPosts);
-app.post('/api/makePost', userCtrl.makePost);
+app.post('/api/post', userCtrl.makePost);
 app.delete('/api/deletePost/:id', userCtrl.deletePost);
 
 // User Data
 app.get('/api/profile/:id', userCtrl.getUserInfo);
 app.put('/api/profile/:id', userCtrl.updateProfile);
-app.get('/api/getTeam/:id', userCtrl.getTeam)
+app.get('/api/team/:id', userCtrl.getTeam);
 
 // Polls
-app.get('/api/getPoll', userCtrl.getPoll)
+app.get('/api/poll', userCtrl.getPoll)
 app.post('/api/pollResponseSubmition', userCtrl.submitPollResponse)
 app.post('/api/employeeRatingsRetrieval', userCtrl.getEmployeeRating)
 
@@ -130,8 +130,6 @@ io.on('connection', (socket) => {
   })
 })
 
-app.get("/api/getRoomName/:socket_room_id");
-
 //?----- Auth0 ------------
 app.use(passport.initialize());
 app.use(passport.session());
@@ -181,7 +179,11 @@ app.get(
     failureRedirect: "http://localhost:3000/#/"
   }),
   (req, res) => {
-    res.redirect("http://localhost:3000/#/posts");
+    console.log(req.session);
+
+    res.set('Location', 'http://localhost:3000/#/posts');
+    res.status(302).send(req.session.passport.user);
+    // res.redirect("http://localhost:3000/#/posts");
   }
 );
 
