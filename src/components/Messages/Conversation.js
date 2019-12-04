@@ -25,7 +25,7 @@ const Conversation = (props) => {
 
   useEffect(() => {
     socket = io();
-    socket.emit('enter', {userId: props.user.user_id, userTwo: props.match.params.id}, () => {
+    socket.emit('enter', { userId: props.user.user_id, userTwo: props.match.params.id }, () => {
 
     })
 
