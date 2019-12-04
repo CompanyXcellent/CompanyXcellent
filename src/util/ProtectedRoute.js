@@ -8,7 +8,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Route {...rest} render={(props) => {
       console.log(rest.user);
       console.log(rest.user.user_id);
-      if(rest.adminRoute && rest.user.user_id !== 1){
+      if(rest.adminRoute && rest.user.role_id !== 1){
         props.history.goBack()
         return;
       }
