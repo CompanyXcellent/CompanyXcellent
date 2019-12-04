@@ -55,6 +55,7 @@ describe("Testing routing", () => {
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+  // ? John 1
   test("make sure that '/add-conversation' renders add-conversation page correctly", () => {
     const component = renderer.create(
       <HashRouter>
@@ -64,6 +65,7 @@ describe("Testing routing", () => {
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+  // ? John 2
   test("make sure that '/employees' renders employees page correctly", () => {
     const component = renderer.create(
       <HashRouter>
@@ -73,6 +75,7 @@ describe("Testing routing", () => {
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+  // ? John 3
   test("make sure that '/createPoll' renders createPoll page correctly", () => {
     const component = renderer.create(
       <HashRouter>
@@ -82,6 +85,7 @@ describe("Testing routing", () => {
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+  // ? John 4
   test("make sure that '/posts' renders posts page correctly", () => {
     const component = renderer.create(
       <HashRouter>
@@ -91,6 +95,7 @@ describe("Testing routing", () => {
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+  // ? John 5
   test("make sure that '/create-employee' renders create-employee page correctly", () => {
     const component = renderer.create(
       <HashRouter>

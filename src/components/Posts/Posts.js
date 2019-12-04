@@ -119,6 +119,8 @@ export default connect(mapStateToProps, { getUser })(Posts);
 const useStyles = makeStyles(theme => ({
   mainContainer: {
     [theme.breakpoints.up('lg')]: {
+
+
       padding: 32,
 
       display: 'flex',
