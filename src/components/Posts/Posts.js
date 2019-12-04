@@ -36,7 +36,7 @@ const Posts = (props) => {
       console.log(props.userReducer)
       await axios.get(`/api/posts/${props.userReducer.user.user_id}`)
       .then(res => {
-        console.log(res);
+        // console.log(res.data);
         setPosts(res.data)
       })
     }     
@@ -60,7 +60,7 @@ const Posts = (props) => {
     getMyPosts();
   }
 
-  console.log(posts);
+  // console.log(posts);
 
   return (
     <Container className={classes.mainContainer}>
