@@ -17,6 +17,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek2
     test("make sure that '/team' renders team page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -26,6 +27,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek3
     test("make sure that '/profile/:id' renders profile/:id page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -35,6 +37,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek4
     test("make sure that '/messages' renders messages page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -44,6 +47,7 @@ describe('Testing routing', () => {
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+    //?Derek5
     test("make sure that '/conversations/:id' renders conversations/:id page correctly", () => {
         const component = renderer.create(
             <HashRouter>
@@ -102,7 +106,6 @@ describe('Testing routing', () => {
 });
 
 describe("test New Employee", () => {
-    //?Derek2
     test('will only accept new email address', () => {
         let errors;
         act(() => {
