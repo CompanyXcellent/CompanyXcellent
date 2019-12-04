@@ -117,7 +117,7 @@ io.on('connection', (socket) => {
     let participants = await db.add_participants(newRoom.chat_room_id, userId, userTwo);
 
     socket.join(newRoom.chat_room_name);
-    socket.emit('joined', { messages: [], room: { chat_room_id: room.chat_room_id, user_id: userId }});
+    socket.emit('joined', { messages: [], room: { chat_room_id: newRoom.chat_room_id, user_id: userId }});
   })
 
   socket.on('send message', async ({ message, room, userId }) => {
@@ -168,7 +168,7 @@ passport.deserializeUser(function (obj, done) {
 });
 
 app.get("/api/getUser", (req, res, next) => {
-  if (req.session.passport.user) {
+  if (req.session.passport !== undefined) {
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
 });
@@ -179,9 +179,9 @@ app.get(
     failureRedirect: "http://localhost:3000/#/"
   }),
   (req, res) => {
-    console.log(req.session);
+    // console.log(req.session);
 
-    res.set('Location', 'http://localhost:3000/#/posts');
+    res.set('Location', 'http://localhost:3000/#/');
     res.status(302).send(req.session.passport.user);
     // res.redirect("http://localhost:3000/#/posts");
   }
@@ -190,6 +190,7 @@ app.get(
 app.get("/api/logout", (req, res) => {
   console.log("logout");
   req.logout();
+  req.session.destroy();
   let returnTo = "http://localhost:3000/";
   res.redirect(
     `https://${AUTH0_DOMAIN}/v2/logout?returnTo=${returnTo}&client_id=${CLIENT_ID}`

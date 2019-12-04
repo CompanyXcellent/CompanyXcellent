@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
 import store from './redux/store';
@@ -9,7 +9,7 @@ import NavBar from './components/Nav/NavBar'
 import {withRouter} from 'react-router'
 
 
-function App(props) {
+const App = (props) => {
 
   //this function makes it so that the navBar is not availible until the user is logged in
   const navBarDisplay = () => {
@@ -20,12 +20,17 @@ function App(props) {
     }
   }
 
+  // useEffect(() => {
+
+  // }, [])
+
 
   return (
     <Provider store={store} >
       <ThemeProvider theme={theme} >
         <div className="App">
           {navBarDisplay()}
+          {/* <NavBar /> */}
           <CssBaseline />
           {routes}
         </div>
