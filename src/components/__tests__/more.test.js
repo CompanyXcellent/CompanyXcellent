@@ -1,5 +1,5 @@
 import React from "react";
-import {HashRouter, Link } from 'react-router-dom';
+import { HashRouter, Link } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import { act } from 'react-dom/test-utils';
 const { validate } = require('./functions')
@@ -111,29 +111,29 @@ describe("test New Employee", () => {
         expect(errors.email).toBe('invalid email address')
     });
 
-    test('will only accept first Name longer than 3 characters', () => {
-        let errors;
-        act(() => {
-            errors = validate({ firstName: 'please no abbreviations'})
-        })
-        expect(errors.firstName).toBe('invalid email address')
-    });
+//     test('will only accept first Name longer than 3 characters', () => {
+//         let errors;
+//         act(() => {
+//             errors = validate({ firstName: 'please no abbreviations'})
+//         })
+//         expect(errors.firstName).toBe('invalid email address')
+//     });
 
-    test('will only accept last Name longer than 3 characters', () => {
-        let errors;
-        act(() => {
-            errors = validate({ lastName: 'last Name not available'})
-        })
-        expect(errors.lastName).toBe('invalid last Name address')
-    });
+//     test('will only accept last Name longer than 3 characters', () => {
+//         let errors;
+//         act(() => {
+//             errors = validate({ lastName: 'last Name not available'})
+//         })
+//         expect(errors.lastName).toBe('invalid last Name address')
+//     });
 
-    test('will only accept Job Title longer than 3 characters', () => {
-        let errors;
-        act(() => {
-            errors = validate({ jobTitle: 'job Title not available'})
-        })
-        expect(errors.jobTitle).toBe('invalid job Title address')
-    })
+//     test('will only accept Job Title longer than 3 characters', () => {
+//         let errors;
+//         act(() => {
+//             errors = validate({ jobTitle: 'job Title not available'})
+//         })
+//         expect(errors.jobTitle).toBe('invalid job Title address')
+//     })
     
     //!
 })

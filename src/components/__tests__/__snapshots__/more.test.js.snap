@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing routing make sure that "/" renders landing page correctly 1`] = `
+<a
+  href="#/"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/add-conversation' renders add-conversation page correctly 1`] = `
+<a
+  href="#/add-conversation"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/conversations/:id' renders conversations/:id page correctly 1`] = `
+<a
+  href="#/conversations/:id"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/create-employee' renders create-employee page correctly 1`] = `
+<a
+  href="#/create-employee"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/createPoll' renders createPoll page correctly 1`] = `
+<a
+  href="#/createPoll"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/employees' renders employees page correctly 1`] = `
+<a
+  href="#/employees"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/messages' renders messages page correctly 1`] = `
+<a
+  href="#/messages"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/posts' renders posts page correctly 1`] = `
+<a
+  href="#/posts"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/profile/:id' renders profile/:id page correctly 1`] = `
+<a
+  href="#/profile/:id"
+  onClick={[Function]}
+/>
+`;
+
+exports[`Testing routing make sure that '/team' renders team page correctly 1`] = `
+<a
+  href="#/team"
+  onClick={[Function]}
+/>
+`;
