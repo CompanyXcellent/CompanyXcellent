@@ -120,5 +120,6 @@ module.exports = {
         const db = req.app.get('db')
         const averageRating = await db.get_employee_ratings(receiverId, questionId)
         res.status(200).send(averageRating)
-     }
+        console.log('this is the average rating', averageRating)
+    }
 }
