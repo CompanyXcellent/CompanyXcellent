@@ -7,6 +7,12 @@ const Landing = (props) => {
   useEffect(() => {
     axios.get('/api/getUser')
     .then(res => {
+      // console.log(props.location.state.from === true)
+      if(props.location.state !== undefined){
+        props.history.push(props.location.state.from.pathname)
+        return
+      }
+
       if(res.data.user_id){
         props.history.push('/posts');
       }
