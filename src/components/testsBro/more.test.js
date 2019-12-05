@@ -5,7 +5,8 @@ import { act } from "react-dom/test-utils";
 import axios from 'axios'
 import Team from '../Team/Team'
 import promise from "redux-promise-middleware";
-const { createPost, getEmployeeRating, testingGetTeamEndpoint, testingGetPosts, testGetPoll } = require("./functions");
+// import { testUsersInfo } from "./functions";
+const { createPost, getEmployeeRating, testingGetTeamEndpoint, testingGetPosts, testGetPoll, testPostPoll, testResponses, testUsersInfo } = require("./functions");
 
 describe("Testing routing", () => {
   //?Derek1
@@ -128,7 +129,7 @@ describe("createPost", () => {
     expect(typeof testVal).toBe('object')
   });
 
-  it('testing functionality on the get posts endpoints', async() => {
+  it('testing functionality on the get posts endpoints', async () => {
     const posts = await testingGetPosts()
     expect(posts[0].user_id).toBe(1)
   });
@@ -139,3 +140,22 @@ describe("createPost", () => {
   })
 
 });
+
+//? Ryan's tests
+describe('tests the polls', () => {
+  it('posts the polls', async () => {
+    const questions = await testPostPoll()
+    expect(typeof questions).toBe('object')
+  })
+  it('submits the poll responses', async () => {
+    const responses = await testResponses()
+    expect(responses[0].question).toBe('Efficiency:')
+  })
+});
+
+describe(`tests the user's data`, () => {
+  it('get the user nickname', async () => {
+    const userInfo = await testUsersInfo()
+    expect(userInfo.nickname).toBe('alienkiller47')
+  })
+})

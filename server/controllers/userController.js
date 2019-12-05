@@ -114,7 +114,7 @@ module.exports = {
     },
 
     getEmployeeRating: async (req, res) => {
-        const {questionId, receiverId} = req.body
+        const { questionId, receiverId } = req.body
 
         const db = req.app.get('db')
         const averageRating = await db.get_employee_ratings(receiverId, questionId)
