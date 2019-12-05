@@ -110,16 +110,11 @@ describe("createPost", () => {
   });
 
   it('testing getEmployeeRating endpoint ', async () => {
-    
-    
-    // return getEmployeeRating().then(res => {
-    //   expect(res.data).toBe([])
-    // })
-    
-    // console.log(await getEmployeeRating())
-    // expect(typeof getEmployeeRating()).toBe('string')
+    const answer = await getEmployeeRating()    
+    console.log('this is the aaaaaanswer', answer)
+    expect(typeof answer[0]).toBe('object')
   })
 
-  
+  //heres a good example of endpoint testing
 
 });

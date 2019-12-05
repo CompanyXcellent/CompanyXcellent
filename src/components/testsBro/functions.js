@@ -8,12 +8,13 @@ export async function createPost() {
     })
 }
 
-export function getEmployeeRating(){
+export async function getEmployeeRating(){
     // const endval = ''
-    axios.post('/api/employeeRatingsRetrieval', { questionId: 0, receiverId: 1 })
-    // .then(res => {
-    //     endval = res.data[0].avg
-    // })
-    // .catch(err => err)
-    // return endval
+    const variable = await axios.post('http://localhost:3030/api/employeeRatingsRetrieval', { questionId: 0, receiverId: 1 })
+    .then(res => {
+        return res.data
+    })
+    .catch(err => err)
+    return variable
+    //you have to make it match this format witht the axuis request for it to return what you wnat
 }
