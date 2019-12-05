@@ -31,6 +31,9 @@ const Conversation = (props) => {
     })
 
     socket.on('joined', ({ messages, room }) => {
+      console.log('client side');
+      console.log(messages);
+      console.log(room);
       setMessages(messages);
       setRoom(room);
       scrollToBottom();
@@ -44,6 +47,9 @@ const Conversation = (props) => {
 
   useEffect(() => {
     socket.on('new message', (newMessage) => {
+      console.log('new message cliente side');
+      console.log(newMessage);
+      // This might be the problem
       setMessages([...messages, newMessage])
       scrollToBottom();
     })

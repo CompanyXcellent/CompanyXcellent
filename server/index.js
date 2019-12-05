@@ -91,9 +91,11 @@ const io = socket(server);
 
 io.on('connection', (socket) => {
   socket.on('enter', async ({ userId, userTwo }) => {
+    console.log(socket.id);
     const db = app.get('db');
 
     let rooms = await db.get_rooms(userId);
+    console.log(rooms);
 
     let otherParticipants = [];
 
@@ -102,16 +104,19 @@ io.on('connection', (socket) => {
       otherParticipants = [...otherParticipants, ...otherParticipant];
     }
 
+    console.log(otherParticipants);
     otherParticipants = otherParticipants.filter(e => e.user_id === +userTwo);
 
     if(otherParticipants[0]){
       const messages = await db.get_messages(otherParticipants[0].chat_room_id);
+      console.log(otherParticipants[0].chat_room_id);
       socket.join(otherParticipants[0].chat_room_id);
       socket.emit('joined', { messages, room: otherParticipants[0] });
       return;
     }
 
     // Logic to create room if it doesn't exist.
+    console.log('creating a new room ...')
 
     let chatRoomName = randomatic('Aa0!', 20);
 
@@ -125,10 +130,12 @@ io.on('connection', (socket) => {
   })
 
   socket.on('send message', async ({ message, room, userId }) => {
+    console.log(message, room, userId)
     const db = app.get('db');
 
     let newMessage = await db.send_message(userId, room.chat_room_id, message);
     newMessage = newMessage[0];
+    console.log(newMessage);
 
     socket.emit('new message', newMessage);
   })
