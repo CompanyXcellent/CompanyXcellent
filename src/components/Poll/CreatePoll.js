@@ -1,114 +1,150 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button'
-import axios from 'axios'
-import './pollStyling.css'
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+
+import './pollStyling.css';
 
 const CreatePoll = () => {
   const classes = useStyles();
 
-  const[question1, setQuestion1] = useState('')
-  const[question2, setQuestion2] = useState('')
-  const[question3, setQuestion3] = useState('')
-  const[question4, setQuestion4] = useState('')
-  const[question5, setQuestion5] = useState('')
-  const[question6, setQuestion6] = useState('')
-  const[question7, setQuestion7] = useState('')
-  const[question8, setQuestion8] = useState('')
-  const[question9, setQuestion9] = useState('')
-  const[question10, setQuestion10] = useState('')
-  const[question11, setQuestion11] = useState('')
-  const[question12, setQuestion12] = useState('')
-  const[question13, setQuestion13] = useState('')
-  const[question14, setQuestion14] = useState('')
-  const[question15, setQuestion15] = useState('')
+  const [numberOfQuestions, setNumbersOfQuestions] = useState(5);
+
+  const [question1, setQuestion1] = useState('')
+  const [question2, setQuestion2] = useState('')
+  const [question3, setQuestion3] = useState('')
+  const [question4, setQuestion4] = useState('')
+  const [question5, setQuestion5] = useState('')
+  const [question6, setQuestion6] = useState('')
+  const [question7, setQuestion7] = useState('')
+  const [question8, setQuestion8] = useState('')
+  const [question9, setQuestion9] = useState('')
+  const [question10, setQuestion10] = useState('')
+  const [question11, setQuestion11] = useState('')
+  const [question12, setQuestion12] = useState('')
+  const [question13, setQuestion13] = useState('')
+  const [question14, setQuestion14] = useState('')
+  const [question15, setQuestion15] = useState('')
 
   const handleSubmit = () => {
-    axios.post('/api/poll', {
-      q1: question1,
-      q2: question2,
-      q3: question3,
-      q4: question4,
-      q5: question5,
-      q6: question6,
-      q7: question7,
-      q8: question8,
-      q9: question9,
-      q10: question10,
-      q11: question11,
-      q12: question12,
-      q13: question13,
-      q14: question14,
-      q15: question15,
-    })
-    setQuestion1('')
-    setQuestion2('')
-    setQuestion3('')
-    setQuestion4('')
-    setQuestion5('')
-    setQuestion6('')
-    setQuestion7('')
-    setQuestion8('')
-    setQuestion9('')
-    setQuestion10('')
-    setQuestion11('')
-    setQuestion12('')
-    setQuestion13('')
-    setQuestion14('')
-    setQuestion15('')
-    alert('poll submitted')
+    const body = {};
+
+    for (let i = 0; i < 15; i++) {
+      if(i >= questions.length){
+        body[`q${i + 1}`] = ''  
+      } else {
+        body[`q${i + 1}`] = questions[i].question
+      }
+    }
+    console.log(body);
+
+    axios.post('/api/poll', body);
+    setQuestions([{...blankQuestion}]);
+    alert('poll submitted');
+  }
+
+  const blankQuestion = { number: 0, question: '' }
+  const [questions, setQuestions] = useState([
+    { ...blankQuestion }
+  ]);
+
+  const addQuestion = () => {
+    if (questions.length >= 15) {
+      return;
+    }
+    setQuestions([...questions, { ...blankQuestion }]);
+  };
+
+  const handleQuestionChange = (e) => {
+    const updatedQuestions = [...questions];
+
+    updatedQuestions[e.target.name].question = e.target.value;
+
+    setQuestions(updatedQuestions);
+  };
+
+  console.log(questions);
+  const renderQuestions = [];
+
+  for (let i = 0; i < questions.length; i++) {
+    renderQuestions.push(
+      <TextField
+        key={`q${i}`}
+        name={`${i}`}
+        label={`Question ${i + 1}`}
+        variant='outlined'
+        className={`${classes.marginTop16} ${classes.input}`}
+        multiline
+        rowsMax='3'
+        value={questions[i].question}
+        onChange={e => handleQuestionChange(e)}
+      />
+    )
   }
 
   return (
     <Container className={classes.mainContainer}>
-      <h1 id='pollform'>Enter Questions</h1>
-      <div id='poll-input-container'>
-        <input className='poll-question-input' name='question1' value={question1} onChange={(e) => {setQuestion1(e.target.value)}}/>
-        
-        <input className='poll-question-input' name='question2' value={question2} onChange={(e) => {setQuestion2(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question3' value={question3} onChange={(e) => {setQuestion3(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question4' value={question4} onChange={(e) => {setQuestion4(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question5' value={question5} onChange={(e) => {setQuestion5(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question6' value={question6} onChange={(e) => {setQuestion6(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question7' value={question7} onChange={(e) => {setQuestion7(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question8' value={question8} onChange={(e) => {setQuestion8(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question9' value={question9} onChange={(e) => {setQuestion9(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question10' value={question10} onChange={(e) => {setQuestion10(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question11' value={question11} onChange={(e) => {setQuestion11(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question12' value={question12} onChange={(e) => {setQuestion12(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question13' value={question13} onChange={(e) => {setQuestion13(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question14' value={question14} onChange={(e) => {setQuestion14(e.target.value)}}/>
-
-        <input className='poll-question-input' name='question15' value={question15} onChange={(e) => {setQuestion15(e.target.value)}}/>
-      </div>
+      <Typography variant='h3' className={`${classes.textAlignCenter} ${classes.padding16}`}>Enter Questions</Typography>
+      <Typography variant='h5' className={`${classes.textAlignCenter} ${classes.padding16}`}>15 Question Limit</Typography>
       <Button
-        className={classes.submitButton}
+        variant='contained'
+        color='primary'
+        size='large'
+        className={classes.button}
+        onClick={addQuestion}
+      >
+        Add Question
+        </Button>
+      {renderQuestions}
+      <Button
+        variant='contained'
+        color='primary'
+        size='large'
+        className={`${classes.button} ${classes.marginTop16}`}
         onClick={handleSubmit}
-      >Put Out Poll</Button>
+      >
+        Submit Poll
+      </Button>
     </Container>
   )
 }
 
 export default CreatePoll;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   mainContainer: {
-
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
   },
-  submitButton:{
-    margin: '20px'
+  textAlignCenter: {
+    textAlign: 'center'
+  },
+  padding16: {
+    padding: 16
+  },
+  marginTop16: {
+    marginTop: 16
+  },
+  button: {
+    maxWidth: 175
+  },
+  input: {
+    width: '100%',
+
+    [theme.breakpoints.up('md')]: {
+      width: '90%'
+
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      width: '75%'
+
+    }
   }
-})
+}))

@@ -91,11 +91,9 @@ const io = socket(server);
 
 io.on('connection', (socket) => {
   socket.on('enter', async ({ userId, userTwo }) => {
-    console.log(socket.id);
     const db = app.get('db');
 
     let rooms = await db.get_rooms(userId);
-    console.log(rooms);
 
     let otherParticipants = [];
 
@@ -104,19 +102,16 @@ io.on('connection', (socket) => {
       otherParticipants = [...otherParticipants, ...otherParticipant];
     }
 
-    console.log(otherParticipants);
     otherParticipants = otherParticipants.filter(e => e.user_id === +userTwo);
 
     if(otherParticipants[0]){
       const messages = await db.get_messages(otherParticipants[0].chat_room_id);
-      console.log(otherParticipants[0].chat_room_id);
       socket.join(otherParticipants[0].chat_room_id);
       socket.emit('joined', { messages, room: otherParticipants[0] });
       return;
     }
 
     // Logic to create room if it doesn't exist.
-    console.log('creating a new room ...')
 
     let chatRoomName = randomatic('Aa0!', 20);
 
@@ -130,12 +125,10 @@ io.on('connection', (socket) => {
   })
 
   socket.on('send message', async ({ message, room, userId }) => {
-    console.log(message, room, userId)
     const db = app.get('db');
 
     let newMessage = await db.send_message(userId, room.chat_room_id, message);
     newMessage = newMessage[0];
-    console.log(newMessage);
 
     // socket.emit('new message', newMessage);
     io.to(room.chat_room_id).emit('new message', newMessage);
@@ -156,9 +149,7 @@ passport.use(
     },
 
     function (accessToken, refreshToken, extraParams, profile, done) {
-      // const db = req.app.get('db');
       let { id } = profile;
-      // let { value } = profile.emails[0];
 
       app.get('db').get_user([id])
         .then(response => {
@@ -180,7 +171,6 @@ passport.deserializeUser(function (obj, done) {
 });
 
 app.get("/api/getUser", (req, res, next) => {
-  // console.log(req.session)
   if (req.session.passport !== undefined) {
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
@@ -192,7 +182,6 @@ app.get(
     failureRedirect: FAILURE_REDIRECT
   }),
   (req, res) => {
-    console.log(req.session);
 
     res.set('Location', SUCCESS_REDIRECT);
     res.status(302).send(req.session.passport.user);
@@ -201,7 +190,6 @@ app.get(
 );
 
 app.get("/api/logout", (req, res) => {
-  console.log("logout");
   req.logout();
   req.session.destroy();
   
@@ -256,7 +244,6 @@ app.post('/api/register', async (req, res) => {
     return res.status(409).send('Email already in use.');
   }
 
-  console.log('auth0 activating')
   auth0ManagementClient.createUser({
     user_id: uniqueAuth0Id,
     email: email,

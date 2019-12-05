@@ -173,7 +173,7 @@ const Profile = (props) => {
         <Avatar className={classes.avatar} src={employee.profile_img} />
         <Container className={classes.nameTeamJob}>
           <Typography variant='h4' className={classes.paddingTopBottom6}>{employee.first_name} {employee.last_name}</Typography>
-          <Typography variant='subtitle2' className={classes.paddingTopBottom6}>{employee.group_name} - {employee.job_title}</Typography>
+          <Typography variant='subtitle1' className={classes.paddingTopBottom6}>{employee.group_name} - {employee.job_title}</Typography>
           <Container className={classes.buttonContainer}>
 
             {props.user.role_id === 1 ?
@@ -198,6 +198,7 @@ const Profile = (props) => {
             >
               {props.user.user_id === employee.user_id ? 'Edit' : subscriptionId ? 'Unsubscribe' : 'Subscribe'}
             </Button>
+          { props.user.user_id === employee.user_id ? null : <RatingDialog empId={props.match.params.id} keepUpdated={keepPageUpdated} buttonClass={classes.button} /> }
           </Container>
         </Container>
       </Container>
@@ -207,12 +208,12 @@ const Profile = (props) => {
         {stateFunctions.map((e, i) => {
           if (e.out !== '') {
             return (
-              <div key={`key${i}`}>
-                <Box className={classes.ratingBox} component="fieldset" mb={3} borderColor="transparent">
+              // <div key={`key${i}`}>
+                <Box className={classes.ratingBox} component="fieldset" mb={3} borderColor="transparent" >
                   <Typography component="legend">{e.out}</Typography>
                   <Rating name={`name${i}`} value={e.avg} readOnly precision={.01} />
                 </Box>
-              </div>
+              // </div>
             )
           }
         })}
@@ -223,7 +224,6 @@ const Profile = (props) => {
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
-      <RatingDialog empId={props.match.params.id} keepUpdated={keepPageUpdated} />
     </Container>
   )
 }
@@ -239,44 +239,78 @@ const mapStateToProps = reduxState => {
 
 export default connect(mapStateToProps, null)(Profile);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   mainContainer: {
     minHeight: '92.5vh',
 
     padding: 16
   },
   avatarNameTeamJob: {
-    height: '20vh',
+    height: '30vh',
 
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    padding: 0
+    padding: 0,
+
+    [theme.breakpoints.up('lg')]: {
+      height: '40vh',
+
+      justifyContent: 'center'
+    }
   },
   avatar: {
     width: 150,
-    height: 150
+    height: 150,
+
+    [theme.breakpoints.up('md')]: {
+      width: 300,
+      height: 300
+    }
   },
   nameTeamJob: {
     height: '100%',
 
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
 
     padding: 0,
-    marginLeft: 16
+    marginLeft: 16,
+
+    [theme.breakpoints.up('lg')]: {
+      width: '50%',
+
+      margin: 0,
+
+      padding: 32
+    }
   },
   buttonContainer: {
+    height: '30%',
+
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+
+    padding: 0,
+
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly'
+    }
   },
   button: {
-    width: 100,
+    width: 120,
+    // maxWidth: '50%',
 
-    marginTop: 8
+    // marginTop: 8,
+
+    [theme.breakpoints.up('lg')]: {
+      marginTop: 0
+    }
   },
   paddingTopBottom6: {
     padding: '6px 0'
@@ -315,7 +349,9 @@ const useStyles = makeStyles({
   },
   ratingBox: {
     display: 'flex',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+
+    maxWidth: '50%'
   }
 
-})
+}))

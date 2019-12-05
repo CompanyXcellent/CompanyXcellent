@@ -252,10 +252,19 @@ const useStyles = makeStyles({
   },
   avatar: {
     width: 100,
-    height: 100
+    height: 100,
+
+    [theme.breakpoints.up('md')]: {
+      width: 200,
+      height: 200
+    }
   },
   list: {
-    width: 250
+    width: 250,
+
+    [theme.breakpoints.up('md')]: {
+      width: 500
+    }
   },
   link: {
     color: "black"

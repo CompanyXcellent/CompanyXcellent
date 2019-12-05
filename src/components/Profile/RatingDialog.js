@@ -185,9 +185,9 @@ function RatingDialog(props) {
   };
   // console.log('empId', props.empId)
   return (
-    <div>
-      <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
-        Rate Coworker
+    <>
+      <Button variant="contained" color="secondary" size='small' onClick={handleClickOpen} className={props.buttonClass}>
+        Take Poll
       </Button>
       <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
@@ -223,7 +223,7 @@ function RatingDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }
 

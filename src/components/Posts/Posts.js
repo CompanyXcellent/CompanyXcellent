@@ -118,20 +118,24 @@ export default connect(mapStateToProps, { getUser })(Posts);
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
 
 
-      padding: 32,
+      padding: 16,
 
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center'
+    },
+    
+    [theme.breakpoints.up('lg')]: {
+      padding: 32
     }
   },
   makePostContainer: {
     display: 'none',
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       width: '80%',
       height: '100%',
 
@@ -141,7 +145,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   makePostInput: {
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       // padding: 16
     }
   },
@@ -161,7 +165,7 @@ const useStyles = makeStyles(theme => ({
 
     marginTop: 16,
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       width: '75%',
 
       padding: 32,
