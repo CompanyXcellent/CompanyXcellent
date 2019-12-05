@@ -19,7 +19,7 @@ const Landing = (props) => {
     })
     .catch(err => {
       if(err){
-        window.location.href = "http://localhost:3030/api/auth";
+        window.location.href = process.env.REACT_APP_LOGIN_REDIRECT;
       }
     });
   }, [])

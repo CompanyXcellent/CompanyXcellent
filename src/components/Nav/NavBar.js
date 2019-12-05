@@ -63,7 +63,7 @@ function TemporaryDrawer(props) {
   }, [props.userReducer.user.user_id]);
 
   const logout = () => {
-    window.location.href = "http://localhost:3030/api/logout";
+    window.location.href = process.env.REACT_APP_LOGOUT_REDIRECT;
   };
 
   //controls the out and in movement of the navBar using the state hook
