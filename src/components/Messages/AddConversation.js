@@ -58,7 +58,7 @@ const AddConversation = (props) => {
 
         if (fullName.includes(filter.toLocaleLowerCase()) && props.user.user_id !== e.user_id) {
           return (
-            <Link to={`/conversation/${e.user_id}`} className={classes.link}>
+            <Link to={`/messages/${e.user_id}`} className={classes.link}>
               <Container key={e.user_id} className={classes.listItemContainer}>
                 <Container className={classes.topLine}>
                   <Container className={classes.avatarAndName} >

@@ -25,9 +25,13 @@ const {
   CLIENT_SECRET,
   CLIENT_ID_TWO,
   CLIENT_SECRET_TWO,
-  EMAIL_PASSWORD
+  EMAIL_PASSWORD,
+  SUCCESS_REDIRECT,
+  FAILURE_REDIRECT,
+  RETURN_TO
 } = process.env;
 
+app.use( express.static( `${__dirname}/../build` ) );
 app.use(express.json());
 
 massive(CONNECTION_STRING).then(db => {
@@ -41,7 +45,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7
+      maxAge: 1000 * 60 * 60
     }
   })
 );
@@ -168,6 +172,7 @@ passport.deserializeUser(function (obj, done) {
 });
 
 app.get("/api/getUser", (req, res, next) => {
+  // console.log(req.session)
   if (req.session.passport !== undefined) {
     res.status(200).send(req.session.passport.user);
   } else res.sendStatus(500);
@@ -176,14 +181,14 @@ app.get("/api/getUser", (req, res, next) => {
 app.get(
   "/api/auth",
   passport.authenticate("auth0", {
-    failureRedirect: "http://localhost:3000/#/"
+    failureRedirect: FAILURE_REDIRECT
   }),
   (req, res) => {
-    // console.log(req.session);
+    console.log(req.session);
 
-    res.set('Location', 'http://localhost:3000/#/');
+    res.set('Location', SUCCESS_REDIRECT);
     res.status(302).send(req.session.passport.user);
-    // res.redirect("http://localhost:3000/#/posts");
+    // res.redirect(SUCCESS_REDIRECT);
   }
 );
 
@@ -191,9 +196,9 @@ app.get("/api/logout", (req, res) => {
   console.log("logout");
   req.logout();
   req.session.destroy();
-  let returnTo = "http://localhost:3000/";
+  
   res.redirect(
-    `https://${AUTH0_DOMAIN}/v2/logout?returnTo=${returnTo}&client_id=${CLIENT_ID}`
+    `https://${AUTH0_DOMAIN}/v2/logout?returnTo=${RETURN_TO}&client_id=${CLIENT_ID}`
   );
 });
 

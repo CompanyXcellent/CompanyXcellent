@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { makeStyles } from "@material-ui/core/styles";
+import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
 import { getUser } from "../../redux/reducers/userReducer";
 
@@ -39,7 +40,7 @@ const Conversation = (props) => {
       socket.emit('disconnect')
       socket.off()
     }
-  }, [props.user])
+  }, [props.user,  props.match.params.id])
 
   useEffect(() => {
     socket.on('new message', (newMessage) => {
@@ -103,9 +104,9 @@ const mapStateToProps = reduxState => {
   };
 };
 
-export default connect(mapStateToProps, { getUser })(Conversation);
+export default connect(mapStateToProps, { getUser })(withRouter(Conversation));
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   mainContainer: {
     width: '100%',
     maxHeight: '84.5vh',
@@ -117,7 +118,11 @@ const useStyles = makeStyles({
 
     padding: 8,
 
-    overflowY: 'auto'
+    overflowY: 'auto',
+
+    [theme.breakpoints.up('lg')]: {
+      width: '90%'
+    }
   },
   message: {
     // borderRadius: 10,
@@ -158,27 +163,40 @@ const useStyles = makeStyles({
   },
   inputContainer: {
     backgroundColor: 'white',
-    width: 'calc(100% - 16px)',
+    width: 'calc(100%)',
     // height: '6vh',
     position: 'fixed',
     bottom: 0,
+    left: 0,
 
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    padding: '5px 0',
+    padding: 8,
 
     boxSizing: 'border-box',
     MozBoxSizing: 'border-box',
     WebkitBoxSizing: 'border-box',
 
-    zIndex: 5
+    zIndex: 5,
+
+    [theme.breakpoints.up('lg')]: {
+      width: '70%',
+
+      position: 'fixed',
+      right: 0,
+      left: 'auto'
+    }
   },
   input: {
-    width: '80%'
+    width: '80%',
+
+    [theme.breakpoints.up('lg')]: {
+      width: '100%'
+    }
   },
   button: {
     marginLeft: 8
   }
-});
+}));

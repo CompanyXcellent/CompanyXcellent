@@ -7,6 +7,7 @@ import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
+import { relative } from 'path';
 
 const ImageFile = (props) => {
   const classes = useStyles();
@@ -60,18 +61,21 @@ export default ImageFile;
 
 const useStyles = makeStyles({
   imagePreviewContainer: {
-    height: '35vh',
+    height: 'auto',
+    // marginTop: 50,
 
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
+    // position: 'fixed',
 
     ['@media (min-width: 1280px)']: {
       alignItems: 'center'
     }
   },
   img: {
-    borderRadius: '50%'
+    borderRadius: '50%',
+
   },
   card: {
     height: '80%',
@@ -89,9 +93,12 @@ const useStyles = makeStyles({
   center: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBotton: 10
+
+
   },
   marginTop10: {
-    marginTop: 10
+    marginTop: 10,
   }
 })

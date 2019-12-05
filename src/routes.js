@@ -18,8 +18,9 @@ export default (
         <Route exact path='/' component={Landing}/>
         <ProtectedRoute path='/team' component={Team} adminRoute={false}/>
         <ProtectedRoute path='/profile/:id' component={Profile} adminRoute={false}/>
-        <ProtectedRoute path='/messages' component={Messages} adminRoute={false}/>
-        <ProtectedRoute path='/conversation/:id' component={Conversation} adminRoute={false}/>
+        <ProtectedRoute exact path='/messages' component={Messages} adminRoute={false}/>
+        <ProtectedRoute path='/messages/:id' component={Messages} adminRoute={false}/>
+        {/* <ProtectedRoute path='/messages/:id' component={Conversation} adminRoute={false}/> */}
         <ProtectedRoute path='/add-conversation' component={AddConversation} adminRoute={false}/>
         <ProtectedRoute path='/employees' component={Employees} adminRoute={false}/>
         <ProtectedRoute path='/createPoll' component={CreatePoll} adminRoute={true}/>
