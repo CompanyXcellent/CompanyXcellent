@@ -2,7 +2,10 @@ import React from "react";
 import { HashRouter, Link } from "react-router-dom";
 import renderer from "react-test-renderer";
 import { act } from "react-dom/test-utils";
-const { createPost, testFunc, getEmployeeRating } = require("./functions");
+import axios from 'axios'
+import Team from '../Team/Team'
+import promise from "redux-promise-middleware";
+const { createPost, getEmployeeRating, testingGetTeamEndpoint, testingGetPosts, testGetPoll } = require("./functions");
 
 describe("Testing routing", () => {
   //?Derek1
@@ -108,23 +111,31 @@ describe("Testing routing", () => {
   //!end ROUTE tests
 });
 
-//! endpoints test
+//! endpoints test thanjarvis
 describe("createPost", () => {
   it("this should be a function", () => {
     expect(typeof createPost).toBe("function");
   });
 
+  //important------------these tests depend on the backend so the server MUST be running for it to pass
   it('testing getEmployeeRating endpoint ', async () => {
-    
-    
-    // return getEmployeeRating().then(res => {
-    //   expect(res.data).toBe([])
-    // })
-    
-    // console.log(await getEmployeeRating())
-    // expect(typeof getEmployeeRating()).toBe('string')
-  })
+    const answer = await getEmployeeRating()
+    expect(typeof answer[0]).toBe('object')
+  });
 
-  
+  it(' testing the team enpoint', async () => {
+    const testVal = await testingGetTeamEndpoint()
+    expect(typeof testVal).toBe('object')
+  });
+
+  it('testing functionality on the get posts endpoints', async() => {
+    const posts = await testingGetPosts()
+    expect(posts[0].user_id).toBe(1)
+  });
+
+  it('testing functionality of the backend get poll enpoint', async () => {
+    const poll = await testGetPoll()
+    expect(poll[12].question).toBe('')
+  })
 
 });
