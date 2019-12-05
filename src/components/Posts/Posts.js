@@ -33,7 +33,6 @@ const Posts = (props) => {
 
   const getMyPosts = async () => {
     if(props.userReducer.user.user_id){
-      console.log(props.userReducer)
       await axios.get(`/api/posts/${props.userReducer.user.user_id}`)
       .then(res => {
         // console.log(res.data);
@@ -97,10 +96,16 @@ const Posts = (props) => {
               <Typography variant='body1'>{e.content}</Typography>
               {e.user_id === props.userReducer.user.user_id ?
                 <Button
-                  onClick={() => deletePost(e.post_id)}
-                >delete</Button> :
-                null
-              }              
+                variant='contained'
+                color='secondary'
+                size='small'
+                className={classes.deleteButton}
+                onClick={() => deletePost(e.post_id)}
+              >
+                Delete
+              </Button> :
+              null
+            }           
             </Paper>
           )
         })
@@ -184,5 +189,16 @@ const useStyles = makeStyles(theme => ({
   },
   name: {
     marginLeft: 16
-  }
+  },
+  deleteButton: {
+    marginLeft: '80%',
+
+    [theme.breakpoints.up('md')]: {
+      marginLeft: '90%'
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      marginLeft: '92%'
+    },
+  },
 }))

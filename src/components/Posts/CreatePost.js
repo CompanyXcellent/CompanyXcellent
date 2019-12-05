@@ -135,6 +135,8 @@ const useStyles = makeStyles( theme => ({
   addPostButton: {
     position: 'fixed',
     bottom: 16,
-    right: 16
+    right: 16,
+
+    zIndex: 10
   }
 }))
