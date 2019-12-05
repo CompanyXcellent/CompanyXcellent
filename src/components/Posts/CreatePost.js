@@ -128,7 +128,7 @@ const useStyles = makeStyles( theme => ({
   mainContainer: {
     width: '100%',
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       display: 'none'
     }
   },

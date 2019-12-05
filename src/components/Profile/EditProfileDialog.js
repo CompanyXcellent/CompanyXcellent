@@ -156,7 +156,7 @@ export default function CustomizedDialogs(props) {
   }
 
   return (
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={props.edit}>
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={props.edit} className={classes.dialogMainContainer}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Enter info
         </DialogTitle>
@@ -191,7 +191,13 @@ export default function CustomizedDialogs(props) {
   );
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+  dialogMainContainer: {
+    [theme.breakpoints.up('md')]: {
+      // height: '50vh',
+      // width: '70%'
+    },
+  },
   dialogContentContainer: {
     height: '70vh',
     // paddingTop:
@@ -200,7 +206,16 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    overflow: 'scroll'
+    overflow: 'scroll',
+
+    [theme.breakpoints.up('md')]: {
+      height: '50vh',
+      // width: '70%'
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      height: '70vh'
+    }
   },
   avatar: {
     width: 100,
@@ -212,4 +227,4 @@ const useStyles = makeStyles({
   aboutInput: {
     marginTop: 10
   }
-})
+}))

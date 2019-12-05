@@ -59,7 +59,7 @@ const ImageFile = (props) => {
 
 export default ImageFile;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   imagePreviewContainer: {
     height: 'auto',
     // marginTop: 50,
@@ -69,13 +69,22 @@ const useStyles = makeStyles({
     justifyContent: 'space-evenly',
     // position: 'fixed',
 
-    ['@media (min-width: 1280px)']: {
+    [theme.breakpoints.up('md')]: {
       alignItems: 'center'
     }
   },
   img: {
     borderRadius: '50%',
 
+    [theme.breakpoints.up('md')]: {
+      width: 250,
+      height: 250
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      width: 300,
+      height: 300
+    }
   },
   card: {
     height: '80%',
@@ -101,4 +110,4 @@ const useStyles = makeStyles({
   marginTop10: {
     marginTop: 10,
   }
-})
+}))

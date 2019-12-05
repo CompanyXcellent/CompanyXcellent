@@ -29,7 +29,6 @@ module.exports = {
   getConversations: async (req, res) => {
     const db = req.app.get("db");
     const { id } = req.params;
-    console.log(id);
 
     let conversations = await db.get_conversations(id);
 

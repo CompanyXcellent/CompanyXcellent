@@ -101,7 +101,6 @@ module.exports = {
     unsubscribe: async (req, res) => {
         const db = req.app.get('db');
         const { subscriptionId } = req.params;
-        console.log(subscriptionId);
 
         const oldSubscription = await db.unsubscribe(subscriptionId);
 

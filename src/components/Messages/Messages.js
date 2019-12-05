@@ -28,7 +28,7 @@ const Messages = props => {
 
   return (
     <Container className={classes.mainContainer} maxWidth={false}>
-      <Box className={props.match.params.id ? classes.displayNone : null}>
+      <Box className={classes.displayNone}>
         {conversations.map((e, i) => (
           <Link to={`/messages/${e.other_user.user_id}`} key={i}>
             <Container className={classes.conversationListItemContainer}>
@@ -66,10 +66,16 @@ const useStyles = makeStyles(theme => ({
   displayNone: {
     display: 'none',
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       display: 'inline',
       
-      width: '30%'
+      width: '30%',
+
+      boxShadow: '-5px 0px 15px black'
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      height: '88vh',
     }
   },
   mainContainer: {
@@ -77,11 +83,14 @@ const useStyles = makeStyles(theme => ({
 
     padding: 0,
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       width: '100%',
-      height: '87.5vh',
 
       display: 'flex'
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      height: '87.5vh'
     }
   },
   conversationListItemContainer: {
@@ -100,12 +109,12 @@ const useStyles = makeStyles(theme => ({
 
     fontSize: 60,
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       left: 16
     }
   },
   desktopConversation: {
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       width: '70%',
 
       display: 'inline'

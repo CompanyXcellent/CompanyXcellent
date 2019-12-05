@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -22,55 +23,63 @@ const Employees = (props) => {
       })
   }, [])
 
+
+  console.log(props);
   return (
     <Container className={classes.mainContainer}>
       {/* <Typography variant='h2' className={classes.title}>Employees</Typography> */}
       {employees.map(e => {
         return (
-            <Container key={e.user_id} className={classes.listItemContainer}>
-              <Container className={classes.topLine}>
-                <Container className={classes.avatarAndName} >
-                  <Avatar src={e.profile_img} />
-                  <Typography variant='h5' className={classes.name}>{e.first_name} {e.last_name}</Typography>
-                </Container>
-                <Link to={`/profile/${e.user_id}`} >
-                  <Button 
-                    variant="contained"
-                    size="small" 
-                    color="primary" 
-                    >
-                    View
+          <Container key={e.user_id} className={classes.listItemContainer}>
+            <Container className={classes.topLine}>
+              <Container className={classes.avatarAndName} >
+                <Avatar src={e.profile_img} className={classes.avatar} />
+                <Typography variant='h5' className={classes.name}>{e.first_name} {e.last_name}</Typography>
+              </Container>
+              <Link to={`/profile/${e.user_id}`} >
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                >
+                  View
                   </Button>
-                </Link>
-              </Container>
-              <Container className={classes.departmentJobEmail}>
-                <Typography variant='h6' className={classes.department}>{e.group_name}</Typography>
-                <Typography variant='subtitle1' className={classes.jobTitle}>{e.job_title}</Typography>
-                <Typography variant='subtitle1'>{e.username}</Typography>
-              </Container>
-              <Typography variant='body2'>{e.about}</Typography>
-              <Divider />
+              </Link>
             </Container>
+            <Typography variant='h6' className={classes.department}>{e.group_name}</Typography>
+            <Typography variant='subtitle1' className={classes.jobTitle}>{e.job_title}</Typography>
+            <Typography variant='subtitle1'>{e.username}</Typography>
+            <Typography variant='body2'>{e.about}</Typography>
+            <Divider />
+          </Container>
         )
       })}
-      <Link to='/create-employee'>
-        <Button 
-          className={classes.fixedBottomRight}
-          variant='contained' >
-          Add Employee
+      {props.user.user_id === 1 ?
+        <Link to='/create-employee'>
+          <Button
+            className={classes.fixedBottomRight}
+            variant='contained' >
+            Add Employee
         </Button>
-        {/* <AddIcon className={classes.addIcon} color='secondary' /> */}
-      </Link>
+        </Link>
+        : null}
     </Container>
   )
 }
 
-export default Employees;
+const mapStateToProps = reduxState => {
+  const { user } = reduxState.userReducer;
 
-const useStyles = makeStyles({
+  return {
+    user
+  }
+}
+
+export default connect(mapStateToProps, null)(Employees);
+
+const useStyles = makeStyles(theme => ({
   mainContainer: {
     width: '100%',
-    // minHeight: '90vh',
 
     display: 'flex',
     flexDirection: 'column',
@@ -78,15 +87,23 @@ const useStyles = makeStyles({
     alignItems: 'center'
   },
   title: {
-    margin: '16px 0'
+    padding: 16,
+
+    [theme.breakpoints.up('lg')]: {
+      padding: 32
+    }
   },
   listItemContainer: {
     width: '100%',
-    height: '25vh',
+    height: '30vh',
 
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
+
+    [theme.breakpoints.up('lg')]: {
+      height: '35vh'
+    }
 
   },
   topLine: {
@@ -97,30 +114,34 @@ const useStyles = makeStyles({
   },
   avatarAndName: {
     display: 'flex',
-    // justifyContent: 'space-evenly'
     alignItems: 'center',
 
     padding: 0
   },
+  avatar: {
+    width: 75,
+    height: 75,
+
+    [theme.breakpoints.up('md')]: {
+      width: 125,
+      height: 125
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      width: 150,
+      height: 150
+    }
+  },
   name: {
     marginLeft: 16
   },
-  button: {
-    
-  },
-  departmentJobEmail: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    
-    padding: 0
-  },
   department: {
-    width: '50%'
+    display: 'flex',
+    alignItems: 'center'
   },
   jobTitle: {
-    width: '50%',
-
-    textAlign: 'right'
+    display: 'flex',
+    alignItems: 'center'
   },
   fixedBottomRight: {
     position: 'fixed',
@@ -129,4 +150,4 @@ const useStyles = makeStyles({
 
     // fontSize: 60,
   }
-})
+}))

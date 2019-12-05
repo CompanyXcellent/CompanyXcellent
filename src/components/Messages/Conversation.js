@@ -31,9 +31,6 @@ const Conversation = (props) => {
     })
 
     socket.on('joined', ({ messages, room }) => {
-      console.log('client side');
-      console.log(messages);
-      console.log(room);
       setMessages(messages);
       setRoom(room);
       scrollToBottom();
@@ -47,9 +44,6 @@ const Conversation = (props) => {
 
   useEffect(() => {
     socket.on('new message', (newMessage) => {
-      console.log('new message cliente side');
-      console.log(newMessage);
-      // This might be the problem
       setMessages([...messages, newMessage])
       scrollToBottom();
     })
@@ -115,7 +109,7 @@ export default connect(mapStateToProps, { getUser })(withRouter(Conversation));
 const useStyles = makeStyles(theme => ({
   mainContainer: {
     width: '100%',
-    maxHeight: '84.5vh',
+    maxHeight: '84vh',
     // height: 'fit-content',
 
     boxSizing: 'border-box',
@@ -126,8 +120,14 @@ const useStyles = makeStyles(theme => ({
 
     overflowY: 'auto',
 
+    [theme.breakpoints.up('md')]: {
+      width: '100%',
+      maxHeight: '87vh',
+
+      padding: '8px 16px'
+    },
     [theme.breakpoints.up('lg')]: {
-      width: '90%'
+      maxHeight: '80vh'
     }
   },
   message: {
@@ -168,7 +168,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '10px 10px 10px 0px'
   },
   inputContainer: {
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background,
     width: 'calc(100%)',
     // height: '6vh',
     position: 'fixed',
@@ -187,18 +187,20 @@ const useStyles = makeStyles(theme => ({
 
     zIndex: 5,
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       width: '70%',
 
       position: 'fixed',
       right: 0,
-      left: 'auto'
+      left: 'auto',
+
+      padding: '8px 16px'
     }
   },
   input: {
     width: '80%',
 
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
       width: '100%'
     }
   },
