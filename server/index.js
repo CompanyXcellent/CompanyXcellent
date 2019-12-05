@@ -137,7 +137,8 @@ io.on('connection', (socket) => {
     newMessage = newMessage[0];
     console.log(newMessage);
 
-    socket.emit('new message', newMessage);
+    // socket.emit('new message', newMessage);
+    io.to(room.chat_room_id).emit('new message', newMessage);
   })
 })
 
