@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 
 
 // import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -22,7 +23,7 @@ const Profile = (props) => {
   const [reRender, setReRender] = useState(false)
   const [employee, setEmployee] = useState({});
   // const [skills, setSkills] = useState([]);
-  // const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [edit, setEdit] = useState(false);
   const [update, setUpdate] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState(false);
@@ -143,8 +144,28 @@ const Profile = (props) => {
     .then(res => {
       setUserSubscriptions(res.data);
     });
-    // console.log(userSubscriptions);
   }
+
+  const getMyPosts = () => {
+    if(props.user.user_id){
+      axios.get(`/api/posts/${props.user.user_id}`)
+      .then(async res => {
+        const myPosts = await res.data.filter(post => post.user_id === props.user.user_id);
+        setPosts(myPosts);
+      })
+    }
+  }
+
+  useEffect(() => {
+    getMyPosts();
+  }, [])
+
+  const deletePost = (id) => {
+    axios.delete(`/api/deletePost/${id}`)
+    getMyPosts();
+  }
+
+  console.log(posts);
 
   useEffect(() => {
     if(!userSubscriptions[0] && props.user.user_id){
@@ -218,9 +239,35 @@ const Profile = (props) => {
           }
         })}
       </Container>
-      <Typography>Recent Posts</Typography>
+      <Typography variant='h6' className={classes.recentPosts}>Recent Posts</Typography>
       <Container className={classes.posts}>
-
+      {
+        posts.map((e, i) => {
+          return(
+            <Paper 
+              key={e.post_id} 
+              className={classes.postContainer}>
+              <Container className={classes.avatarName}>
+                <Avatar className={classes.postAvatar} src={e.profile_img} />
+                <Typography variant='h6' className={classes.name}>{e.first_name} {e.last_name}</Typography>
+              </Container>
+              <Typography variant='body1'>{e.content}</Typography>
+              {e.user_id === props.user.user_id ?
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  size='small'
+                  className={classes.deleteButton}
+                  onClick={() => deletePost(e.post_id)}
+                >
+                  Delete
+                </Button> :
+                null
+              }              
+            </Paper>
+          )
+        })
+      }
       </Container>
       <EditProfileDialog user={props.user} employee={employee} edit={edit} setEdit={setEdit} />
       <EditEmployeeDialog employee={employee} update={update} setUpdate={setUpdate} />
@@ -243,7 +290,11 @@ const useStyles = makeStyles(theme => ({
   mainContainer: {
     minHeight: '92.5vh',
 
-    padding: 16
+    padding: 16,
+
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   avatarNameTeamJob: {
     height: '30vh',
@@ -341,11 +392,55 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  recentPosts: {
+    [theme.breakpoints.up('md')]: {
+      width: '75%'
+    }
+  },
   posts: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
+    alignItems: 'center'
 
+  },
+  postContainer: {
+    width: '100%',
+
+    padding: 8,
+
+    marginTop: 16,
+
+    [theme.breakpoints.up('md')]: {
+      width: '75%',
+
+      padding: 32,
+
+      borderRadius: 20
+    }
+  },
+  avatarName: {
+    display: 'flex',
+    alignItems: 'center',
+
+    padding: 0
+  },
+  postAvatar: {
+    margin: 0
+  },
+  name: {
+    marginLeft: 16
+  },
+  deleteButton: {
+    marginLeft: '77.5%',
+
+    [theme.breakpoints.up('md')]: {
+      marginLeft: '90%'
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      marginLeft: '92%'
+    },
   },
   ratingBox: {
     display: 'flex',
