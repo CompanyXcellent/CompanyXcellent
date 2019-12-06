@@ -55,8 +55,8 @@ const Posts = (props) => {
     e.preventDefault();
 
     await makeNewPost();
-    setPost('');
     getMyPosts();
+    setPost('');
   }
 
   // console.log(posts);
