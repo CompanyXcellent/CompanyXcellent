@@ -41,9 +41,9 @@ const Posts = (props) => {
     }     
   }
 
-  const deletePost = (id) => {
-    axios.delete(`/api/deletePost/${id}`)
-    getMyPosts()
+  const deletePost = async (id) => {
+    await axios.delete(`/api/deletePost/${id}`);
+    await getMyPosts();
   }
 
   const makeNewPost = () => {
@@ -55,7 +55,7 @@ const Posts = (props) => {
     e.preventDefault();
 
     await makeNewPost();
-    getMyPosts();
+    await getMyPosts();
     setPost('');
   }
 
