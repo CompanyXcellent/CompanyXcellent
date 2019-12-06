@@ -13,14 +13,9 @@ import AddIcon from '@material-ui/icons/AddBox';
 
 import Conversation from './Conversation';
 
-// import Conversation from './Conversation';
-
-
 const Messages = props => {
   const classes = useStyles();
   const [conversations, setConversations] = useState([]);
-
-  console.log(props.location.state)
 
   useEffect(() => {
     if(props.user || (props.location.state && props.location.state.newConversation)){
@@ -33,7 +28,6 @@ const Messages = props => {
   useEffect(() => {
     if(props.location.state && props.location.state.newConversation){
       axios.get(`/api/conversations/${props.user.user_id}`).then(res => {
-        console.log(res.data)
         setConversations(res.data);
         props.location.state = undefined;
       });
@@ -59,7 +53,6 @@ const Messages = props => {
         </Link>
       </Box>
       <Box className={classes.desktopConversation}>
-        {/* <Conversation /> */}
         { props.match.params.id ? <Conversation newConversation={props.location.state} /> : null }
       </Box>
     </Container>

@@ -151,6 +151,7 @@ const CreateEmployee = (props) => {
       </Container>
 
       {/* Error Dialog */}
+
       <Dialog
         open={errorMessage}
       >
@@ -166,17 +167,15 @@ const CreateEmployee = (props) => {
       </Dialog>
 
       {/* Success Dialog */}
+
       <Dialog
         open={success}
       >
-        <DialogTitle>Incomplete Form</DialogTitle>
+        <DialogTitle>Form Submitted</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Employee Profile successfully created!
           </DialogContentText>
-          {/* <DialogActions>
-            <Button onClick={() => setErrorMessage('')}>OK</Button>
-          </DialogActions> */}
         </DialogContent>
       </Dialog>
     </Container>
@@ -189,14 +188,11 @@ const useStyles = makeStyles({
   mainContainer: {
     height: '82.5vh',
     width: '100%',
-    // backgroundColor: 'beige'
 
     display: 'flex',
     justifyContent: 'space-evenly',
     flexWrap: 'wrap',
     alignContent: 'center',
-    // alignItems: 'flex-start',
-
   },
   textAlignCenter: {
     textAlign: 'center'
