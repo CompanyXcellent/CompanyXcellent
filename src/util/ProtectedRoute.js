@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-// I can destructure adminRoute and user like Component.
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   return (
     <Route {...rest} render={(props) => {

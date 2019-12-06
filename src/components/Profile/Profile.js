@@ -147,10 +147,10 @@ const Profile = (props) => {
   }
 
   const getMyPosts = () => {
-    if(props.user.user_id){
-      axios.get(`/api/posts/${props.user.user_id}`)
+    if(employee.user_id){
+      axios.get(`/api/posts/${employee.user_id}`)
       .then(async res => {
-        const myPosts = await res.data.filter(post => post.user_id === props.user.user_id);
+        const myPosts = await res.data.filter(post => post.user_id === employee.user_id);
         setPosts(myPosts);
       })
     }
@@ -158,14 +158,12 @@ const Profile = (props) => {
 
   useEffect(() => {
     getMyPosts();
-  }, [])
+  }, [employee])
 
   const deletePost = (id) => {
     axios.delete(`/api/deletePost/${id}`)
     getMyPosts();
   }
-
-  console.log(posts);
 
   useEffect(() => {
     if(!userSubscriptions[0] && props.user.user_id){
@@ -185,8 +183,6 @@ const Profile = (props) => {
       }
     }
   }, [userSubscriptions, employee, props.user])
-
-  // console.log(stateFunctions)
 
   return (
     <Container className={classes.mainContainer}>
@@ -339,7 +335,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   buttonContainer: {
-    height: '30%',
+    height: '45%',
 
     display: 'flex',
     flexDirection: 'column',

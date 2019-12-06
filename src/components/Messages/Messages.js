@@ -20,15 +20,29 @@ const Messages = props => {
   const classes = useStyles();
   const [conversations, setConversations] = useState([]);
 
+  console.log(props.location.state)
+
   useEffect(() => {
-    axios.get(`/api/conversations/${props.user.user_id}`).then(res => {
-      setConversations(res.data);
-    });
+    if(props.user || (props.location.state && props.location.state.newConversation)){
+      axios.get(`/api/conversations/${props.user.user_id}`).then(res => {
+        setConversations(res.data);
+      });
+    }
   }, [props.user]);
+
+  useEffect(() => {
+    if(props.location.state && props.location.state.newConversation){
+      axios.get(`/api/conversations/${props.user.user_id}`).then(res => {
+        console.log(res.data)
+        setConversations(res.data);
+        props.location.state = undefined;
+      });
+    }
+  })
 
   return (
     <Container className={classes.mainContainer} maxWidth={false}>
-      <Box className={classes.displayNone}>
+      <Box className={props.match.params.id ? `${classes.displayNone} ${classes.boxShadow}` : classes.boxShadow}>
         {conversations.map((e, i) => (
           <Link to={`/messages/${e.other_user.user_id}`} key={i}>
             <Container className={classes.conversationListItemContainer}>
@@ -46,7 +60,7 @@ const Messages = props => {
       </Box>
       <Box className={classes.desktopConversation}>
         {/* <Conversation /> */}
-        { props.match.params.id ? <Conversation /> : null }
+        { props.match.params.id ? <Conversation newConversation={props.location.state} /> : null }
       </Box>
     </Container>
   );
@@ -70,12 +84,16 @@ const useStyles = makeStyles(theme => ({
       display: 'inline',
       
       width: '30%',
-
-      boxShadow: '-5px 0px 15px black'
     },
-
+    
     [theme.breakpoints.up('lg')]: {
       height: '88vh',
+    }
+  },
+  boxShadow: {
+    [theme.breakpoints.up('md')]: {
+      boxShadow: '-5px 0px 15px black',
+      width: '30%'
     }
   },
   mainContainer: {
@@ -90,7 +108,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     [theme.breakpoints.up('lg')]: {
-      height: '87.5vh'
+      height: '88vh'
     }
   },
   conversationListItemContainer: {
