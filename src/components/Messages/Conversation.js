@@ -19,7 +19,7 @@ let socket;
 
 const Conversation = (props) => {
   const classes = useStyles();
-  // const [user, setUser] = useState({})
+
   const [messages, setMessages] = useState([])
   const [message, setMessage] = useState('')
   const [room, setRoom] = useState(0)
@@ -110,7 +110,6 @@ const useStyles = makeStyles(theme => ({
   mainContainer: {
     width: '100%',
     maxHeight: '84vh',
-    // height: 'fit-content',
 
     boxSizing: 'border-box',
     MozBoxSizing: 'border-box',
@@ -131,8 +130,6 @@ const useStyles = makeStyles(theme => ({
     }
   },
   message: {
-    // borderRadius: 10,
-    // minWidth: '10%',
     width: 'fit-content',
     maxWidth: '60%',
 
@@ -150,18 +147,12 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main,
 
     borderRadius: '10px 10px 0px 10px',
-
-    // position: 'absolute',
-    // right: 8,
-
-    // textAlign: 'right'
   },
   receivedContainer: {
     display: 'flex',
     alignItems: 'center'
   },
   received: {
-    // backgroundColor: '#147EFB',
     backgroundColor: theme.palette.primary.main,
     color: 'white',
 
@@ -170,7 +161,7 @@ const useStyles = makeStyles(theme => ({
   inputContainer: {
     backgroundColor: theme.palette.background,
     width: 'calc(100%)',
-    // height: '6vh',
+
     position: 'fixed',
     bottom: 0,
     left: 0,
