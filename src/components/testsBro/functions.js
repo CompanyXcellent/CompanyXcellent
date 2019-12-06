@@ -63,8 +63,29 @@ export async function testRatingsRetrieval() {
 }
 
 export async function testUsersInfo() {
-    const userInfo = await axios('http://localhost:3030/api/profile/1')
+    const userInfo = await axios(`http://localhost:3030/api/profile/1`)
         .then(res => res.data)
         .catch(err => err)
     return userInfo
+}
+
+export async function testUpdateProfile() {
+    const newInfo = await axios('http://localhost:303/api/profile/')
+        .then(res => res.data)
+        .catch(err => err)
+    return newInfo
+}
+
+export async function testGetEmployees() {
+    const employees = await axios('http://localhost:3030/api/employees')
+        .then(res => res.data)
+        .catch(err => err)
+    return employees
+}
+
+export async function testEmployee() {
+    const employee = await axios('http://localhost:3030/api/employees/1')
+        .then(res => res.data)
+        .catch(err => err)
+    return employee
 }

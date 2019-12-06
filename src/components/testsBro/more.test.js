@@ -5,8 +5,8 @@ import { act } from "react-dom/test-utils";
 import axios from 'axios'
 import Team from '../Team/Team'
 import promise from "redux-promise-middleware";
-// import { testUsersInfo } from "./functions";
-const { createPost, getEmployeeRating, testingGetTeamEndpoint, testingGetPosts, testGetPoll, testPostPoll, testResponses, testUsersInfo } = require("./functions");
+import { expressJwtSecret } from "jwks-rsa";
+const { createPost, getEmployeeRating, testingGetTeamEndpoint, testingGetPosts, testGetPoll, testPostPoll, testResponses, testUsersInfo, testGetEmployees, testEmployee } = require("./functions");
 
 describe("Testing routing", () => {
   //?Derek1
@@ -143,7 +143,7 @@ describe("createPost", () => {
 
 //? Ryan's tests
 describe('tests the polls', () => {
-  it('posts the polls', async () => {
+  it('creates a new poll', async () => {
     const questions = await testPostPoll()
     expect(typeof questions).toBe('object')
   })
@@ -153,9 +153,23 @@ describe('tests the polls', () => {
   })
 });
 
-describe(`tests the user's data`, () => {
-  it('get the user nickname', async () => {
-    const userInfo = await testUsersInfo()
-    expect(userInfo.nickname).toBe('alienkiller47')
-  })
+it('get the user nickname', async () => {
+  const userInfo = await testUsersInfo()
+  expect(userInfo.nickname).toBe('alienkiller47')
+  expect(typeof userInfo).toBe('object')
+})
+
+it('gets all the company employees', async () => {
+  const employees = await testGetEmployees()
+
+  expect(typeof employees).toBe('object')
+  expect(employees[0].first_name).toBe('Johnny')
+})
+
+it('gets employee by their id', async () => {
+  const employee = await testEmployee()
+  console.log(employee)
+  expect(employee.job_title).toBe('Marketer')
+  expect(employee.user_id).toBe(1)
+  expect(employee.first_name).not.toBe('Derek')
 })
