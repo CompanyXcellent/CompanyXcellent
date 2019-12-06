@@ -23,8 +23,6 @@ const Employees = (props) => {
       })
   }, [])
 
-
-  console.log(props);
   return (
     <Container className={classes.mainContainer}>
       {/* <Typography variant='h2' className={classes.title}>Employees</Typography> */}
@@ -54,7 +52,7 @@ const Employees = (props) => {
           </Container>
         )
       })}
-      {props.user.user_id === 1 ?
+      {props.user.role_id === 1 ?
         <Link to='/create-employee'>
           <Button
             className={classes.fixedBottomRight}

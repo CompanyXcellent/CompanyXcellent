@@ -40,7 +40,7 @@ const Conversation = (props) => {
       socket.emit('disconnect')
       socket.off()
     }
-  }, [props.user,  props.match.params.id])
+  }, [props.user,  props.match.params.id, props.newConversation])
 
   useEffect(() => {
     socket.on('new message', (newMessage) => {
